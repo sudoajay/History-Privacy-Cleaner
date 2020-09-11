@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">History &amp; Privacy Cleaner</string>
+
+    <!--    Notification channel-->
+    <string name="notifications_group_service">Service control</string>
+    <string name="firebase_channel_id" >Push Notification</string>
+
+    <!--    Dark Mode Bottom Sheet-->
+    <string name="dark_mode_trans_text">Dark Mode</string>
+    <string name="off_trans_text">Off</string>
+    <string name="on_trans_text">On</string>
+    <string name="automatic_at_sunset_trans_text">Automatic at sunset</string>
+    <string name="set_by_battery_saver_trans_text">Set by battery saver</string>
+    <string name="system_default_trans_text">System Default</string>
+
+    <!--    Delete Cache-->
+    <string name="successfully_cache_data_is_deleted_text">Successfully Cache Data Is Deleted</string>
+
+    <!--        No Trans-->
+
+    <!--    Dark Mode No Trans-->
+    <string name="dark_mode_text" translatable="false">Dark Mode</string>
+    <string name="is_dark_mode_text" translatable="false">isDarkMode</string>
+    <string name="off_text" translatable="false">Off</string>
+    <string name="on_text" translatable="false">On</string>
+    <string name="automatic_at_sunset_text" translatable="false">Automatic at sunset</string>
+    <string name="set_by_battery_saver_text" translatable="false">Set by battery saver</string>
+    <string name="system_default_text" translatable="false">System Default</string>
 </resources>

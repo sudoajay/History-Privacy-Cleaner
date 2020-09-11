@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    App Theme Color-->
+    <color name="colorPrimaryDark">#121212</color>
+    <color name="colorPrimary">#272727</color>
+    <color name="colorAccent">#74A0EE</color>
+
+    <!--    Modify  App Theme Color -->
+    <color name="mainBgColor">#121212</color>
+    <color name="headingNormalTextColor">#dae1e7</color>
+
+</resources>

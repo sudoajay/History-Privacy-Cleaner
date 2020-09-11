@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <!--    App Theme Color-->
+    <color name="colorPrimaryDark">#1e5397</color>
+    <color name="colorPrimary">#376db6</color>
+    <color name="colorAccent">#376db6</color>
+
+    <!--    Modify  App Theme Color -->
+    <color name="mainBgColor">#ffffff</color>
+    <color name="headingNormalTextColor">#353131</color>
 </resources>
