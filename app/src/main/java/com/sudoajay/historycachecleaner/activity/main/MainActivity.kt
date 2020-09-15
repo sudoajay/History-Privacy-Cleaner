@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historycachecleaner.activity.BaseActivity
+import com.sudoajay.historycachecleaner.activity.main.root.RootState
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import com.sudoajay.historycachecleaner.firebase.NotificationChannels.notificationOnCreate
 import com.sudoajay.historycachecleaner.helper.CustomToast
@@ -65,7 +66,7 @@ class MainActivity : BaseActivity()  {
 
     override fun onResume() {
 
-
+//        checkRootState()
 
         super.onResume()
     }
@@ -185,7 +186,69 @@ class MainActivity : BaseActivity()  {
     }
 
 
+    private fun checkRootState(): RootState? {
+        val rootState: RootState = viewModel.checkRootPermission()!!
+        when (rootState) {
+            RootState.NO_ROOT -> {
+                setRootAccessAlreadyObtained(false, applicationContext)
+                generateAlertDialog(
+                    resources.getString(R.string.alert_dialog_title_no_root_permission),
+                    resources.getString(R.string.alert_dialog_message_no_root_permission),
+                    getString(R.string.ok_text)
+                )
+            }
+            RootState.BE_ROOT -> {
+                setRootAccessAlreadyObtained(false, applicationContext)
+                generateAlertDialog(
+                    resources.getString(R.string.alert_dialog_title_be_root),
+                    resources.getString(R.string.alert_dialog_message_be_root),
+                    getString(R.string.ok_text)
+                )
+            }
+            RootState.HAVE_ROOT -> {
 
+                if (isRootAccessAlreadyObtained(applicationContext)) return null
+                setRootAccessAlreadyObtained(true, applicationContext)
+                generateAlertDialog(
+                    resources.getString(R.string.alert_dialog_title_have_root),
+                    resources.getString(R.string.alert_dialog_message_have_root),
+                    getString(R.string.ok_text)
+                )
+            }
+        }
+        return rootState
+    }
+
+    private fun generateAlertDialog(
+        title: String,
+        message: String,
+        negativeText: String
+    ) {
+        val builder: AlertDialog.Builder =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AlertDialog.Builder(
+                    this,
+                    if (!isDarkMode(applicationContext)) android.R.style.Theme_Material_Light_Dialog_Alert else android.R.style.Theme_Material_Dialog_Alert
+                )
+            } else {
+                AlertDialog.Builder(this)
+            }
+        builder.setTitle(title)
+            .setMessage(message)
+            .setNegativeButton(negativeText) { _, _ ->
+
+            }
+
+            .setCancelable(true)
+        val dialog = builder.create()
+        dialog.show()
+        val textView = dialog.findViewById<View>(android.R.id.message) as TextView?
+        textView!!.setTextSize(
+            TypedValue.COMPLEX_UNIT_PX,
+            resources.getDimension(R.dimen.alert_dialog_message_size)
+        )
+
+    }
 
     override fun onBackPressed() {
         onBack()
@@ -229,6 +292,19 @@ class MainActivity : BaseActivity()  {
         const val settingShortcutId = "setting"
         const val homeShortcutId = "home"
 
+        private fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
+            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
+                .putBoolean(
+                    context.getString(R.string.is_root_permission_text), status
+                ).apply()
+        }
+
+        fun isRootAccessAlreadyObtained(context: Context): Boolean {
+            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
+                .getBoolean(
+                    context.getString(R.string.is_root_permission_text), false
+                )
+        }
 
 
     }

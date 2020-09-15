@@ -70,6 +70,16 @@
     <string name="about_app_summary_text">open github link</string>
 
 
+
+    <!--    Root permission-->
+    <string name="alert_dialog_title_no_root_permission">No Rooted App</string>
+    <string name="alert_dialog_message_no_root_permission">Root access is required in order to remove internal cache dir which you only see with root </string>
+    <string name="alert_dialog_title_be_root">Root Access Denied</string>
+    <string name="alert_dialog_message_be_root">Root access is installed on your device, but
+        to remove internal cache dir, you have to grant root access for this app from your root manager app.</string>
+    <string name="alert_dialog_title_have_root">Root Access Obtained!</string>
+    <string name="alert_dialog_message_have_root">Root access is properly installed on this device.</string>
+
     <!--        No Trans-->
 
     <!--    Dark Mode No Trans-->
@@ -80,4 +90,7 @@
     <string name="automatic_at_sunset_text" translatable="false">Automatic at sunset</string>
     <string name="set_by_battery_saver_text" translatable="false">Set by battery saver</string>
     <string name="system_default_text" translatable="false">System Default</string>
+
+    <!--    Root -->
+    <string name="is_root_permission_text" translatable="false">isRootPermission</string>
 </resources>

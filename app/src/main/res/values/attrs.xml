@@ -2,7 +2,7 @@
 <resources>
     <attr name="mainBgColor" format="reference" />
     <attr name="headingNormalTextColor" format="reference" />
-    <!--    <attr name="fadeTextColor" format="reference"/>-->
+    <attr name="fadeTextColor" format="reference"/>
     <attr name="bgBoxColor" format="reference" />
     <attr name="primaryAppColor" format="reference" />
     <attr name="bottomItemTintColor" format="reference"/>

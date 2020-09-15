@@ -8,6 +8,8 @@
     <!--    Modify  App Theme Color -->
     <color name="mainBgColor">#ffffff</color>
     <color name="headingNormalTextColor">#353131</color>
+    <color name="fadeTextColor">#5C5757</color>
+
     <color name="bgBoxColor">#ffffff</color>
     <color name="primaryAppColor">#376db6</color>
     <color name="bottomItemTintColor">#353131</color>

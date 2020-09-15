@@ -24,8 +24,8 @@
 <!--    <dimen name="app_bar_height">220dp</dimen>-->
 <!--    <dimen name="fab_margin">16dp</dimen>-->
 
-<!--&lt;!&ndash;    Alert dialog&ndash;&gt;-->
-<!--    <dimen name="alert_dialog_message_size">14sp</dimen>-->
+<!--    Alert dialog-->
+    <dimen name="alert_dialog_message_size">14sp</dimen>
 
 <!--&lt;!&ndash;    Splash Screen&ndash;&gt;-->
 <!--    <dimen name="image_header_dimen">100dp</dimen>-->
