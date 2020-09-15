@@ -11,5 +11,9 @@
     <color name="bgBoxColor">#ffffff</color>
     <color name="primaryAppColor">#376db6</color>
     <color name="bottomItemTintColor">#353131</color>
-
+    <color name="boxTextColor">#353131</color>
+    <color name="boxHoverColor">#376db6</color>
+    <color name="errorBoxColor">#F44336</color>
+    <color name="dialogBgColorInfo">#2546ABEB</color>
+    <color name="feedbackBoxBgColor">#BEBEBE</color>
 </resources>

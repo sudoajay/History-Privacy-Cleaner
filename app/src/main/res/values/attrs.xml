@@ -7,12 +7,12 @@
     <attr name="primaryAppColor" format="reference" />
     <attr name="bottomItemTintColor" format="reference"/>
 
-    <!--    Send Feedback -->
-    <!--    <attr name="boxTextColor" format="reference"/>-->
-    <!--    <attr name="boxHoverColor" format="reference"/>-->
-    <!--    <attr name="errorBoxColor" format="reference"/>-->
-    <!--    <attr name="dialogBgColorInfo" format="reference"/>-->
-    <!--    <attr name="feedbackBoxBgColor" format="reference"/>-->
+<!--        Send Feedback -->
+        <attr name="boxTextColor" format="reference"/>
+        <attr name="boxHoverColor" format="reference"/>
+        <attr name="errorBoxColor" format="reference"/>
+        <attr name="dialogBgColorInfo" format="reference"/>
+        <attr name="feedbackBoxBgColor" format="reference"/>
 
 
 </resources>

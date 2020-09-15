@@ -11,7 +11,11 @@
         <item name="bgBoxColor">@color/bgBoxColor</item>
         <item name="primaryAppColor">@color/primaryAppColor</item>
         <item name="bottomItemTintColor">@color/bottomItemTintColor</item>
-
+        <item name="boxTextColor">@color/boxTextColor</item>
+        <item name="boxHoverColor">@color/boxHoverColor</item>
+        <item name="errorBoxColor">@color/errorBoxColor</item>
+        <item name="dialogBgColorInfo">@color/dialogBgColorInfo</item>
+        <item name="feedbackBoxBgColor">@color/feedbackBoxBgColor</item>
 
     </style>
 

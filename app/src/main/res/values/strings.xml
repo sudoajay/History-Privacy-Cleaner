@@ -23,6 +23,53 @@
     <string name="darkMode_optionMenu">Dark Mode</string>
     <string name="action_more_setting">More Setting</string>
 
+
+    <!--    Send Feedback -->
+    <string name="feedbackEditTextHint">Please write your feedback</string>
+    <string name="feedbackEditTextError">Please write something in feedback</string>
+    <string name="systemInfo_text">Your System Info will be send to our developer team</string>
+    <string name="add_screenshot_text">+ Add Screenshot</string>
+    <string name="ok_text">OK</string>
+
+    <!--    Network Provider-->
+    <string name="wifi_text">Wifi</string>
+    <string name="mobile_data_text">Mobile Data</string>
+    <string name="vpn_text">Vpn</string>
+    <string name="no_internet_text">No Internet</string>
+
+    <!--    System Info-->
+    <string name="system_info_text"> System Info </string>
+    <string name="device_text">Device : </string>
+    <string name="os_api_level_text">Os Api Level : </string>
+    <string name="app_version_text">App Version : </string>
+    <string name="language_text">Language : </string>
+    <string name="total_memory_text">Total Heap Memory : </string>
+    <string name="free_memory_text">Free Heap Memory : </string>
+    <string name="screen_Text">Screen Size : </string>
+    <string name="network_type_text">Network Type : </string>
+
+    <!--    Setting Preference-->
+    <string name="system_setting_text">System Settings</string>
+    <string name="use_dark_mode_text">Use Dark Mode</string>
+    <string name="change_language_text">"Change Language "</string>
+    <string name="clear_cache_text">Clear Cache</string>
+    <string name="help_support_text">Help &amp; Support</string>
+    <string name="privacy_policy_text">Privacy Policy</string>
+    <string name="report_a_bug_text">Report A Bug</string>
+    <string name="report_a_bug_summary_text">submit an issue on Github issue page</string>
+    <string name="send_feedback_text">Send Feedback</string>
+    <string name="send_feedback_summary_text">submit feedback to fix the app bug</string>
+    <string name="more_info_text">More Info</string>
+    <string name="share_app_text">Share App</string>
+    <string name="rate_use_text">Rate-Us</string>
+    <string name="more_app_text">More App</string>
+    <string name="about_app_text">About App</string>
+    <string name="share_app_summary_text">share the play store app link</string>
+    <string name="rate_use_summary_text">express your experience through rating</string>
+    <string name="more_app_summary_text">there is more app out there</string>
+    <string name="about_app_summary_text">open github link</string>
+
+
     <!--        No Trans-->
 
     <!--    Dark Mode No Trans-->
