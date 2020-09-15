@@ -8,5 +8,9 @@
     <!--    Modify  App Theme Color -->
     <color name="mainBgColor">#121212</color>
     <color name="headingNormalTextColor">#dae1e7</color>
+    <color name="bgBoxColor">#272727</color>
+    <color name="primaryAppColor">#74A0EE</color>
+    <color name="bottomItemTintColor">#74A0EE</color>
+
 
 </resources>

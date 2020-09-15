@@ -1,4 +1,4 @@
-package com.sudoajay.historyprivacycleaner.firebase
+package com.sudoajay.historycachecleaner.firebase
 
 import android.app.Notification
 import android.app.NotificationManager

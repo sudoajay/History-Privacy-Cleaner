@@ -1,4 +1,4 @@
-package com.sudoajay.historyprivacycleaner.helper
+package com.sudoajay.historycachecleaner.helper
 
 import android.content.Context
 import android.os.Build

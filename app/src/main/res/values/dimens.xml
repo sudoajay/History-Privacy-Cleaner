@@ -9,9 +9,9 @@
     <dimen name="toolbar_title_size">24sp</dimen>
     <dimen name="progress_circular_dimension">48dp</dimen>
 
-<!--    &lt;!&ndash;    Insert Divider&ndash;&gt;-->
-<!--    <dimen name="divider_height">0.8dp</dimen>-->
-<!--    <dimen name="divider_inset">72dp</dimen>-->
+    <!--    Insert Divider-->
+    <dimen name="divider_height">0.8dp</dimen>
+    <dimen name="divider_inset">72dp</dimen>
 
 <!--    &lt;!&ndash;    Layout app item Recycler view&ndash;&gt;-->
 <!--    <dimen name="image_dimension">40dp</dimen>-->

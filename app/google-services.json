@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "990162169962",
+    "firebase_url": "https://history-and-cache-cleaner.firebaseio.com",
+    "project_id": "history-and-cache-cleaner",
+    "storage_bucket": "history-and-cache-cleaner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990162169962:android:15fd3d397ea6a1fff41a13",
+        "android_client_info": {
+          "package_name": "com.sudoajay.historycachecleaner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990162169962-18s086jua01iivbf9uoja9rjpc70q55a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sudoajay.historycachecleaner",
+            "certificate_hash": "76a725010c7a7213bf6511960e6393c4299e865e"
+          }
+        },
+        {
+          "client_id": "990162169962-1jn9d69jijl09vss4mma6fsij0c7p338.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe42eNjj0IfsEPCLHs86g8DcIo1y2ET78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "990162169962-1jn9d69jijl09vss4mma6fsij0c7p338.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

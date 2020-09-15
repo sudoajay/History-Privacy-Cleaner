@@ -9,7 +9,7 @@
         <import type="android.view.View"/>
         <variable
             name="bottomSheet"
-            type="com.sudoajay.historyprivacycleaner.helper.DarkModeBottomSheet" />
+            type="com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

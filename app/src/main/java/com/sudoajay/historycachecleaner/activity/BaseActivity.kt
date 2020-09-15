@@ -1,4 +1,4 @@
-package com.sudoajay.historyprivacycleaner.activity
+package com.sudoajay.historycachecleaner.activity
 
 import android.content.Context
 import android.content.res.Configuration
@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.sudoajay.historyprivacycleaner.R
-import com.sudoajay.historyprivacycleaner.helper.LocalizationUtil.changeLocale
+import com.sudoajay.historycachecleaner.helper.LocalizationUtil.changeLocale
 import java.util.*
 
 

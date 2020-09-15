@@ -8,6 +8,10 @@
         <!--        Modified Attr for Dark Mode Effect-->
         <item name="mainBgColor">@color/mainBgColor</item>
         <item name="headingNormalTextColor">@color/headingNormalTextColor</item>
+        <item name="bgBoxColor">@color/bgBoxColor</item>
+        <item name="primaryAppColor">@color/primaryAppColor</item>
+        <item name="bottomItemTintColor">@color/bottomItemTintColor</item>
+
 
     </style>
 

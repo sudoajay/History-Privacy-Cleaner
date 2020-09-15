@@ -16,6 +16,13 @@
     <!--    Delete Cache-->
     <string name="successfully_cache_data_is_deleted_text">Successfully Cache Data Is Deleted</string>
 
+
+    <!--  MainActivity  Bottom Toolbar-->
+    <string name="action_search">Search</string>
+    <string name="filterList_optionMenu">Filter List</string>
+    <string name="darkMode_optionMenu">Dark Mode</string>
+    <string name="action_more_setting">More Setting</string>
+
     <!--        No Trans-->
 
     <!--    Dark Mode No Trans-->

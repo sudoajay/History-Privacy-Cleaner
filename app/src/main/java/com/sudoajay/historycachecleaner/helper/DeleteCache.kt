@@ -1,4 +1,4 @@
-package com.sudoajay.historyprivacycleaner.helper
+package com.sudoajay.historycachecleaner.helper
 
 import android.content.Context
 import com.sudoajay.historyprivacycleaner.R
@@ -9,7 +9,10 @@ internal object DeleteCache {
         try {
             val dir = context.cacheDir
             deleteWithFile(dir)
-            CustomToast.toastIt(context, context.getString(R.string.successfully_cache_data_is_deleted_text))
+            CustomToast.toastIt(
+                context,
+                context.getString(R.string.successfully_cache_data_is_deleted_text)
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }

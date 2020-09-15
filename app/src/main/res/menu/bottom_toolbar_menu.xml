@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search_optionMenu"
+        android:icon="@drawable/ic_search"
+        android:title="@string/action_search"
+        app:iconTint="?attr/bottomItemTintColor"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/filterList_optionMenu"
+        android:title="@string/filterList_optionMenu" />
+    <item
+        android:id="@+id/darkMode_optionMenu"
+        android:title="@string/darkMode_optionMenu" />
+    <item
+        android:id="@+id/more_setting_optionMenu"
+        android:title="@string/action_more_setting" />
+</menu>
