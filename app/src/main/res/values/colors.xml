@@ -9,7 +9,6 @@
     <color name="mainBgColor">#ffffff</color>
     <color name="headingNormalTextColor">#353131</color>
     <color name="fadeTextColor">#5C5757</color>
-
     <color name="bgBoxColor">#ffffff</color>
     <color name="primaryAppColor">#376db6</color>
     <color name="bottomItemTintColor">#353131</color>
@@ -18,4 +17,16 @@
     <color name="errorBoxColor">#F44336</color>
     <color name="dialogBgColorInfo">#2546ABEB</color>
     <color name="feedbackBoxBgColor">#BEBEBE</color>
+
+    <!--    Not Modify Color Theme -->
+    <color name="swipeSchemeColor">#376db6</color>
+    <color name="swipeSchemeDarkColor">#74A0EE</color>
+    <color name="swipeBgColor">#ffffff</color>
+    <color name="swipeBgDarkColor">#121212</color>
+    <color name="navigationIconColor">#353131</color>
+    <color name="navigationIconDarkColor">#74A0EE</color>
+
+
+    <color name="divider">#E6E6E6</color>
+
 </resources>

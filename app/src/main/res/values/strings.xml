@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">History &amp; Privacy Cleaner</string>
+    <string name="app_name">History &amp; Cache Cleaner</string>
 
     <!--    Notification channel-->
     <string name="notifications_group_service">Service control</string>
@@ -69,6 +69,23 @@
     <string name="more_app_summary_text">there is more app out there</string>
     <string name="about_app_summary_text">open github link</string>
 
+    <!--    Scroll Activity-->
+    <string name="action_applicationSetting">Application Setting</string>
+    <string name="action_openAppInGooglePlayStore">Open app in Google Play Store</string>
+    <string name="version_name_text">Version Name</string>
+    <string name="version_code_text">Version Code</string>
+    <string name="first_install_text">First Install</string>
+    <string name="last_Update_text">Last Update</string>
+    <string name="package_name_text">Package Name</string>
+    <string name="apk_path_text">Apk Path</string>
+    <string name="data_path_text">Data Path</string>
+    <string name="apk_size_text">Apk Size</string>
+    <string name="min_sdk_text">Min Sdk</string>
+    <string name="target_sdk_text">Target Sdk</string>
+    <string name="installer_text">Installer</string>
+    <string name="permission_text">Permission</string>
+    <string name="unspecified_text">Unspecified</string>
+
 
 
     <!--    Root permission-->
@@ -79,6 +96,17 @@
         to remove internal cache dir, you have to grant root access for this app from your root manager app.</string>
     <string name="alert_dialog_title_have_root">Root Access Obtained!</string>
     <string name="alert_dialog_message_have_root">Root access is properly installed on this device.</string>
+    <string name="alert_dialog_no_app_selected_title">There are no apps selected!</string>
+
+    <!--    Filter Bottom sheet-->
+    <string name="filter_option_text">Filter Option</string>
+    <string name="title_menu_show">Show</string>
+    <string name="title_menu_order_by_trans">Order by</string>
+    <string name="menu_alphabetical_order_trans">Alphabetical order</string>
+    <string name="menu_installation_date_trans">Installation date</string>
+    <string name="menu_app_size_trans">App size</string>
+    <string name="menu_system_app_trans">System app</string>
+    <string name="menu_user_app_trans">User app</string>
 
     <!--        No Trans-->
 
@@ -91,6 +119,20 @@
     <string name="set_by_battery_saver_text" translatable="false">Set by battery saver</string>
     <string name="system_default_text" translatable="false">System Default</string>
 
+
+    <!--    FilterDnsBottomSheet Not Trans-->
+    <string name="title_menu_order_by" translatable="false">Order by</string>
+    <string name="menu_alphabetical_order" translatable="false">Alphabetical order</string>
+    <string name="menu_installation_date" translatable="false">Installation date</string>
+    <string name="menu_app_size" translatable="false">App size</string>
+    <string name="menu_system_app" translatable="false">System apps</string>
+    <string name="menu_user_app" translatable="false">User apps</string>
+
+    <string name="filter_changes_text" translatable="false">filterChanges</string>
+
     <!--    Root -->
     <string name="is_root_permission_text" translatable="false">isRootPermission</string>
+
+    <!--    Information text-->
+    <string name="at_least_one_item_text">You Can\'t Hide Both Item </string>
 </resources>

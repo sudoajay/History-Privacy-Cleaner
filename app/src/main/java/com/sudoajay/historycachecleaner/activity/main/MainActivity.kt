@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historycachecleaner.activity.BaseActivity
+import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.activity.main.root.RootState
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import com.sudoajay.historycachecleaner.firebase.NotificationChannels.notificationOnCreate
@@ -36,6 +37,7 @@ class MainActivity : BaseActivity()  {
     private lateinit var binding: ActivityMainBinding
     private var isDarkTheme: Boolean = false
     private var doubleBackToExitPressedOnce = false
+    private var selectedList = mutableListOf<App>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +69,22 @@ class MainActivity : BaseActivity()  {
     override fun onResume() {
 
 //        checkRootState()
+        binding.deleteFloatingActionButton.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.IO) {
+                    selectedList = viewModel.appRepository.getSelectedApp()
+                }
+                if (selectedList.isEmpty())
+                    CustomToast.toastIt(
+                        applicationContext,
+                        getString(R.string.alert_dialog_no_app_selected_title)
+                    )
+                else {
+
+                }
+            }
+        }
+
 
         super.onResume()
     }
@@ -75,8 +93,30 @@ class MainActivity : BaseActivity()  {
     private fun setReference() {
 
         //      Setup Swipe RecyclerView
+        binding.swipeRefresh.setColorSchemeResources(
+            if (isDarkTheme) R.color.swipeSchemeDarkColor else R.color.swipeSchemeColor
+        )
+        binding.swipeRefresh.setProgressBackgroundColorSchemeColor(
+            ContextCompat.getColor(
+                applicationContext,
+                if (isDarkTheme) R.color.swipeBgDarkColor else R.color.swipeBgColor
+
+            )
+        )
 
 
+//         Setup BottomAppBar Navigation Setup
+        binding.bottomAppBar.navigationIcon?.mutate()?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                it.setTint(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        if (isDarkTheme) R.color.navigationIconDarkColor else R.color.navigationIconColor
+                    )
+                )
+            }
+            binding.bottomAppBar.navigationIcon = it
+        }
 
         setSupportActionBar(binding.bottomAppBar)
 
@@ -86,24 +126,46 @@ class MainActivity : BaseActivity()  {
 
     private fun setRecyclerView() {
 
+        val recyclerView = binding.recyclerView
+        val divider = getInsertDivider()
+        recyclerView.addItemDecoration(divider)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
+        val pagingAppRecyclerAdapter = PagingAppRecyclerAdapter(applicationContext, this)
+        recyclerView.adapter = pagingAppRecyclerAdapter
+
+        viewModel.appList!!.observe(this, {
+            pagingAppRecyclerAdapter.submitList(it)
+
+            if (binding.swipeRefresh.isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+
+            viewModel.hideProgress!!.value = it.isEmpty()
+
+        })
+
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.onRefresh()
+        }
 
     }
 
-//    private fun getInsertDivider(): RecyclerView.ItemDecoration {
-//        val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
-//        val dividerColor = ContextCompat.getColor(
-//            applicationContext,
-//            R.color.divider
-//        )
-//        val marginLeft = resources.getDimensionPixelSize(R.dimen.divider_inset)
-//        return InsetDivider.Builder(this)
-//            .orientation(InsetDivider.VERTICAL_LIST)
-//            .dividerHeight(dividerHeight)
-//            .color(dividerColor)
-//            .insets(marginLeft, 0)
-//            .build()
-//    }
+    private fun getInsertDivider(): RecyclerView.ItemDecoration {
+        val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
+        val dividerColor = ContextCompat.getColor(
+            applicationContext,
+            R.color.divider
+        )
+        val marginLeft = resources.getDimensionPixelSize(R.dimen.divider_inset)
+        return InsetDivider.Builder(this)
+            .orientation(InsetDivider.VERTICAL_LIST)
+            .dividerHeight(dividerHeight)
+            .color(dividerColor)
+            .insets(marginLeft, 0)
+            .build()
+    }
 
 
 

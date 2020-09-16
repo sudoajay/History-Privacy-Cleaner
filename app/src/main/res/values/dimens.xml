@@ -13,16 +13,16 @@
     <dimen name="divider_height">0.8dp</dimen>
     <dimen name="divider_inset">72dp</dimen>
 
-<!--    &lt;!&ndash;    Layout app item Recycler view&ndash;&gt;-->
-<!--    <dimen name="image_dimension">40dp</dimen>-->
+    <!--    Layout app item Recycler view-->
+    <dimen name="image_dimension">40dp</dimen>
 
 <!--    &lt;!&ndash;    Navigation Drawer&ndash;&gt;-->
 <!--    <dimen name="text_view_margin_gap">12dp</dimen>-->
 <!--    <dimen name="gap_margin_left_right">16dp</dimen>-->
 
-<!--&lt;!&ndash;    Scrolling Activity&ndash;&gt;-->
-<!--    <dimen name="app_bar_height">220dp</dimen>-->
-<!--    <dimen name="fab_margin">16dp</dimen>-->
+<!--    Scrolling Activity-->
+    <dimen name="app_bar_height">220dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 <!--    Alert dialog-->
     <dimen name="alert_dialog_message_size">14sp</dimen>

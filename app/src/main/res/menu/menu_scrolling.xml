@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.sudoajay.uninstaller.activity.scrolling.ScrollingActivity">
+    <item
+        android:id="@+id/action_applicationSetting"
+        android:orderInCategory="100"
+        android:title="@string/action_applicationSetting"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_openAppInGooglePlayStore"
+        android:orderInCategory="100"
+        android:title="@string/action_openAppInGooglePlayStore"
+        app:showAsAction="never" />
+</menu>
