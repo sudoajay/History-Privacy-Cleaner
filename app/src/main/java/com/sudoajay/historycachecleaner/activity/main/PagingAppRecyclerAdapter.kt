@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 class PagingAppRecyclerAdapter(var context: Context, var main:MainActivity) :
     PagedListAdapter<App, PagingAppRecyclerAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
-
     private var packageManager = context.packageManager
 
 

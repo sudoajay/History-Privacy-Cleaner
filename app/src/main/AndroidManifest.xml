@@ -28,7 +28,9 @@
         <activity
             android:name="com.sudoajay.historycachecleaner.activity.sendFeedback.SendFeedback"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity
+            android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -3,6 +3,7 @@ package com.sudoajay.historycachecleaner.activity.main.root
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.MainActivityViewModel
 import eu.chainfire.libsuperuser.Shell
 import java.io.File
@@ -10,6 +11,8 @@ import java.util.*
 
 
 class RootManager(private var viewModel: MainActivityViewModel, var context: Context) {
+
+    var TAG = "RootManager"
     private val SU_BINARY_DIRS = arrayOf(
         "/system/bin",
         "/system/sbin",
@@ -62,6 +65,20 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
 //        }
 //    }
 
+    fun removeCacheFolder(): Boolean {
+        val commandOutput =
+            executeCommandSH("rm  -rf /data/data/com.android.inputdevices/cache")
+        val command = executeCommandSH("rm  -rf /data/data/com.android.inputdevices/code_cache")
+        checkCommandSuccesfull(command)
+        val commands =
+            executeCommandSH("rm  -rf /mnt/sdcard/Android/data/com.android.bookmarkprovider/cache")
+        checkCommandSuccesfull(commands)
+
+        val output = executeCommandSH("ls /storage/")
+        Log.e(TAG, output)
+        return checkCommandSuccesfull(commandOutput)
+    }
+
     private fun uninstallSystemApp(appApk: String): Boolean {
         executeCommandSU("mount -o rw,remount /system")
         executeCommandSU("rm $appApk")
@@ -71,12 +88,12 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
 
     private fun uninstallSystemAppAlternativeMethod(packageName: String): Boolean {
         val commandOutput = executeCommandSU("pm uninstall --user 0 $packageName")
-        return checkPMCommandSuccesfull(commandOutput)
+        return checkCommandSuccesfull(commandOutput)
     }
 
     private fun uninstallUserApp(packageName: String): Boolean {
         val commandOutput = executeCommandSU("pm uninstall $packageName")
-        return checkPMCommandSuccesfull(commandOutput)
+        return checkCommandSuccesfull(commandOutput)
     }
 
     private fun uninstallUserAppUnRooted(packageName: String) {
@@ -97,6 +114,7 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
         }
         val stringBuilder = StringBuilder()
         for (line in stdout) {
+            Log.e(TAG, "  here - $line")
             stringBuilder.append(line).append("\n")
         }
         return stringBuilder.toString()
@@ -122,12 +140,23 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
         return output.trim { it <= ' ' }.isEmpty()
     }
 
-    private fun checkPMCommandSuccesfull(commandOutput: String?): Boolean {
+    private fun checkCommandSuccesfull(commandOutput: String?): Boolean {
+        Log.e(TAG, commandOutput.toString() + " ---- ")
         return commandOutput != null && commandOutput.toLowerCase(Locale.ROOT).contains("success")
     }
 
 
     fun rebootDevice(): String {
         return executeCommandSU("reboot")
+    }
+
+    companion object {
+
+        fun getExternalCachePathFromCacheDir(context: Context?): String {
+            //  Its supports till android 9
+            val cachePath = (context!!.externalCacheDir?.absolutePath).toString()
+            val split = cachePath.split("/Android/data/")
+            return cachePath.replace(split[1],"")
+        }
     }
 }

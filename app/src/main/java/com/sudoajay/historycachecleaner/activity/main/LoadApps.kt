@@ -3,6 +3,7 @@ package com.sudoajay.historycachecleaner.activity.main
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
 import java.io.File
@@ -41,7 +42,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                 appRepository.setUpdateInstall(
                     packageName
                 )
-
         }
 
 //        Here we remove Uninstall App from Data base
@@ -62,6 +62,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         // return size in form of Bytes(Long)
         val size = File(packageManager.getApplicationInfo(packageName, 0).publicSourceDir).length()
+
 
 
         appRepository.insert(

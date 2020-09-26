@@ -5,10 +5,16 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+
+        <item name="android:fontFamily">@font/lato</item>
+
+        <item name="android:textColorSecondary">@color/bottomItemTintColor</item>
+
         <!--        Modified Attr for Dark Mode Effect-->
         <item name="mainBgColor">@color/mainBgColor</item>
         <item name="headingNormalTextColor">@color/headingNormalTextColor</item>
         <item name="bgBoxColor">@color/bgBoxColor</item>
+        <item name="fadeTextColor">@color/fadeTextColor</item>
         <item name="primaryAppColor">@color/primaryAppColor</item>
         <item name="bottomItemTintColor">@color/bottomItemTintColor</item>
         <item name="boxTextColor">@color/boxTextColor</item>

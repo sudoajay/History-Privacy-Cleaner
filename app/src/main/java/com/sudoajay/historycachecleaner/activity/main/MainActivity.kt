@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -19,25 +20,27 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.App
+import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import com.sudoajay.historycachecleaner.activity.main.root.RootState
-import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
-import com.sudoajay.historycachecleaner.firebase.NotificationChannels.notificationOnCreate
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
+import com.sudoajay.historyprivacycleaner.R
+import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
+import java.io.File
 import java.util.*
 
-class MainActivity : BaseActivity()  {
+class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
 
     lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
     private var isDarkTheme: Boolean = false
     private var doubleBackToExitPressedOnce = false
     private var selectedList = mutableListOf<App>()
+    private var TAG = "MainActivityTag"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,12 +83,15 @@ class MainActivity : BaseActivity()  {
                         getString(R.string.alert_dialog_no_app_selected_title)
                     )
                 else {
-
+                    CustomToast.toastIt(
+                        applicationContext,
+                        viewModel.rootManager.removeCacheFolder().toString()
+                    )
                 }
             }
         }
 
-
+        setReference()
         super.onResume()
     }
 
@@ -138,6 +144,7 @@ class MainActivity : BaseActivity()  {
         viewModel.appList!!.observe(this, {
             pagingAppRecyclerAdapter.submitList(it)
 
+
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
 
@@ -177,26 +184,29 @@ class MainActivity : BaseActivity()  {
         )
     }
 
-//    private fun showNavigationDrawer(){
+    //    private fun showNavigationDrawer(){
 //        val navigationDrawerBottomSheet = NavigationDrawerBottomSheet()
 //        navigationDrawerBottomSheet.show(supportFragmentManager, navigationDrawerBottomSheet.tag)
 //    }
 //
-//    private fun showFilterAppBottomSheet(){
-//        val filterAppBottomSheet = FilterAppBottomSheet()
-//        filterAppBottomSheet.show(supportFragmentManager, filterAppBottomSheet.tag)
-//    }
-//
+    private fun showFilterAppBottomSheet() {
+        val filterAppBottomSheet = FilterAppBottomSheet()
+        filterAppBottomSheet.show(supportFragmentManager, filterAppBottomSheet.tag)
+    }
+
+    //
 //    private fun openSetting() {
 //        val intent = Intent(applicationContext, SettingsActivity::class.java)
 //        startActivity(intent)
 //    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            android.R.id.home -> showNavigationDrawer()
-//            R.id.filterList_optionMenu -> showFilterAppBottomSheet()
-//            R.id.darkMode_optionMenu -> showDarkMode()
-//            R.id.more_setting_optionMenu -> openSetting()
+            android.R.id.home -> {
+            }
+            R.id.filterList_optionMenu -> showFilterAppBottomSheet()
+            R.id.darkMode_optionMenu -> showDarkMode()
+            R.id.more_setting_optionMenu -> {
+            }
             else -> return super.onOptionsItemSelected(item)
         }
 
@@ -241,7 +251,7 @@ class MainActivity : BaseActivity()  {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 val query: String = newText.toLowerCase(Locale.ROOT).trim { it <= ' ' }
-//                viewModel.filterChanges(query)
+                viewModel.filterChanges(query)
                 return true
             }
         })
@@ -312,6 +322,10 @@ class MainActivity : BaseActivity()  {
 
     }
 
+    override fun handleDialogClose() {
+        viewModel.filterChanges()
+    }
+
     override fun onBackPressed() {
         onBack()
     }
@@ -370,7 +384,6 @@ class MainActivity : BaseActivity()  {
 
 
     }
-
 
 
 }
