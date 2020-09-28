@@ -54,8 +54,8 @@ class AndroidExternalStoragePermission(
                 AlertDialog.Builder(activity)
             }
         alertDialog.setIcon(R.drawable.internal_storage_icon)
-            .setTitle(context.getString(R.string.activity_custom_dialog_permission_TextView1))
-            .setMessage(context.getString(R.string.activity_custom_dialog_permission_TextView2))
+            .setTitle(context.getString(R.string.external_storage_alert_dialog_title_text))
+            .setMessage(context.getString(R.string.external_storage_alert_dialog_message_text))
             .setCancelable(true)
             .setPositiveButton(R.string.continueButton) { _, _ ->
                 storagePermissionGranted()
@@ -89,7 +89,7 @@ class AndroidExternalStoragePermission(
             val intent: Intent
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                val requestCode = 58
+                val requestCode = 1
                 activity.startActivityForResult(intent, requestCode)
             }
         } catch (e: Exception) {

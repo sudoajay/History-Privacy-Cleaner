@@ -1,5 +1,6 @@
 package com.sudoajay.historycachecleaner.activity.main.root
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -153,10 +154,13 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
     companion object {
 
         fun getExternalCachePathFromCacheDir(context: Context?): String {
-            //  Its supports till android 9
             val cachePath = (context!!.externalCacheDir?.absolutePath).toString()
             val split = cachePath.split("/Android/data/")
             return cachePath.replace(split[1],"")
         }
+
+        @SuppressLint("SdCardPath")
+        fun getInternalCachePath(): String = "/data/data/"
+
     }
 }

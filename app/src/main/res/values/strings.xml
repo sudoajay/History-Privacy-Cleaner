@@ -90,7 +90,7 @@
 
     <!--    Root permission-->
     <string name="alert_dialog_title_no_root_permission">No Rooted App</string>
-    <string name="alert_dialog_message_no_root_permission">Root access is required in order to remove internal cache dir which you only see with root </string>
+    <string name="alert_dialog_message_no_root_permission">Root access is required in order to remove internal cache dir which we only see with root </string>
     <string name="alert_dialog_title_be_root">Root Access Denied</string>
     <string name="alert_dialog_message_be_root">Root access is installed on your device, but
         to remove internal cache dir, you have to grant root access for this app from your root manager app.</string>
@@ -112,12 +112,16 @@
     <string name="selectSdCardMes">Only Select the Sd Card Directory</string>
     <string name="wrongDirectorySelected">You select the wrong directory</string>
     <string name="supportAboveSdCard">Sorry , We don\'t support sd card at this android version </string>
+    <string name="we_detect_sd_card_text">We detected sd card ! </string>
+    <string name="sd_card_storage_alert_dialog_title_text">Sd Card Present ?</string>
+    <string name="sd_card_storage_alert_dialog_message_text">If Sd Card available at you device then select sd card otherwise cancel this dialog</string>
+    <string name="yes_button_text">Yes</string>
+    <string name="no_button_text">No</string>
 
 
     <!-- callPermissionDialog (External Storage Permission)-->
-    <string name="activity_custom_dialog_permission_TextView1">App Permission</string>
-    <string name="activity_custom_dialog_permission_TextView2">In Android 6+ Apps will ask for
-        permission once you start using them.</string>
+    <string name="external_storage_alert_dialog_title_text">App Permission</string>
+    <string name="external_storage_alert_dialog_message_text">In Android 6+ App need permission for scanning and cleaning process.</string>
     <string name="readMoreButton">Read More</string>
     <string name="continueButton">Continue</string>
     <string name="reportIt">There is Error Please Report It</string>

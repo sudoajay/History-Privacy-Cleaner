@@ -3,9 +3,9 @@ package com.sudoajay.historycachecleaner.activity.main
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -55,6 +55,8 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         val label = getApplicationLabel(applicationInfo)
         val sourceDir = getApplicationSourceDir(applicationInfo)
+        val extCachePath = getExtCachePath(applicationInfo)
+        val intCachePath = getIntCachePath(applicationInfo)
         val packageName = getApplicationPackageName(applicationInfo)
         val icon = getApplicationsIcon(applicationInfo)
         val installedDate = getInstalledDate(packageName)
@@ -70,6 +72,8 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                 null,
                 label,
                 sourceDir,
+                extCachePath,
+                intCachePath,
                 packageName,
                 icon,
                 installedDate,
@@ -82,21 +86,28 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         )
     }
 
-    private fun isSystemApps(applicationInfo: ApplicationInfo): Boolean {
-        return applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 1
+    private fun getExtCachePath(applicationInfo: ApplicationInfo): String {
+        return RootManager.getExternalCachePathFromCacheDir(context) + applicationInfo.packageName + "/cache/"
+    }
+    private fun getIntCachePath(applicationInfo: ApplicationInfo): String {
+        return RootManager.getInternalCachePath() + applicationInfo.packageName + "/cache/"
     }
 
-    private fun getApplicationLabel(applicationInfo: ApplicationInfo): String {
-        return packageManager.getApplicationLabel(applicationInfo) as String
-    }
+    private fun isSystemApps(applicationInfo: ApplicationInfo): Boolean =
+        applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 1
 
-    private fun getApplicationSourceDir(applicationInfo: ApplicationInfo): String {
-        return applicationInfo.sourceDir
-    }
 
-    private fun getApplicationPackageName(applicationInfo: ApplicationInfo): String {
-        return applicationInfo.packageName
-    }
+    private fun getApplicationLabel(applicationInfo: ApplicationInfo): String =
+        packageManager.getApplicationLabel(applicationInfo) as String
+
+
+    private fun getApplicationSourceDir(applicationInfo: ApplicationInfo): String =
+        applicationInfo.sourceDir
+
+
+    private fun getApplicationPackageName(applicationInfo: ApplicationInfo): String =
+        applicationInfo.packageName
+
 
     private fun getApplicationsIcon(applicationInfo: ApplicationInfo): String {
         return try {

@@ -1,10 +1,13 @@
 package com.sudoajay.historycachecleaner.helper.storagePermission
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
+import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.CoroutineScope
@@ -16,8 +19,52 @@ import java.io.File
 class AndroidSdCardPermission(private var context: Context, private var activity: Activity?) {
 
 
+    private var TAG = "AndroidSdCardPermissionTAG"
+    fun checkForSdCardExistAfterPermission() {
+        if (isSdStorageWritable) return
 
-    fun callPermission() {
+        var isSdCardExist = false
+        File("/storage/").listFiles()?.forEach loop@{
+            Log.e(TAG, it.name)
+            if (Regex("[\\w\\d]+-[\\w\\d]+") in it.name) {
+                isSdCardExist = true
+                if (Build.VERSION.SDK_INT < 21) setSdCardPath(context, it.absolutePath)
+                return@loop
+            }
+        }
+
+        if (!isSdCardExist) {
+            callPermissionDialog()
+        } else {
+            CustomToast.toastIt(context, context.getString(R.string.we_detect_sd_card_text))
+            callPermission()
+        }
+    }
+
+    private fun callPermissionDialog() {
+        val alertDialog: AlertDialog.Builder =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AlertDialog.Builder(
+                    activity,
+                    if (!BaseActivity.isDarkMode(context)) android.R.style.Theme_Material_Light_Dialog_Alert
+                    else android.R.style.Theme_Material_Dialog_Alert
+                )
+            } else {
+                AlertDialog.Builder(activity)
+            }
+        alertDialog.setIcon(R.drawable.internal_storage_icon)
+            .setTitle(context.getString(R.string.sd_card_storage_alert_dialog_title_text))
+            .setMessage(context.getString(R.string.sd_card_storage_alert_dialog_message_text))
+            .setCancelable(true)
+            .setPositiveButton(R.string.yes_button_text) { _, _ ->
+                callPermission()
+            }
+            .setNegativeButton(R.string.no_button_text) { _, _ ->
+            }
+            .show()
+    }
+
+    private fun callPermission() {
         if (!isSdStorageWritable) {
             CoroutineScope(Dispatchers.Main).launch {
                 delay(500)
@@ -26,7 +73,8 @@ class AndroidSdCardPermission(private var context: Context, private var activity
                     CustomToast.toastIt(context, context.getString(R.string.selectSdCardMes))
                     storageAccessFrameWork()
                 } else {
-                    CustomToast.toastIt(context, context.getString(R.string.supportAboveSdCard))
+                    if (!File(getSdCardPath(context)).exists())
+                        CustomToast.toastIt(context, context.getString(R.string.supportAboveSdCard))
                 }
 
             }
@@ -39,7 +87,7 @@ class AndroidSdCardPermission(private var context: Context, private var activity
             // Its Support from Lollipop
             if (Build.VERSION.SDK_INT >= 21) {
                 intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                val requestCode = 42
+                val requestCode = 2
                 activity!!.startActivityForResult(intent, requestCode)
             }
         } catch (e: Exception) {
@@ -61,7 +109,7 @@ class AndroidSdCardPermission(private var context: Context, private var activity
                     context
                 )
                 else -> {
-                    true
+                    false
                 }
             }
         }

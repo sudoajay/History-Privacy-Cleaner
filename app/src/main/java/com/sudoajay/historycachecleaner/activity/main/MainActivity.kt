@@ -1,11 +1,13 @@
 package com.sudoajay.historycachecleaner.activity.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -22,15 +24,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.App
-import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import com.sudoajay.historycachecleaner.activity.main.root.RootState
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
+import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternalStoragePermission
+import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
+import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
-import java.io.File
 import java.util.*
 
 class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
@@ -41,6 +44,8 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
     private var doubleBackToExitPressedOnce = false
     private var selectedList = mutableListOf<App>()
     private var TAG = "MainActivityTag"
+    private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
+    private var sdCardPermission: AndroidSdCardPermission? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,17 +66,18 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
 
-        if (!intent.action.isNullOrEmpty() && intent.action.toString() == settingShortcutId) {
-//            openSetting()
-        }
+//        if (!intent.action.isNullOrEmpty() && intent.action.toString() == settingShortcutId) {
+//           openSetting()
+//        }
 
-
+//        External and sd-Card permission
+        permissionIssue()
     }
 
 
     override fun onResume() {
 
-//        checkRootState()
+        checkRootState()
         binding.deleteFloatingActionButton.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 withContext(Dispatchers.IO) {
@@ -93,6 +99,19 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
 
         setReference()
         super.onResume()
+    }
+
+    private fun permissionIssue() {
+        //        Take Permission external permission
+        androidExternalStoragePermission =
+            AndroidExternalStoragePermission(applicationContext, this)
+        sdCardPermission = AndroidSdCardPermission(applicationContext, this)
+
+
+        if (!androidExternalStoragePermission?.isExternalStorageWritable!!) androidExternalStoragePermission?.callPermission()
+        else sdCardPermission?.checkForSdCardExistAfterPermission()
+
+
     }
 
 
@@ -321,6 +340,121 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         )
 
     }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        if (requestCode == 1) { // If request is cancelled, the result arrays are empty.
+            if (grantResults.isNotEmpty()
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+//                permission Granted :)
+                AndroidExternalStoragePermission.setExternalPath(
+                    applicationContext,
+                    AndroidExternalStoragePermission.getExternalPathFromCacheDir(applicationContext)
+                        .toString()
+                )
+                sdCardPermission?.checkForSdCardExistAfterPermission()
+
+            } else // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+                CustomToast.toastIt(applicationContext, getString(R.string.giveUsPermission))
+        }
+    }
+
+    public override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) { // local variable
+        super.onActivityResult(requestCode, resultCode, data)
+        val sdCardPathURL: String?
+        val stringURI: String
+        val spiltPart: String?
+        if (resultCode != Activity.RESULT_OK) return
+
+        if (requestCode == 1 || requestCode == 2) {
+            val sdCardURL: Uri? = data!!.data
+            grantUriPermission(
+                this@MainActivity.packageName,
+                sdCardURL,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                this@MainActivity.contentResolver.takePersistableUriPermission(
+                    sdCardURL!!,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+            }
+
+            sdCardPathURL = SdCardPath.getFullPathFromTreeUri(sdCardURL, this@MainActivity)
+            stringURI = sdCardURL.toString()
+
+            // Its supports till android 9 & api 28
+            if (requestCode == 2) {
+                spiltPart = "%3A"
+                AndroidSdCardPermission.setSdCardPath(
+                    applicationContext,
+                    spiltThePath(stringURI, sdCardPathURL.toString())
+                )
+                AndroidSdCardPermission.setSdCardUri(
+                    applicationContext,
+                    spiltUri(stringURI, spiltPart)
+                )
+                val androidSdCardPermission = AndroidSdCardPermission(applicationContext, this)
+                if (!androidSdCardPermission.isSdStorageWritable) {
+                    CustomToast.toastIt(
+                        applicationContext,
+                        resources.getString(R.string.wrongDirectorySelected)
+                    )
+                    return
+                }
+
+            } else {
+                val realExternalPath =
+                    AndroidExternalStoragePermission.getExternalPath(applicationContext)
+                if (realExternalPath in "$sdCardPathURL/") {
+                    spiltPart = "primary%3A"
+                    AndroidExternalStoragePermission.setExternalPath(
+                        applicationContext,
+                        realExternalPath
+                    )
+                    AndroidExternalStoragePermission.setExternalUri(
+                        applicationContext,
+                        spiltUri(stringURI, spiltPart)
+                    )
+                } else {
+                    CustomToast.toastIt(
+                        applicationContext,
+                        getString(R.string.wrongDirectorySelected)
+                    )
+
+                    return
+                }
+
+
+            }
+
+        } else {
+            CustomToast.toastIt(applicationContext, getString(R.string.reportIt))
+        }
+    }
+
+    private fun spiltUri(uri: String, spiltPart: String): String {
+        return uri.split(spiltPart)[0] + spiltPart
+
+    }
+
+    private fun spiltThePath(url: String, path: String): String {
+        val spilt = url.split("%3A").toTypedArray()
+        val getPaths = spilt[0].split("/").toTypedArray()
+        val paths = path.split(getPaths[getPaths.size - 1]).toTypedArray()
+        return paths[0] + getPaths[getPaths.size - 1] + "/"
+
+    }
+
 
     override fun handleDialogClose() {
         viewModel.filterChanges()
