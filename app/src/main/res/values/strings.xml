@@ -70,6 +70,8 @@
     <string name="about_app_summary_text">open github link</string>
 
     <!--    Scroll Activity-->
+    <string name="share_apk_text">Share Apk </string>
+    <string name="share_apk_message_text">Here you go - %1$s Apk</string>
     <string name="action_applicationSetting">Application Setting</string>
     <string name="action_openAppInGooglePlayStore">Open app in Google Play Store</string>
     <string name="version_name_text">Version Name</string>
@@ -112,7 +114,7 @@
     <string name="selectSdCardMes">Only Select the Sd Card Directory</string>
     <string name="wrongDirectorySelected">You select the wrong directory</string>
     <string name="supportAboveSdCard">Sorry , We don\'t support sd card at this android version </string>
-    <string name="we_detect_sd_card_text">We detected sd card ! </string>
+    <string name="we_detect_sd_card_text">We have detected sd card</string>
     <string name="sd_card_storage_alert_dialog_title_text">Sd Card Present ?</string>
     <string name="sd_card_storage_alert_dialog_message_text">If Sd Card available at you device then select sd card otherwise cancel this dialog</string>
     <string name="yes_button_text">Yes</string>

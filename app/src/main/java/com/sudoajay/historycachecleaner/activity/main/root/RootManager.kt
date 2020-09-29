@@ -1,11 +1,11 @@
 package com.sudoajay.historycachecleaner.activity.main.root
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.MainActivityViewModel
+import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import eu.chainfire.libsuperuser.Shell
 import java.io.File
 import java.util.*
@@ -153,14 +153,14 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
 
     companion object {
 
-        fun getExternalCachePathFromCacheDir(context: Context?): String {
-            val cachePath = (context!!.externalCacheDir?.absolutePath).toString()
-            val split = cachePath.split("/Android/data/")
-            return cachePath.replace(split[1],"")
-        }
+        fun getExternalCachePath(context: Context): String =
+            context.externalCacheDir!!.absolutePath.toString().substringBefore(context.packageName)
 
-        @SuppressLint("SdCardPath")
-        fun getInternalCachePath(): String = "/data/data/"
+        fun getInternalCachePath(context: Context): String =
+            context.cacheDir.absolutePath.toString().substringBefore(context.packageName)
+
+        fun getSdCardCachePath(context: Context): String =
+            AndroidSdCardPermission.getSdCardPath(context) + "Android/data/"
 
     }
 }

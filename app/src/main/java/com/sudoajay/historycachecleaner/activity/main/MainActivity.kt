@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.App
+import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import com.sudoajay.historycachecleaner.activity.main.root.RootState
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
@@ -34,6 +35,7 @@ import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
+import java.io.File
 import java.util.*
 
 class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
@@ -162,7 +164,6 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
 
         viewModel.appList!!.observe(this, {
             pagingAppRecyclerAdapter.submitList(it)
-
 
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false

@@ -55,8 +55,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         val label = getApplicationLabel(applicationInfo)
         val sourceDir = getApplicationSourceDir(applicationInfo)
-        val extCachePath = getExtCachePath(applicationInfo)
-        val intCachePath = getIntCachePath(applicationInfo)
         val packageName = getApplicationPackageName(applicationInfo)
         val icon = getApplicationsIcon(applicationInfo)
         val installedDate = getInstalledDate(packageName)
@@ -72,8 +70,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                 null,
                 label,
                 sourceDir,
-                extCachePath,
-                intCachePath,
                 packageName,
                 icon,
                 installedDate,
@@ -87,10 +83,10 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
     }
 
     private fun getExtCachePath(applicationInfo: ApplicationInfo): String {
-        return RootManager.getExternalCachePathFromCacheDir(context) + applicationInfo.packageName + "/cache/"
+        return RootManager.getExternalCachePath(context) + applicationInfo.packageName + "/cache/"
     }
     private fun getIntCachePath(applicationInfo: ApplicationInfo): String {
-        return RootManager.getInternalCachePath() + applicationInfo.packageName + "/cache/"
+        return RootManager.getInternalCachePath(context) + applicationInfo.packageName + "/cache/"
     }
 
     private fun isSystemApps(applicationInfo: ApplicationInfo): Boolean =

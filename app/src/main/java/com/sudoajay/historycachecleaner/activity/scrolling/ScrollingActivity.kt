@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.core.content.FileProvider
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.databinding.DataBindingUtil
 import com.sudoajay.historycachecleaner.activity.BaseActivity
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.content_scrolling.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -126,6 +128,7 @@ class ScrollingActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_shareApk -> shareApk()
             R.id.action_applicationSetting ->
                 openAppSetting()
 
@@ -134,6 +137,45 @@ class ScrollingActivity : BaseActivity() {
         }
 
         return true
+    }
+
+    private fun shareApk() {
+        val info = packageManager.getPackageInfo(app.packageName, 0)
+
+        val shareIntent: Intent = getShareIntent(
+            File(info.applicationInfo.sourceDir).copyTo(
+                File(cacheDir, "%s.apk".format(app.name))
+            )
+        )
+
+        startActivity(
+            Intent.createChooser(
+                shareIntent,
+                "Share app via"
+            )
+        )
+    }
+
+    private fun getShareIntent(file: File): Intent {
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND
+        val path = FileProvider.getUriForFile(
+            this,
+            this.applicationContext.packageName + ".provider",
+            file
+        )
+        intent.putExtra(Intent.EXTRA_STREAM, path)
+        // MIME of .apk is "application/vnd.android.package-archive".
+        // but Bluetooth does not accept this. Let's use "*/*" instead.
+        intent.type = "*/*"
+        intent.putExtra(
+            Intent.EXTRA_SUBJECT,
+            getString(R.string.share_apk_message_text, app.name)
+        )
+
+        intent.putExtra(Intent.EXTRA_TEXT,  getString(R.string.share_apk_message_text, app.name))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        return intent
     }
 
     private fun openApp() {

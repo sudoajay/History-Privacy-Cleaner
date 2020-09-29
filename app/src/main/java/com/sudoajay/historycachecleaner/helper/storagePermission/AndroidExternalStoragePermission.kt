@@ -133,12 +133,8 @@ class AndroidExternalStoragePermission(
 
 
     companion object {
-        fun getExternalPathFromCacheDir(context: Context?): String? {
-            //  Its supports till android 9
-            val splitWord = "Android/data/"
-            val cacheDir = (context!!.externalCacheDir?.absolutePath)?.split(splitWord)
-            return cacheDir?.get(0)
-        }
+        fun getExternalPathFromCacheDir(context: Context?): String? =
+            context!!.externalCacheDir!!.absolutePath.toString().substringBefore("Android/data/")
 
         fun getExternalPath(context: Context): String {
             return context.getSharedPreferences("state", Context.MODE_PRIVATE)
