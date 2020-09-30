@@ -64,7 +64,7 @@
 
         <include
             android:id="@+id/include"
-            layout="@layout/content_scrolling"
+            layout="@layout/content_scrolling_app_info"
             bind:activity="@{activity}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

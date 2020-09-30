@@ -1,48 +1,51 @@
 package com.sudoajay.historycachecleaner.activity.scrolling
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.view.Menu
-import android.view.MenuItem
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.core.content.FileProvider
-import androidx.core.content.pm.PackageInfoCompat
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.PagingAppRecyclerAdapter
 import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.activity.main.database.AppDao
 import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
-import com.sudoajay.historycachecleaner.helper.FileSize
+import com.sudoajay.historycachecleaner.helper.CustomToast
+import com.sudoajay.historycachecleaner.helper.FileList
 import com.sudoajay.historyprivacycleaner.R
-import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingBinding
-import kotlinx.android.synthetic.main.content_scrolling.*
+import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingAppCachePathBinding
+import kotlinx.android.synthetic.main.content_scrolling_app_cache_path.*
+import kotlinx.android.synthetic.main.layout_app_cache_path_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.withContext
 
 
 class ScrollingAppCachePathActivity : BaseActivity() {
-    private lateinit var binding: ActivityScrollingBinding
+    private lateinit var binding: ActivityScrollingAppCachePathBinding
     lateinit var app: App
     private var isDarkTheme: Boolean = false
+    var hideProgress: MutableLiveData<Boolean>? = null
+    private var TAG = "ScrollingAppCachePathActivityTAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         isDarkTheme = isDarkMode(applicationContext)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_scrolling)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_scrolling_app_cache_path)
         binding.activity = this
+        binding.lifecycleOwner = this
         changeStatusBarColor()
 
         val appDao: AppDao =
@@ -60,154 +63,68 @@ class ScrollingAppCachePathActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        getHideProgress()
 
         setSupportActionBar(binding.toolbar)
-        binding.openAppFloating.setOnClickListener { openApp() }
-
         binding.appImageImageView.setImageDrawable(
             PagingAppRecyclerAdapter.getApplicationsIcon(
                 app.icon,
                 applicationContext.packageManager
             )
         )
-
         binding.toolbar.setNavigationIcon(R.drawable.ic_back)
 
         binding.toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
-        passTheValueInTextView()
-    }
+        var list = mutableListOf<String>()
 
 
-    private fun passTheValueInTextView() {
-        val info = packageManager.getPackageInfo(app.packageName, 0)
+        val viewManager = LinearLayoutManager(this)
+        val viewAdapter = MyAdapter(list)
 
-        val sdf = SimpleDateFormat(" h:mm a , d MMM yyyy ", Locale.getDefault())
+        cachePath_RecyclerView.apply {
+            // use this setting to improve performance if you know that changes
+            // in content do not change the layout size of the RecyclerView
+            setHasFixedSize(true)
 
-        versionNameInfo_TextView.text = info.versionName
-        versionCodeInfo_TextView.text = PackageInfoCompat.getLongVersionCode(info).toString()
-        firstInstallInfo_TextView.text = sdf.format(info.firstInstallTime)
-        lastUpdateInfo_TextView.text = sdf.format(info.lastUpdateTime)
-        packageNameInfo_TextView.text = info.packageName
-        apkPathInfo_TextView.text = info.applicationInfo.sourceDir
-        dataPathInfo_TextView.text = info.applicationInfo.dataDir
-        apkSizeInfo_TextView.text = FileSize.convertIt(app.size)
+            // use a linear layout manager
+            layoutManager = viewManager
 
-        minSdkInfo_TextView.text =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) info.applicationInfo.minSdkVersion.toString() else getString(
-                R.string.unspecified_text
-            )
+            // specify an viewAdapter (see also next example)
+            adapter = viewAdapter
+        }
 
-        targetSdkInfo_TextView.text = info.applicationInfo.targetSdkVersion.toString()
-        installerInfo_TextView.text = info.applicationInfo.processName
 
-        val permission = packageManager.getPackageInfo(
-            app.packageName,
-            PackageManager.GET_PERMISSIONS
-        )
-        val requestedPermissions = permission.requestedPermissions
-        val builder = StringBuilder()
-        if (!requestedPermissions.isNullOrEmpty())
-            for (per in requestedPermissions) {
-                builder.append(per).append("\n")
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.IO) {
+                list = FileList(applicationContext, app.packageName).fileList()
+                list.forEach { Log.e(TAG, it) }
+                hideProgress!!.postValue(false)
+
             }
 
+            if (list.isEmpty())
+                CustomToast.toastIt(applicationContext, "Empty List")
 
-        permissionInfo_TextView.text = builder.toString()
+            viewAdapter.updateReceiptsList(list)
 
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_scrolling, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_shareApk -> shareApk()
-            R.id.action_applicationSetting ->
-                openAppSetting()
-
-            R.id.action_openAppInGooglePlayStore -> openAppInStore()
-            else -> return super.onOptionsItemSelected(item)
         }
-
-        return true
     }
 
-    private fun shareApk() {
-        val info = packageManager.getPackageInfo(app.packageName, 0)
 
-        val shareIntent: Intent = getShareIntent(
-            File(info.applicationInfo.sourceDir).copyTo(
-                File(cacheDir, "%s.apk".format(app.name))
-            )
-        )
-
-        startActivity(
-            Intent.createChooser(
-                shareIntent,
-                "Share app via"
-            )
-        )
-    }
-
-    private fun getShareIntent(file: File): Intent {
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        val path = FileProvider.getUriForFile(
-            this,
-            this.applicationContext.packageName + ".provider",
-            file
-        )
-        intent.putExtra(Intent.EXTRA_STREAM, path)
-        // MIME of .apk is "application/vnd.android.package-archive".
-        // but Bluetooth does not accept this. Let's use "*/*" instead.
-        intent.type = "*/*"
-        intent.putExtra(
-            Intent.EXTRA_SUBJECT,
-            getString(R.string.share_apk_message_text, app.name)
-        )
-
-        intent.putExtra(Intent.EXTRA_TEXT,  getString(R.string.share_apk_message_text, app.name))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        return intent
-    }
-
-    private fun openApp() {
-        val launchIntent = packageManager.getLaunchIntentForPackage(app.packageName)
-        launchIntent?.let { startActivity(it) }
-    }
-
-    private fun openAppSetting() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.parse("package:${app.packageName}")
-        startActivity(intent)
-    }
-
-    private fun openAppInStore() {
-        val appPackageName =
-            app.packageName // getPackageName() from Context or Activity object
-
-        try {
-            startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=$appPackageName")
-                )
-            )
-        } catch (anfe: ActivityNotFoundException) {
-            startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
-                )
-            )
+    private fun getHideProgress(): LiveData<Boolean> {
+        if (hideProgress == null) {
+            hideProgress = MutableLiveData()
+            loadHideProgress()
         }
+        return hideProgress as MutableLiveData<Boolean>
+    }
+
+    private fun loadHideProgress() {
+        hideProgress!!.value = true
     }
 
     /**
@@ -220,6 +137,41 @@ class ScrollingAppCachePathActivity : BaseActivity() {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = Color.TRANSPARENT
             }
+        }
+    }
+
+    class MyAdapter(private val cachePath: MutableList<String>) :
+        RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+
+        // Create new views (invoked by the layout manager)
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+        ): MyViewHolder {
+            val layout = LayoutInflater.from(parent.context)
+                .inflate(R.layout.layout_app_cache_path_item, parent, false)
+            return MyViewHolder(layout)
+        }
+
+        class MyViewHolder(view: View) :
+            RecyclerView.ViewHolder(view) {
+            var path: TextView = view.appCachePath_TextView
+        }
+
+        // Replace the contents of a view (invoked by the layout manager)
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            // - get element from your dataset at this position
+            // - replace the contents of the view with that element
+            holder.path.text = cachePath[position]
+        }
+
+        // Return the size of your dataset (invoked by the layout manager)
+        override fun getItemCount() = cachePath.size
+
+        fun updateReceiptsList(newlist: MutableList<String>) {
+            cachePath.clear()
+            cachePath.addAll(newlist)
+            notifyDataSetChanged()
         }
     }
 }

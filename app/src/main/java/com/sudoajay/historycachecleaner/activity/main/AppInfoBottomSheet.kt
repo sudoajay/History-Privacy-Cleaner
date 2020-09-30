@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppCachePathActivity
 import com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppInfoActivity
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.LayoutAppInfoBottomSheetBinding
@@ -34,10 +35,19 @@ class AppInfoBottomSheet(var ID:Long) : BottomSheetDialogFragment() {
 
 
      fun openAppInfo() {
-        val intent = Intent(context, ScrollingAppInfoActivity::class.java)
+         val intent = Intent(context, ScrollingAppInfoActivity::class.java)
+         intent.action = ID.toString()
+         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+         requireContext().startActivity(intent)
+         dismiss()
+     }
+
+    fun openAppCachePath() {
+        val intent = Intent(context, ScrollingAppCachePathActivity::class.java)
         intent.action = ID.toString()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         requireContext().startActivity(intent)
+        dismiss()
     }
 
 

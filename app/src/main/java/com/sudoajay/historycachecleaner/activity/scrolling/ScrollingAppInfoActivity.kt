@@ -22,8 +22,8 @@ import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
-import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingBinding
-import kotlinx.android.synthetic.main.content_scrolling.*
+import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingAppInfoBinding
+import kotlinx.android.synthetic.main.content_scrolling_app_info.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ import java.util.*
 
 
 class ScrollingAppInfoActivity : BaseActivity() {
-    private lateinit var binding: ActivityScrollingBinding
+    private lateinit var binding: ActivityScrollingAppInfoBinding
     lateinit var app: App
     private var isDarkTheme: Boolean = false
 
@@ -41,7 +41,7 @@ class ScrollingAppInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         isDarkTheme = isDarkMode(applicationContext)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_scrolling)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_scrolling_app_info)
         binding.activity = this
         changeStatusBarColor()
 

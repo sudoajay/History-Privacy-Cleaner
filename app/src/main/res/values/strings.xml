@@ -132,7 +132,7 @@
 
 
 <!--    App Info BottomSheet-->
-    <string name="more_option_text">Show More Option</string>
+    <string name="more_option_text">Show Option</string>
     <string name="app_text">App</string>
     <string name="app_more_detail_text">More Detail</string>
     <string name="app_cache_file">Cache Path</string>

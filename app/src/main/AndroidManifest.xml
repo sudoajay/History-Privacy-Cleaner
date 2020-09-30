@@ -39,6 +39,10 @@
             android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppCachePathActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
