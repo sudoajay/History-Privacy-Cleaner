@@ -214,6 +214,11 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         filterAppBottomSheet.show(supportFragmentManager, filterAppBottomSheet.tag)
     }
 
+     fun showAppInfoBottomSheet(ID:Long) {
+        val appInfoBottomSheet = AppInfoBottomSheet(ID)
+        appInfoBottomSheet.show(supportFragmentManager, appInfoBottomSheet.tag)
+    }
+
     //
 //    private fun openSetting() {
 //        val intent = Intent(applicationContext, SettingsActivity::class.java)

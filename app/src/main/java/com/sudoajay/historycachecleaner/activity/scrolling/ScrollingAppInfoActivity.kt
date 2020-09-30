@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ScrollingActivity : BaseActivity() {
+class ScrollingAppInfoActivity : BaseActivity() {
     private lateinit var binding: ActivityScrollingBinding
     lateinit var app: App
     private var isDarkTheme: Boolean = false

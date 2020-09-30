@@ -130,6 +130,13 @@
     <string name="selectExternalMes">Only Select the Internal Card Directory</string>
     <string name="giveUsPermission">Give us permission for further process</string>
 
+
+<!--    App Info BottomSheet-->
+    <string name="more_option_text">Show More Option</string>
+    <string name="app_text">App</string>
+    <string name="app_more_detail_text">More Detail</string>
+    <string name="app_cache_file">Cache Path</string>
+
     <!--        No Trans-->
 
     <!--    Dark Mode No Trans-->

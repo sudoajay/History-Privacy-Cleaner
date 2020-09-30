@@ -2,7 +2,6 @@ package com.sudoajay.historycachecleaner.activity.main
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
-import com.sudoajay.historycachecleaner.activity.scrolling.ScrollingActivity
 import kotlinx.android.synthetic.main.layout_app_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,19 +64,11 @@ class PagingAppRecyclerAdapter(var context: Context, var main:MainActivity) :
                 )
             }
         }
-        holder.infoContainer.setOnClickListener { openAppInfo(app.id!!)}
-        holder.icon.setOnClickListener {app.id!! }
-
+        holder.infoContainer.setOnClickListener { main.showAppInfoBottomSheet(app.id!!)}
 
         holder.checkBox.isChecked = app.isSelected
     }
 
-    private fun openAppInfo(id: Long) {
-        val intent = Intent(context, ScrollingActivity::class.java)
-        intent.action = id.toString()
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(intent)
-    }
 
     companion object {
         private val DIFF_CALLBACK = object :

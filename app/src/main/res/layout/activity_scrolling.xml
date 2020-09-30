@@ -8,7 +8,7 @@
     <data>
         <variable
             name="activity"
-            type="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingActivity" />
+            type="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppInfoActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

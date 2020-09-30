@@ -36,7 +36,7 @@
             android:name="com.sudoajay.historycachecleaner.activity.sendFeedback.SendFeedback"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingActivity"
+            android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -55,5 +55,16 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/firebase_channel_id" />
 
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>
