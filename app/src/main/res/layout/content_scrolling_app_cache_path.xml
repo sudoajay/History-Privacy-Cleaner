@@ -21,11 +21,11 @@
             android:layout_height="match_parent">
 
             <ProgressBar
-                android:id="@+id/progress_circular"
+                android:id="@+id/circular_ProgressBar"
                 android:layout_width="@dimen/progress_circular_dimension"
                 android:layout_height="@dimen/progress_circular_dimension"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="24dp"
                 android:indeterminate="true"
                 android:visibility="@{activity.hideProgress ? View.VISIBLE :View.GONE }"
                 app:layout_constraintBottom_toBottomOf="parent"

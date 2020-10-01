@@ -36,7 +36,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
     private lateinit var binding: ActivityScrollingAppCachePathBinding
     lateinit var app: App
     private var isDarkTheme: Boolean = false
-    var hideProgress: MutableLiveData<Boolean>? = null
+    var hideProgress = MutableLiveData<Boolean>()
     private var TAG = "ScrollingAppCachePathActivityTAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +45,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
         isDarkTheme = isDarkMode(applicationContext)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_scrolling_app_cache_path)
         binding.activity = this
+        // Required to update UI with LiveData
         binding.lifecycleOwner = this
         changeStatusBarColor()
 
@@ -63,8 +64,9 @@ class ScrollingAppCachePathActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        getHideProgress()
-
+        hideProgress.value = true
+        Log.e(TAG, hideProgress.value.toString())
+        Log.e(TAG,circular_ProgressBar.visibility.toString() )
         setSupportActionBar(binding.toolbar)
         binding.appImageImageView.setImageDrawable(
             PagingAppRecyclerAdapter.getApplicationsIcon(
@@ -97,34 +99,22 @@ class ScrollingAppCachePathActivity : BaseActivity() {
         }
 
 
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.IO) {
-                list = FileList(applicationContext, app.packageName).fileList()
-                list.forEach { Log.e(TAG, it) }
-                hideProgress!!.postValue(false)
+        CoroutineScope(Dispatchers.IO).launch {
 
-            }
+
+            list = FileList(applicationContext, app.packageName).fileList()
+            list.forEach { Log.e(TAG, it) }
+
 
             if (list.isEmpty())
                 CustomToast.toastIt(applicationContext, "Empty List")
 
-            viewAdapter.updateReceiptsList(list)
-
+            withContext(Dispatchers.Main) {
+                viewAdapter.updateReceiptsList(list)
+            }
+            hideProgress.postValue(false)
 
         }
-    }
-
-
-    private fun getHideProgress(): LiveData<Boolean> {
-        if (hideProgress == null) {
-            hideProgress = MutableLiveData()
-            loadHideProgress()
-        }
-        return hideProgress as MutableLiveData<Boolean>
-    }
-
-    private fun loadHideProgress() {
-        hideProgress!!.value = true
     }
 
     /**
@@ -172,6 +162,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
             cachePath.clear()
             cachePath.addAll(newlist)
             notifyDataSetChanged()
+
         }
     }
 }
