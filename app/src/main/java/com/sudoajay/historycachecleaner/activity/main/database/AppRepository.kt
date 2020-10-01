@@ -96,11 +96,7 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         }
     }
 
-    suspend fun setSelectedToDefault() {
-        for (pack in getSelectedApp()) {
-            updateSelectedApp(false, pack.packageName)
-        }
-    }
+
 
     suspend fun getSelectedApp(): MutableList<App> {
         return appDao.getSelectedApp()
