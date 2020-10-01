@@ -13,7 +13,7 @@ class App(
     @ColumnInfo(name = "Package_Name") val packageName: String,
     @ColumnInfo(name = "Icon") val icon: String,
     @ColumnInfo(name = "Date") val date: String,
-    @ColumnInfo(name = "Size") val size: Long,
+    @ColumnInfo(name = "Cache_Size") val cacheSize: Long,
     @ColumnInfo(name = "System_App") val isSystemApp: Boolean,
     @ColumnInfo(name = "User_App") val isUserApp: Boolean,
     @ColumnInfo(name = "Selected") val isSelected: Boolean,

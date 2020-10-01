@@ -94,7 +94,7 @@ class ScrollingAppInfoActivity : BaseActivity() {
         packageNameInfo_TextView.text = info.packageName
         apkPathInfo_TextView.text = info.applicationInfo.sourceDir
         dataPathInfo_TextView.text = info.applicationInfo.dataDir
-        apkSizeInfo_TextView.text = FileSize.convertIt(app.size)
+        apkSizeInfo_TextView.text = FileSize.convertIt(app.cacheSize)
 
         minSdkInfo_TextView.text =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) info.applicationInfo.minSdkVersion.toString() else getString(

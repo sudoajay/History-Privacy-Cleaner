@@ -55,7 +55,7 @@ class PagingAppRecyclerAdapter(var context: Context, var main:MainActivity) :
         holder.appPackage.text = app.packageName
         holder.icon.setImageDrawable(getApplicationsIcon(app.icon, packageManager))
 
-        holder.size.text = String.format("(%s)", FileSize.convertIt(app.size))
+        holder.size.text = String.format("(%s)", FileSize.convertIt(app.cacheSize))
         holder.checkBox.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 main.viewModel.appRepository.updateSelectedApp(

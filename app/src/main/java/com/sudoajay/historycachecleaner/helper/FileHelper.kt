@@ -5,13 +5,14 @@ import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import java.io.File
 
-class FileList(var context: Context, var packageName: String) {
+class FileHelper(var context: Context, var packageName: String) {
     private var list = mutableListOf<String>()
+    private var fileLength = 0L
     private val cachePath = "/cache"
     private val codeCache = "/code_cache"
     private val TAG = "FileListTAG"
 
-     fun fileList(): MutableList<String> {
+    fun fileList(): MutableList<String> {
 
 //        Internal Path cache
         getFilePath(File(RootManager.getInternalCachePath(context) + packageName + cachePath))
@@ -38,5 +39,19 @@ class FileList(var context: Context, var packageName: String) {
             }
             dir.isFile -> list.add(dir.absolutePath.toString())
         }
+    }
+
+
+    fun fileLength(): Long {
+        //        Internal Path cache
+        fileLength += File(RootManager.getInternalCachePath(context) + packageName + cachePath).length()
+        fileLength += File(RootManager.getInternalCachePath(context) + packageName + codeCache).length()
+
+//        External Path Cache
+        fileLength += File(RootManager.getExternalCachePath(context) + packageName + cachePath).length()
+
+        //        Sd Card Path Cache
+        fileLength += File(RootManager.getSdCardCachePath(context) + packageName + cachePath).length()
+        return fileLength
     }
 }

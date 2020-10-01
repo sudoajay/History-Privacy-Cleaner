@@ -82,8 +82,8 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         return appDao.isPresent(packageName)
     }
 
-    suspend fun setUpdateInstall(packageName: String) {
-        appDao.updateInstalledByPackage(packageName)
+    suspend fun updateInstalledAndCacheByPackage(packageName: String, cacheSize:Long) {
+        appDao.updateInstalledAndCacheByPackage(packageName,cacheSize)
     }
 
     suspend fun setDefaultValueInstall() {

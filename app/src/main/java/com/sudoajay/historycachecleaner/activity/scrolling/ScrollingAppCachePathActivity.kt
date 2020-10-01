@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +20,7 @@ import com.sudoajay.historycachecleaner.activity.main.database.AppDao
 import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.CustomToast
-import com.sudoajay.historycachecleaner.helper.FileList
+import com.sudoajay.historycachecleaner.helper.FileHelper
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingAppCachePathBinding
 import kotlinx.android.synthetic.main.content_scrolling_app_cache_path.*
@@ -102,7 +101,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
         CoroutineScope(Dispatchers.IO).launch {
 
 
-            list = FileList(applicationContext, app.packageName).fileList()
+            list = FileHelper(applicationContext, app.packageName).fileList()
             list.forEach { Log.e(TAG, it) }
 
 

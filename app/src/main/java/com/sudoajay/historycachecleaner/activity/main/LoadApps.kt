@@ -5,8 +5,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.root.RootManager
-import java.io.File
+import com.sudoajay.historycachecleaner.helper.FileHelper
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,12 +34,11 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
-            if (packageName == context.packageName) continue
             if (appRepository.isPresent(packageName) == 0)
                 createApp(applicationInfo)
             else
-                appRepository.setUpdateInstall(
-                    packageName
+                appRepository.updateInstalledAndCacheByPackage(
+                    packageName, FileHelper(context,packageName).fileLength()
                 )
         }
 
@@ -61,9 +59,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         val systemApp = isSystemApps(applicationInfo)
 
         // return size in form of Bytes(Long)
-        val size = File(packageManager.getApplicationInfo(packageName, 0).publicSourceDir).length()
-
-
+        val cacheSize = FileHelper(context,packageName).fileLength()
 
         appRepository.insert(
             App(
@@ -73,7 +69,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                 packageName,
                 icon,
                 installedDate,
-                size,
+                cacheSize,
                 systemApp,
                 !systemApp,
                 isSelected = false,
@@ -82,12 +78,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         )
     }
 
-    private fun getExtCachePath(applicationInfo: ApplicationInfo): String {
-        return RootManager.getExternalCachePath(context) + applicationInfo.packageName + "/cache/"
-    }
-    private fun getIntCachePath(applicationInfo: ApplicationInfo): String {
-        return RootManager.getInternalCachePath(context) + applicationInfo.packageName + "/cache/"
-    }
 
     private fun isSystemApps(applicationInfo: ApplicationInfo): Boolean =
         applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 1

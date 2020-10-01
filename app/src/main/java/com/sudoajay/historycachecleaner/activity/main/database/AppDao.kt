@@ -10,16 +10,16 @@ import androidx.room.Query
 @Dao
 interface AppDao {
 
-    @Query("Select * From AppTable Where System_App = :isSystemApp Or User_App = :isUserApp Order By Name asc ")
+    @Query("Select * From AppTable Where System_App = :isSystemApp  Or User_App = :isUserApp and Cache_Size != 0 Order By Name asc ")
     fun getSortByAlpha(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("Select * From AppTable Where System_App = :isSystemApp Or User_App = :isUserApp Order By Date Desc ")
+    @Query("Select * From AppTable Where System_App = :isSystemApp  Or User_App = :isUserApp and Cache_Size != 0 Order By Date Desc ")
     fun getSortByDate(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("Select * From AppTable Where System_App = :isSystemApp Or User_App = :isUserApp Order By Size Desc ")
+    @Query("Select * From AppTable Where System_App = :isSystemApp Or User_App = :isUserApp and Cache_Size != 0 Order By Cache_Size Desc ")
     fun getSortBySize(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("SELECT * FROM AppTable WHERE Name LIKE :search")
+    @Query("SELECT * FROM AppTable WHERE Name LIKE :search and Cache_Size != 0")
     fun searchItem(search: String?): DataSource.Factory<Int, App>
 
     @Query("SELECT * FROM AppTable WHERE id= :id")
@@ -48,8 +48,8 @@ interface AppDao {
     suspend fun setDefaultValueInstall()
 
 
-    @Query("UPDATE AppTable SET Installed = 1  WHERE id IN (SELECT id FROM ( select id from AppTable where Package_Name = :packageName  limit 0,1)l)")
-    suspend fun updateInstalledByPackage(packageName: String)
+    @Query("UPDATE AppTable SET Installed = 1 and Cache_Size =:cacheSize  WHERE id IN (SELECT id FROM ( select id from AppTable where Package_Name = :packageName  limit 0,1)l)")
+    suspend fun updateInstalledAndCacheByPackage(packageName: String,cacheSize:Long )
 
     @Query("UPDATE AppTable SET Selected = :selected  Where Package_Name = :packageName")
     suspend fun updateSelectedApp(selected: Boolean, packageName: String)
