@@ -18,7 +18,7 @@ internal object DeleteCache {
         }
     }
 
-    private fun deleteWithFile(dir: File): Boolean {
+    fun deleteWithFile(dir: File): Boolean {
         return when {
             dir.isDirectory -> {
                 val children = dir.listFiles()

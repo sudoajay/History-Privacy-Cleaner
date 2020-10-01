@@ -10,13 +10,13 @@ import androidx.room.Query
 @Dao
 interface AppDao {
 
-    @Query("Select * From AppTable Where System_App = :isSystemApp  Or User_App = :isUserApp and Cache_Size != 0 Order By Name asc ")
+    @Query("Select * From AppTable Where (Cache_Size != 0 and System_App = :isSystemApp)  Or (Cache_Size != 0 and User_App = :isUserApp) Order By Name asc ")
     fun getSortByAlpha(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("Select * From AppTable Where System_App = :isSystemApp  Or User_App = :isUserApp and Cache_Size != 0 Order By Date Desc ")
+    @Query("Select * From AppTable Where (Cache_Size != 0 and System_App = :isSystemApp)  Or (Cache_Size != 0 and User_App = :isUserApp) Order By Date Desc ")
     fun getSortByDate(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("Select * From AppTable Where System_App = :isSystemApp Or User_App = :isUserApp and Cache_Size != 0 Order By Cache_Size Desc ")
+    @Query("Select * From AppTable Where (Cache_Size != 0 and System_App = :isSystemApp)  Or (Cache_Size != 0 and User_App = :isUserApp) Order By Cache_Size Desc ")
     fun getSortBySize(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
     @Query("SELECT * FROM AppTable WHERE Name LIKE :search and Cache_Size != 0")

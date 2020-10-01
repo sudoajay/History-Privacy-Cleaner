@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.App
-import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import com.sudoajay.historycachecleaner.activity.main.root.RootState
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
@@ -35,7 +34,6 @@ import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
-import java.io.File
 import java.util.*
 
 class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
@@ -44,10 +42,10 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
     private lateinit var binding: ActivityMainBinding
     private var isDarkTheme: Boolean = false
     private var doubleBackToExitPressedOnce = false
-    private var selectedList = mutableListOf<App>()
     private var TAG = "MainActivityTag"
     private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
     private var sdCardPermission: AndroidSdCardPermission? = null
+    private lateinit var selectedList: MutableList<App>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +79,7 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
 
         checkRootState()
         binding.deleteFloatingActionButton.setOnClickListener {
+
             CoroutineScope(Dispatchers.Main).launch {
                 withContext(Dispatchers.IO) {
                     selectedList = viewModel.appRepository.getSelectedApp()
@@ -91,10 +90,14 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
                         getString(R.string.alert_dialog_no_app_selected_title)
                     )
                 else {
-                    CustomToast.toastIt(
-                        applicationContext,
-                        viewModel.rootManager.removeCacheFolder().toString()
+
+                    generateAlertDialog(
+                        getString(R.string.alert_dialog_ask_permission_to_remove_apps_title),
+                        getString(R.string.alert_dialog_ask_permission_to_remove_apps_message),
+                        getString(R.string.no_text),
+                        getString(R.string.yes_text)
                     )
+
                 }
             }
         }
@@ -319,7 +322,8 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
     private fun generateAlertDialog(
         title: String,
         message: String,
-        negativeText: String
+        negativeText: String,
+        positiveText: String = ""
     ) {
         val builder: AlertDialog.Builder =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -333,6 +337,19 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         builder.setTitle(title)
             .setMessage(message)
             .setNegativeButton(negativeText) { _, _ ->
+
+            }
+            .setPositiveButton(positiveText) { _, _ ->
+
+                if (positiveText == getString(R.string.yes_text)) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val rootState: RootState = viewModel.checkRootPermission()!!
+                        if (rootState == RootState.NO_ROOT)
+                            viewModel.rootManager.removeCacheFolderRoot(selectedList)
+                        else viewModel.rootManager.removeCacheFolderUnRoot(selectedList)
+                    }
+                }
+
 
             }
 

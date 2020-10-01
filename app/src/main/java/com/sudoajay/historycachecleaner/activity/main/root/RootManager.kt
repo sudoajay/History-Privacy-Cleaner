@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.MainActivityViewModel
+import com.sudoajay.historycachecleaner.activity.main.database.App
+import com.sudoajay.historycachecleaner.helper.DeleteCache
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import eu.chainfire.libsuperuser.Shell
 import java.io.File
@@ -13,7 +15,7 @@ import java.util.*
 
 class RootManager(private var viewModel: MainActivityViewModel, var context: Context) {
 
-    var TAG = "RootManager"
+    var TAG = "RootManagerTAG"
     private val SU_BINARY_DIRS = arrayOf(
         "/system/bin",
         "/system/sbin",
@@ -21,6 +23,9 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
         "/vendor/bin",
         "/sbin"
     )
+
+    private val cachePath = "/cache"
+    private val codeCache = "/code_cache"
 
 
     fun hasRootedPermission(): Boolean {
@@ -66,20 +71,30 @@ class RootManager(private var viewModel: MainActivityViewModel, var context: Con
 //        }
 //    }
 
-    fun removeCacheFolder(): Boolean {
-        val commandOutput =
-            executeCommandSH("rm  -rf /data/data/com.android.inputdevices/cache")
-        val command = executeCommandSH("rm  -rf /data/data/com.android.inputdevices/code_cache")
-        checkCommandSuccesfull(command)
-        val commands =
-            executeCommandSH("rm  -rf /mnt/sdcard/Android/data/com.android.bookmarkprovider/cache")
-        checkCommandSuccesfull(commands)
 
-        val output = executeCommandSH("ls /storage/")
-        Log.e(TAG, output)
-        return checkCommandSuccesfull(commandOutput)
+    fun removeCacheFolderUnRoot(selectedList: MutableList<App>) {
+        selectedList.forEach {
+            DeleteCache.deleteWithFile(File(RootManager.getInternalCachePath(context) + it.packageName + cachePath))
+            DeleteCache.deleteWithFile(File(RootManager.getInternalCachePath(context) + it.packageName + codeCache))
+
+            DeleteCache.deleteWithFile(File(RootManager.getExternalCachePath(context) + it.packageName + cachePath))
+
+            DeleteCache.deleteWithFile(File(RootManager.getSdCardCachePath(context) + it.packageName + cachePath))
+        }
+        Log.e(TAG , "Done File deleted with Un root ")
     }
 
+    fun removeCacheFolderRoot(selectedList: MutableList<App>) {
+        selectedList.forEach {
+            executeCommandSH("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + cachePath))
+            executeCommandSH("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + codeCache))
+
+            executeCommandSH("rm  -rf %s".format(getExternalCachePath(context) + it.packageName + cachePath))
+
+            executeCommandSH("rm  -rf %s".format(getSdCardCachePath(context) + it.packageName + cachePath))
+        }
+        Log.e(TAG , "Done File deleted with root ")
+    }
     private fun uninstallSystemApp(appApk: String): Boolean {
         executeCommandSU("mount -o rw,remount /system")
         executeCommandSU("rm $appApk")

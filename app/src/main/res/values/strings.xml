@@ -137,6 +137,12 @@
     <string name="app_more_detail_text">More Detail</string>
     <string name="app_cache_file">Cache Path</string>
 
+<!--    Delete Data alert dialog-->
+    <string name="alert_dialog_ask_permission_to_remove_apps_title">Remove Selected App Unnecessary Data</string>
+    <string name="alert_dialog_ask_permission_to_remove_apps_message">You are going to remove selected apps. It\'s an irreversible action, pay attention.</string>
+    <string name="no_text">NO</string>
+    <string name="yes_text">Yes</string>
+
     <!--        No Trans-->
 
     <!--    Dark Mode No Trans-->
