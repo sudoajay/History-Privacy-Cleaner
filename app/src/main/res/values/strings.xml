@@ -3,7 +3,7 @@
 
     <!--    Notification channel-->
     <string name="notifications_group_service">Service control</string>
-    <string name="firebase_channel_id" >Push Notification</string>
+    <string name="firebase_channel_id">Push Notification</string>
 
     <!--    Dark Mode Bottom Sheet-->
     <string name="dark_mode_trans_text">Dark Mode</string>
@@ -89,7 +89,6 @@
     <string name="unspecified_text">Unspecified</string>
 
 
-
     <!--    Root permission-->
     <string name="alert_dialog_title_no_root_permission">No Rooted App</string>
     <string name="alert_dialog_message_no_root_permission">Root access is required in order to remove internal cache dir which we only see with root </string>
@@ -131,14 +130,14 @@
     <string name="giveUsPermission">Give us permission for further process</string>
 
 
-<!--    App Info BottomSheet-->
+    <!--    App Info BottomSheet-->
     <string name="more_option_text">Show Option</string>
     <string name="app_text">App</string>
     <string name="app_more_detail_text">More Detail</string>
     <string name="app_cache_file">Cache Path</string>
 
-<!--    Delete Data alert dialog-->
-    <string name="alert_dialog_ask_permission_to_remove_apps_title">Remove Selected App Unnecessary Data</string>
+    <!--    Delete Data alert dialog-->
+    <string name="alert_dialog_ask_permission_to_remove_apps_title">Unnecessary Data</string>
     <string name="alert_dialog_ask_permission_to_remove_apps_message">You are going to remove selected apps. It\'s an irreversible action, pay attention.</string>
     <string name="no_text">NO</string>
     <string name="yes_text">Yes</string>
@@ -153,7 +152,6 @@
     <string name="automatic_at_sunset_text" translatable="false">Automatic at sunset</string>
     <string name="set_by_battery_saver_text" translatable="false">Set by battery saver</string>
     <string name="system_default_text" translatable="false">System Default</string>
-
 
 
     <!--    FilterDnsBottomSheet Not Trans-->

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sudoajay.historyprivacycleaner">
 
@@ -9,7 +10,7 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -22,53 +23,50 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!--            <meta-data-->
-            <!--                android:name="android.app.shortcuts"-->
-            <!--                android:resource="@xml/shortcuts" />-->
+            <!-- <meta-data -->
+            <!-- android:name="android.app.shortcuts" -->
+            <!-- android:resource="@xml/shortcuts" /> -->
         </activity>
         <activity android:name="com.sudoajay.historycachecleaner.activity.BaseActivity" />
-
-
         <activity
             android:name="com.sudoajay.historycachecleaner.activity.sendFeedback.SendFeedback"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name="com.sudoajay.historycachecleaner.activity.scrolling.ScrollingAppCachePathActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.sudoajay.historycachecleaner.activity.progress.ProgressActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_delete" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/primaryAppColor" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/firebase_channel_id" />
-
 
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+
 </manifest>
