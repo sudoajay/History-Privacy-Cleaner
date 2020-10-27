@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.App
 import com.sudoajay.historycachecleaner.activity.main.root.RootState
+import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
@@ -287,7 +288,7 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
 
 
     private fun checkRootState(): RootState? {
-        val rootState: RootState = viewModel.checkRootPermission()!!
+        val rootState: RootState = viewModel.rootManager.checkRootPermission()!!
         when (rootState) {
             RootState.NO_ROOT -> {
                 setRootAccessAlreadyObtained(false, applicationContext)
@@ -342,12 +343,9 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
             .setPositiveButton(positiveText) { _, _ ->
 
                 if (positiveText == getString(R.string.yes_text)) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val rootState: RootState = viewModel.checkRootPermission()!!
-                        if (rootState == RootState.NO_ROOT)
-                            viewModel.rootManager.removeCacheFolderRoot(selectedList)
-                        else viewModel.rootManager.removeCacheFolderUnRoot(selectedList)
-                    }
+                    val intent = Intent(this,ProgressActivity::class.java)
+                    intent.action = appCacheDataId
+                    startActivity(intent)
                 }
 
 
@@ -524,7 +522,7 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
     companion object {
         const val settingShortcutId = "setting"
         const val homeShortcutId = "home"
-
+        const val appCacheDataId = "appCacheData"
         private fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
             context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
                 .putBoolean(

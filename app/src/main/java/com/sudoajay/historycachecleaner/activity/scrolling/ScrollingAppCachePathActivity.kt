@@ -99,16 +99,11 @@ class ScrollingAppCachePathActivity : BaseActivity() {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-
-
             list = FileHelper(applicationContext, app.packageName).fileList()
-            list.forEach { Log.e(TAG, it) }
-
-
-            if (list.isEmpty())
-                CustomToast.toastIt(applicationContext, "Empty List")
 
             withContext(Dispatchers.Main) {
+                if (list.isEmpty())
+                    CustomToast.toastIt(applicationContext, "Empty List")
                 viewAdapter.updateReceiptsList(list)
             }
             hideProgress.postValue(false)

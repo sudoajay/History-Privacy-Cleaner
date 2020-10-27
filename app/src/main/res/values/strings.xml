@@ -105,7 +105,7 @@
     <string name="title_menu_order_by_trans">Order by</string>
     <string name="menu_alphabetical_order_trans">Alphabetical order</string>
     <string name="menu_installation_date_trans">Installation date</string>
-    <string name="menu_app_size_trans">App size</string>
+    <string name="menu_cache_size_trans">Cache size</string>
     <string name="menu_system_app_trans">System app</string>
     <string name="menu_user_app_trans">User app</string>
 
@@ -141,6 +141,12 @@
     <string name="alert_dialog_ask_permission_to_remove_apps_message">You are going to remove selected apps. It\'s an irreversible action, pay attention.</string>
     <string name="no_text">NO</string>
     <string name="yes_text">Yes</string>
+
+
+<!--    Cache size Progress activity -->
+    <string name="you_have_saved_text">You have saved %s</string>
+
+
 
     <!--        No Trans-->
 

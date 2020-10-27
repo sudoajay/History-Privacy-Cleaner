@@ -154,7 +154,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/appSize_ConstraintLayout"
+            android:id="@+id/cacheSize_ConstraintLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -168,7 +168,7 @@
             app:layout_constraintTop_toBottomOf="@+id/installationDate_ConstraintLayout">
 
             <TextView
-                android:id="@+id/appSize_TextView"
+                android:id="@+id/cacheSize_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
@@ -177,23 +177,23 @@
                 android:layout_marginBottom="12dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/menu_app_size_trans"
+                android:text="@string/menu_cache_size_trans"
                 android:textColor="?attr/headingNormalTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/appSize_ImageView"
+                app:layout_constraintEnd_toStartOf="@+id/cacheSize_ImageView"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/appSize_ImageView"
+                android:id="@+id/cacheSize_ImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
-                app:layout_constraintBottom_toBottomOf="@+id/appSize_TextView"
+                app:layout_constraintBottom_toBottomOf="@+id/cacheSize_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appSize_TextView"
+                app:layout_constraintTop_toTopOf="@+id/cacheSize_TextView"
                 app:layout_constraintVertical_bias="0.261"
                 android:visibility="@{bottomSheet.isOrderBy(@string/menu_app_size)   ?  View.VISIBLE : View.GONE}"
                 app:srcCompat="@drawable/ic_tick"
@@ -214,7 +214,7 @@
             app:layout_constraintEnd_toEndOf="@+id/orderBy_TextView"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/orderBy_TextView"
-            app:layout_constraintTop_toBottomOf="@+id/appSize_ConstraintLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/cacheSize_ConstraintLayout" />
 
 
 

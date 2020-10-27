@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.sudoajay.historycachecleaner.activity.main.root.RootManager
 import java.io.File
+import java.lang.Exception
 
 class FileHelper(var context: Context, var packageName: String) {
     private var list = mutableListOf<String>()
@@ -29,15 +30,20 @@ class FileHelper(var context: Context, var packageName: String) {
 
     private fun getFilePath(dir: File) {
         Log.e(TAG, dir.absolutePath.toString())
-        when {
-            dir.isDirectory -> {
-                val children = dir.listFiles()
-                for (i in children!!.indices) {
-                    getFilePath(children[i])
+        try {
+
+            when {
+                dir.isDirectory -> {
+                    val children = dir.listFiles()
+                    for (i in children!!) {
+                        getFilePath(i)
+                    }
+                    list.add(dir.absolutePath.toString())
                 }
-                list.add(dir.absolutePath.toString())
+                dir.isFile -> list.add(dir.absolutePath.toString())
             }
-            dir.isFile -> list.add(dir.absolutePath.toString())
+        }catch (e :Exception){
+
         }
     }
 

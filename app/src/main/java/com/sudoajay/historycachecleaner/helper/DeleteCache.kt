@@ -19,20 +19,25 @@ internal object DeleteCache {
     }
 
     fun deleteWithFile(dir: File): Boolean {
-        return when {
-            dir.isDirectory -> {
-                val children = dir.listFiles()
-                for (i in children!!.indices) {
-                    deleteWithFile(children[i])
+        try {
+            return when {
+                dir.isDirectory -> {
+                    val children = dir.listFiles()
+                    for (i in children!!.indices) {
+                        deleteWithFile(children[i])
+                    }
+                    dir.delete()
                 }
-                dir.delete()
+                dir.isFile -> {
+                    dir.delete()
+                }
+                else -> {
+                    return false
+                }
             }
-            dir.isFile -> {
-                dir.delete()
-            }
-            else -> {
-                return false
-            }
+        } catch (e: Exception) {
+            return false
         }
     }
+
 }

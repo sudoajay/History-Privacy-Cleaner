@@ -28,6 +28,8 @@ interface AppDao {
     @Query("Select * FROM AppTable Where Selected =1")
     suspend fun getSelectedApp(): MutableList<App>
 
+
+
     @Query("Select Package_Name FROM AppTable Where Selected =:selected")
     suspend fun getPackageFromSelected(selected: Boolean): MutableList<String>
 
@@ -59,6 +61,7 @@ interface AppDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(app: App)
+
 
 
     @Query("DELETE FROM AppTable")

@@ -1,12 +1,79 @@
 package com.sudoajay.historycachecleaner.activity.progress
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
+import com.sudoajay.historycachecleaner.activity.main.MainActivity
+import com.sudoajay.historycachecleaner.activity.main.database.AppDao
+import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
+import com.sudoajay.historycachecleaner.activity.main.root.RootManager
+import com.sudoajay.historycachecleaner.activity.main.root.RootState
+import com.sudoajay.historycachecleaner.helper.CustomToast
+import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
+import kotlinx.android.synthetic.main.activity_progress.*
+import kotlinx.coroutines.*
 
 class ProgressActivity : AppCompatActivity() {
+    private var animatedCircleLoadingView: AnimatedCircleLoadingView? = null
+    private var TAG = "ProgressActivityTAG"
+    private var totalCacheSize = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_progress)
+        val action = intent.action.toString()
+
+        animatedCircleLoadingView = circle_loading_view
+        startLoading()
+
+
+        if (action == MainActivity.appCacheDataId)
+            deleteAppCacheData()
+
+
+//         After Progress finished code
+        animatedCircleLoadingView!!.progressFinished.observe(this, {
+            if (it) startActivity(Intent(this,MainActivity::class.java))
+            CustomToast.toastIt(
+                this,
+                getString(R.string.you_have_saved_text, FileSize.convertIt(totalCacheSize))
+            )
+        })
     }
+
+    private fun startLoading() {
+        animatedCircleLoadingView!!.startDeterminate()
+    }
+
+    private fun deleteAppCacheData() {
+
+        val rootManager = RootManager(applicationContext)
+        val appDao: AppDao =
+            AppRoomDatabase.getDatabase(applicationContext).appDao()
+        val appRepository = AppRepository(applicationContext, appDao)
+        CoroutineScope(Dispatchers.IO).launch {
+            val selectedList = appRepository.getSelectedApp()
+            val rootState: RootState = rootManager.checkRootPermission()!!
+            selectedList.forEachIndexed { index, app ->
+
+                totalCacheSize += app.cacheSize
+                if (rootState == RootState.NO_ROOT)
+                    rootManager.removeCacheFolderRoot(app)
+                else rootManager.removeCacheFolderUnRoot(app)
+
+                withContext(Dispatchers.Main) {
+                    changePercent(((index + 1) * 100) / selectedList.size)
+                }
+            }
+        }
+
+
+    }
+
+    private fun changePercent(percent: Int) {
+        animatedCircleLoadingView!!.setPercent(percent)
+    }
+
 }

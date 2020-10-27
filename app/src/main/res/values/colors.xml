@@ -29,4 +29,8 @@
 
     <color name="divider">#E6E6E6</color>
 
+    <color name="progress_background">#65828e</color>
+    <color name="progress_main_color">#ff9a00</color>
+    <color name="progress_secondary_color">#BDBDBD</color>
+
 </resources>

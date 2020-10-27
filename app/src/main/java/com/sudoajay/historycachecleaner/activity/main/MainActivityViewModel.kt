@@ -24,7 +24,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private var loadApps: LoadApps
     private var _application = application
     var appRepository: AppRepository
-    var  rootManager: RootManager = RootManager(this, application)
+    var  rootManager: RootManager = RootManager(application)
     private var appDao: AppDao =
         AppRoomDatabase.getDatabase(_application.applicationContext).appDao()
 
@@ -54,7 +54,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         filterChanges.value = filter
     }
     fun onRefresh() {
-        databaseConfiguration()
+
         appList!!.value!!.dataSource.invalidate()
     }
 
@@ -81,13 +81,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
         }
 
-    }
-
-    fun checkRootPermission(): RootState? {
-        val hasRootedPermission: Boolean = rootManager.hasRootedPermission()
-        if (hasRootedPermission) return RootState.HAVE_ROOT
-        val wasRooted: Boolean = rootManager.wasRooted()
-        return if (wasRooted) RootState.BE_ROOT else RootState.NO_ROOT
     }
 
 

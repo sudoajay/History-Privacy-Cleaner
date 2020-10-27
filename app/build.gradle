@@ -64,7 +64,8 @@ dependencies {
 
 //  External Lib
 //    Loading progress
-    implementation 'com.github.jlmd:AnimatedCircleLoadingView:1.1.5@aar'
+    implementation 'com.github.SudoAjay:CircleLoadingAnimation-Android:v1.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
 
     // LibSuperUser
