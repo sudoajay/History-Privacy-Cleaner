@@ -1,6 +1,5 @@
 package com.sudoajay.historycachecleaner.activity.progress
 
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -16,7 +15,10 @@ import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.android.synthetic.main.activity_progress.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProgressActivity : AppCompatActivity() {
     private var animatedCircleLoadingView: AnimatedCircleLoadingView? = null
@@ -45,12 +47,13 @@ class ProgressActivity : AppCompatActivity() {
 
 //         After Progress finished code
         animatedCircleLoadingView!!.progressFinished.observe(this, {
-            if (it) startActivity(Intent(this,MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
+            if (it)
+                CustomToast.toastIt(
+                    this,
+                    getString(R.string.you_have_saved_text, FileSize.convertIt(totalCacheSize))
+                )
 
-            CustomToast.toastIt(
-                this,
-                getString(R.string.you_have_saved_text, FileSize.convertIt(totalCacheSize))
-            )
         })
     }
 

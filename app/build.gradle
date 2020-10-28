@@ -64,7 +64,7 @@ dependencies {
 
 //  External Lib
 //    Loading progress
-    implementation 'com.github.SudoAjay:CircleLoadingAnimation-Android:v1.1'
+    implementation 'com.github.SudoAjay:CircleLoadingAnimation-Android:v1.2'
     implementation 'com.google.code.gson:gson:2.8.6'
 
 
