@@ -1,7 +1,9 @@
 package com.sudoajay.historycachecleaner.activity.progress
 
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
@@ -20,6 +22,7 @@ class ProgressActivity : AppCompatActivity() {
     private var animatedCircleLoadingView: AnimatedCircleLoadingView? = null
     private var TAG = "ProgressActivityTAG"
     private var totalCacheSize = 0L
+    private var stopProgress = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_progress)
@@ -33,9 +36,17 @@ class ProgressActivity : AppCompatActivity() {
             deleteAppCacheData()
 
 
+        val closeProgress =imageView_closeProgress
+        closeProgress.setOnClickListener {
+            it.visibility= View.GONE
+            animatedCircleLoadingView!!.stopFailure()
+        }
+
+
 //         After Progress finished code
         animatedCircleLoadingView!!.progressFinished.observe(this, {
             if (it) startActivity(Intent(this,MainActivity::class.java))
+
             CustomToast.toastIt(
                 this,
                 getString(R.string.you_have_saved_text, FileSize.convertIt(totalCacheSize))
@@ -56,10 +67,10 @@ class ProgressActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val selectedList = appRepository.getSelectedApp()
             val rootState: RootState = rootManager.checkRootPermission()!!
-            selectedList.forEachIndexed { index, app ->
-
+            selectedList.forEachIndexed forEach@{ index, app ->
+                if (stopProgress) return@forEach
                 totalCacheSize += app.cacheSize
-                if (rootState == RootState.NO_ROOT)
+                if (rootState == RootState.HAVE_ROOT)
                     rootManager.removeCacheFolderRoot(app)
                 else rootManager.removeCacheFolderUnRoot(app)
 
@@ -76,4 +87,8 @@ class ProgressActivity : AppCompatActivity() {
         animatedCircleLoadingView!!.setPercent(percent)
     }
 
+    override fun onBackPressed() {
+        stopProgress = true
+        super.onBackPressed()
+    }
 }
