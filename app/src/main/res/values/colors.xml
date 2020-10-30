@@ -33,4 +33,10 @@
     <color name="progress_main_color">#ff9a00</color>
     <color name="progress_secondary_color">#BDBDBD</color>
 
+    <!-- SPlash Screen    -->
+    <color name="colorPrimarySplash">#3f3f3f</color>
+    <color name="colorPrimaryDarkSplash">#2a2a2a</color>
+    <color name="colorAccentSplash">#c4c4c4</color>
+    <color name="dark_gray">#3f3f3f</color>
+
 </resources>
