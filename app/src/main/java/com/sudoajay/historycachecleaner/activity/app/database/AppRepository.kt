@@ -1,11 +1,19 @@
 package com.sudoajay.historycachecleaner.activity.app.database
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ResolveInfo
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.sudoajay.historyprivacycleaner.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class AppRepository(private val context: Context, private val appDao: AppDao) {
@@ -33,6 +41,10 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
             val isUserApp = if (context.getSharedPreferences("state", Context.MODE_PRIVATE)
                     .getBoolean(context.getString(R.string.menu_user_app), true)
             ) 1 else 2
+
+            //         get Changes If the Selected App
+            modifyDatabase()
+
 
 
             app = when {
@@ -66,6 +78,63 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
                     .build()
             )
 
+        }
+    }
+
+
+    private fun modifyDatabase() {
+
+        //        Option Selected
+        val selectedOption =
+            context.getSharedPreferences("state", Context.MODE_PRIVATE).getString(
+                context.getString(R.string.title_menu_select_option),
+                context.getString(R.string.menu_custom_app)
+            ).toString()
+
+        when (selectedOption) {
+            context.getString(R.string.menu_no_apps_trans) ->
+                getId(1, SimpleSQLiteQuery("Select id From AppTable Where Selected = '1'"))
+            context.getString(R.string.menu_all_apps_trans) ->
+                getId(2, SimpleSQLiteQuery("Select id From AppTable Where Selected = '0'"))
+            context.getString(R.string.menu_only_user_apps_trans) ->
+                getId(3, SimpleSQLiteQuery("Select id From AppTable Where User_App = '1'"))
+            context.getString(R.string.menu_only_system_apps_trans) ->
+                getId(4, SimpleSQLiteQuery("Select id From AppTable Where System_App = '1'"))
+        }
+    }
+
+
+    private fun getId(type: Int, query: SimpleSQLiteQuery) {
+
+        var value: Boolean
+        CoroutineScope(Dispatchers.Default).launch {
+            value = when (type) {
+                1 -> false
+                2 -> true
+                3, 4 -> {
+                    withContext(Dispatchers.Default) {
+                        id =
+                            appDao.getIdViaQuery(SimpleSQLiteQuery("Select id From AppTable Where Selected = '1'"))
+                        updateTheList(false, id)
+                    }
+                    true
+                }
+                else -> false
+            }
+
+            withContext(Dispatchers.Default) {
+                    id = appDao.getIdViaQuery(query)
+            }
+            withContext(Dispatchers.Default) {
+                updateTheList(value, id)
+            }
+
+        }
+    }
+
+    private suspend fun updateTheList(value: Boolean, id: List<Int>) {
+        for (i in id) {
+            appDao.updateSelectedById(value, i)
         }
     }
 

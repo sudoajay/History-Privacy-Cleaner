@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:backgroundTint="?attr/bgBoxColor"
-            app:menu="@menu/bottom_toolbar_menu"
+            app:menu="@menu/app_bottom_toolbar_menu"
             app:navigationIcon="@drawable/ic_navigation_drawer" />
 
 

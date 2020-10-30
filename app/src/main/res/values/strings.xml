@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">History &amp; Cache Cleaner</string>
+    <string name="app_cache_cleaner_text">App Cache Cleaner </string>
 
     <!--    Notification channel-->
     <string name="notifications_group_service">Service control</string>
@@ -18,10 +19,15 @@
 
 
     <!--  MainActivity  Bottom Toolbar-->
-    <string name="action_search">Search</string>
-    <string name="filterList_optionMenu">Filter List</string>
+    <string name="search_optionMenu">Search</string>
     <string name="darkMode_optionMenu">Dark Mode</string>
-    <string name="action_more_setting">More Setting</string>
+    <string name="moreSetting_optionMenu">More Setting</string>
+
+
+<!--    App cache cleaner Bottom Toolbar-->
+    <string name="filterList_optionMenu">Filter List</string>
+    <string name="selectOption_optionMenu">Select Option</string>
+
 
 
     <!--    Send Feedback -->
@@ -97,7 +103,11 @@
         to remove internal cache dir, you have to grant root access for this app from your root manager app.</string>
     <string name="alert_dialog_title_have_root">Root Access Obtained!</string>
     <string name="alert_dialog_message_have_root">Root access is properly installed on this device.</string>
-    <string name="alert_dialog_no_app_selected_title">There are no apps selected!</string>
+
+<!--    Empty App Info-->
+    <string name="alert_dialog_no_app_selected_title">There are no app selected!</string>
+    <string name="alert_dialog_no_cache_app">There are no app for cache cleaner</string>
+
 
     <!--    Filter Bottom sheet-->
     <string name="filter_option_text">Filter Option</string>
@@ -108,6 +118,15 @@
     <string name="menu_cache_size_trans">Cache size</string>
     <string name="menu_system_app_trans">System app</string>
     <string name="menu_user_app_trans">User app</string>
+
+
+<!--    Select Bottom sheet-->
+    <string name="title_menu_select_option_trans">Select Option</string>
+    <string name="menu_all_apps_trans">All apps</string>
+    <string name="menu_no_apps_trans">No apps</string>
+    <string name="menu_only_system_apps_trans">Only system apps</string>
+    <string name="menu_only_user_apps_trans">Only user apps</string>
+
 
     <!--   callPermissionDialog (Sd Card Storage Permission)  -->
     <string name="selectSdCardMes">Only Select the Sd Card Directory</string>
@@ -167,6 +186,15 @@
     <string name="menu_app_size" translatable="false">App size</string>
     <string name="menu_system_app" translatable="false">System apps</string>
     <string name="menu_user_app" translatable="false">User apps</string>
+
+    <!--    Select AppBottomSheet Not Trans-->
+    <string name="title_menu_select_option" translatable="false">Select Option</string>
+    <string name="menu_all_apps" translatable="false">All apps</string>
+    <string name="menu_no_apps" translatable="false">No apps</string>
+    <string name="menu_only_system_apps" translatable="false">Only system apps</string>
+    <string name="menu_only_user_apps" translatable="false">Only user apps</string>
+    <string name="menu_system_app_except_browser" translatable="false">System app except browser</string>
+    <string name="menu_custom_app" translatable="false">Custom apps</string>
 
     <string name="filter_changes_text" translatable="false">filterChanges</string>
 

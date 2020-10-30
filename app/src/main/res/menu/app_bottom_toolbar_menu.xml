@@ -4,7 +4,7 @@
     <item
         android:id="@+id/search_optionMenu"
         android:icon="@drawable/ic_search"
-        android:title="@string/action_search"
+        android:title="@string/search_optionMenu"
         app:iconTint="?attr/bottomItemTintColor"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
@@ -12,10 +12,11 @@
     <item
         android:id="@+id/filterList_optionMenu"
         android:title="@string/filterList_optionMenu" />
+
+    <item
+        android:id="@+id/selectOption_optionMenu"
+        android:title="@string/selectOption_optionMenu" />
     <item
         android:id="@+id/darkMode_optionMenu"
         android:title="@string/darkMode_optionMenu" />
-    <item
-        android:id="@+id/more_setting_optionMenu"
-        android:title="@string/action_more_setting" />
 </menu>

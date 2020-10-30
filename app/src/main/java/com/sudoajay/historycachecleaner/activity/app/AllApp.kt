@@ -21,23 +21,24 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.database.App
-import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
+import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternalStoragePermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityAllAppBinding
-import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
@@ -45,7 +46,6 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
     lateinit var viewModel: AllAppViewModel
     private lateinit var binding: ActivityAllAppBinding
     private var isDarkTheme: Boolean = false
-    private var doubleBackToExitPressedOnce = false
     private var TAG = "AllActivityTag"
     private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
     private var sdCardPermission: AndroidSdCardPermission? = null
@@ -173,12 +173,15 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         viewModel.appList!!.observe(this, {
             pagingAppRecyclerAdapter.submitList(it)
 
-            Log.e(TAG , "size - " + it.size)
+            Log.e(TAG, "size - " + it.size)
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
 
             viewModel.hideProgress!!.value = false
-            if (it.isEmpty()) CustomToast.toastIt(applicationContext,"Empty List")
+            if (it.isEmpty()) CustomToast.toastIt(
+                applicationContext,
+                getString(R.string.alert_dialog_no_cache_app)
+            )
 
 
         })
@@ -215,34 +218,31 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         )
     }
 
-    //    private fun showNavigationDrawer(){
-//        val navigationDrawerBottomSheet = NavigationDrawerBottomSheet()
-//        navigationDrawerBottomSheet.show(supportFragmentManager, navigationDrawerBottomSheet.tag)
-//    }
-//
+
     private fun showFilterAppBottomSheet() {
         val filterAppBottomSheet = FilterAppBottomSheet()
         filterAppBottomSheet.show(supportFragmentManager, filterAppBottomSheet.tag)
     }
 
-     fun showAppInfoBottomSheet(ID:Long) {
+    fun showAppInfoBottomSheet(ID: Long) {
         val appInfoBottomSheet = AppInfoBottomSheet(ID)
         appInfoBottomSheet.show(supportFragmentManager, appInfoBottomSheet.tag)
     }
 
-    //
-//    private fun openSetting() {
-//        val intent = Intent(applicationContext, SettingsActivity::class.java)
-//        startActivity(intent)
-//    }
+
+    private fun openSelectOption() {
+        val selectAppBottomSheet = SelectAppBottomSheet()
+        selectAppBottomSheet.show(supportFragmentManager, selectAppBottomSheet.tag)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
-            }
+            android.R.id.home -> onBackPressed()
+
             R.id.filterList_optionMenu -> showFilterAppBottomSheet()
             R.id.darkMode_optionMenu -> showDarkMode()
-            R.id.more_setting_optionMenu -> {
-            }
+            R.id.selectOption_optionMenu -> openSelectOption()
+
             else -> return super.onOptionsItemSelected(item)
         }
 
@@ -250,7 +250,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.bottom_toolbar_menu, menu)
+        menuInflater.inflate(R.menu.app_bottom_toolbar_menu, menu)
         val actionSearch = menu.findItem(R.id.search_optionMenu)
         manageSearch(actionSearch)
         return super.onCreateOptionsMenu(menu)
@@ -487,31 +487,6 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
     override fun handleDialogClose() {
         viewModel.filterChanges()
     }
-
-    override fun onBackPressed() {
-        onBack()
-    }
-
-    private fun onBack() {
-        if (doubleBackToExitPressedOnce) {
-            closeApp()
-            return
-        }
-        doubleBackToExitPressedOnce = true
-        CustomToast.toastIt(applicationContext, "Click Back Again To Exit")
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(2000L)
-            doubleBackToExitPressedOnce = false
-        }
-    }
-
-    private fun closeApp() {
-        val homeIntent = Intent(Intent.ACTION_MAIN)
-        homeIntent.addCategory(Intent.CATEGORY_HOME)
-        homeIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(homeIntent)
-    }
-
 
     /**
      * Making notification bar transparent

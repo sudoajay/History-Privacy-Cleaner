@@ -1,10 +1,8 @@
 package com.sudoajay.historycachecleaner.activity.app.database
 
 import androidx.paging.DataSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 
 
 @Dao
@@ -28,6 +26,8 @@ interface AppDao {
     @Query("Select * FROM AppTable Where Selected =1 ")
     suspend fun getSelectedApp(): MutableList<App>
 
+    @RawQuery
+    suspend fun getIdViaQuery(query: SupportSQLiteQuery): List<Int>
 
 
     @Query("Select Package_Name FROM AppTable Where Selected =:selected")

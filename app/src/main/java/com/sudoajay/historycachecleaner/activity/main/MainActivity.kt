@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.AppInfoBottomSheet
 import com.sudoajay.historycachecleaner.activity.app.FilterAppBottomSheet
-import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
@@ -231,22 +230,22 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
 //        val intent = Intent(applicationContext, SettingsActivity::class.java)
 //        startActivity(intent)
 //    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-            }
-            R.id.filterList_optionMenu -> showFilterAppBottomSheet()
-            R.id.darkMode_optionMenu -> showDarkMode()
-            R.id.more_setting_optionMenu -> {
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-
-        return true
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            android.R.id.home -> {
+//            }
+//            R.id.filterList_optionMenu -> showFilterAppBottomSheet()
+//            R.id.darkMode_optionMenu -> showDarkMode()
+//            R.id.more_setting_optionMenu -> {
+//            }
+//            else -> return super.onOptionsItemSelected(item)
+//        }
+//
+//        return true
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.bottom_toolbar_menu, menu)
+        menuInflater.inflate(R.menu.app_bottom_toolbar_menu, menu)
         val actionSearch = menu.findItem(R.id.search_optionMenu)
         manageSearch(actionSearch)
         return super.onCreateOptionsMenu(menu)
