@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">History &amp; Cache Cleaner</string>
     <string name="app_cache_cleaner_text">App Cache Cleaner </string>
-
+    <string name="developer_name">Created by Sudo Ajay</string>
     <!--    Notification channel-->
     <string name="notifications_group_service">Service control</string>
     <string name="firebase_channel_id">Push Notification</string>

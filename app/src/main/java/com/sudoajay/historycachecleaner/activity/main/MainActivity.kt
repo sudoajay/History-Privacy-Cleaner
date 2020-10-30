@@ -13,33 +13,31 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
-import com.sudoajay.historycachecleaner.activity.app.AppInfoBottomSheet
-import com.sudoajay.historycachecleaner.activity.app.FilterAppBottomSheet
-import com.sudoajay.historycachecleaner.activity.app.database.App
-import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
+import com.sudoajay.historycachecleaner.helper.root.RootManager
+import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternalStoragePermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
+class MainActivity : BaseActivity() {
 
     lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
@@ -48,7 +46,6 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
     private var TAG = "MainActivityTag"
     private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
     private var sdCardPermission: AndroidSdCardPermission? = null
-    private lateinit var selectedList: MutableList<App>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,26 +80,6 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         checkRootState()
         binding.deleteFloatingActionButton.setOnClickListener {
 
-            CoroutineScope(Dispatchers.Main).launch {
-                withContext(Dispatchers.IO) {
-                    selectedList = viewModel.appRepository.getSelectedApp()
-                }
-                if (selectedList.isEmpty())
-                    CustomToast.toastIt(
-                        applicationContext,
-                        getString(R.string.alert_dialog_no_app_selected_title)
-                    )
-                else {
-
-                    generateAlertDialog(
-                        getString(R.string.alert_dialog_ask_permission_to_remove_apps_title),
-                        getString(R.string.alert_dialog_ask_permission_to_remove_apps_message),
-                        getString(R.string.no_text),
-                        getString(R.string.yes_text)
-                    )
-
-                }
-            }
         }
 
         setReference()
@@ -210,87 +187,39 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         )
     }
 
-    //    private fun showNavigationDrawer(){
-//        val navigationDrawerBottomSheet = NavigationDrawerBottomSheet()
-//        navigationDrawerBottomSheet.show(supportFragmentManager, navigationDrawerBottomSheet.tag)
-//    }
+    private fun showNavigationDrawer(){
+        val navigationDrawerBottomSheet = NavigationDrawerBottomSheet()
+        navigationDrawerBottomSheet.show(supportFragmentManager, navigationDrawerBottomSheet.tag)
+    }
 //
-    private fun showFilterAppBottomSheet() {
-        val filterAppBottomSheet = FilterAppBottomSheet()
-        filterAppBottomSheet.show(supportFragmentManager, filterAppBottomSheet.tag)
-    }
-
-     fun showAppInfoBottomSheet(ID:Long) {
-        val appInfoBottomSheet = AppInfoBottomSheet(ID)
-        appInfoBottomSheet.show(supportFragmentManager, appInfoBottomSheet.tag)
-    }
 
     //
 //    private fun openSetting() {
 //        val intent = Intent(applicationContext, SettingsActivity::class.java)
 //        startActivity(intent)
 //    }
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            android.R.id.home -> {
-//            }
-//            R.id.filterList_optionMenu -> showFilterAppBottomSheet()
-//            R.id.darkMode_optionMenu -> showDarkMode()
-//            R.id.more_setting_optionMenu -> {
-//            }
-//            else -> return super.onOptionsItemSelected(item)
-//        }
-//
-//        return true
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> showNavigationDrawer()
+            R.id.darkMode_optionMenu -> showDarkMode()
+            R.id.moreSetting_optionMenu -> {
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+
+        return true
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.app_bottom_toolbar_menu, menu)
+        menuInflater.inflate(R.menu.main_bottom_toolbar_menu, menu)
         val actionSearch = menu.findItem(R.id.search_optionMenu)
-        manageSearch(actionSearch)
+
         return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun manageSearch(searchItem: MenuItem) {
-        val searchView =
-            searchItem.actionView as SearchView
-        searchView.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        manageFabOnSearchItemStatus(searchItem)
-        manageInputTextInSearchView(searchView)
-    }
-
-    private fun manageFabOnSearchItemStatus(searchItem: MenuItem) {
-        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                binding.deleteFloatingActionButton.hide()
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                binding.deleteFloatingActionButton.show()
-                return true
-            }
-        })
-    }
-
-    private fun manageInputTextInSearchView(searchView: SearchView) {
-        searchView.setOnQueryTextListener(object :
-            SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                val query: String = newText.toLowerCase(Locale.ROOT).trim { it <= ' ' }
-                viewModel.filterChanges(query)
-                return true
-            }
-        })
     }
 
 
     private fun checkRootState(): RootState? {
-        val rootState: RootState = viewModel.rootManager.checkRootPermission()!!
+        val rootState: RootState = RootManager(applicationContext).checkRootPermission()!!
         when (rootState) {
             RootState.NO_ROOT -> {
                 setRootAccessAlreadyObtained(false, applicationContext)
@@ -478,10 +407,6 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
 
     }
 
-
-    override fun handleDialogClose() {
-        viewModel.filterChanges()
-    }
 
     override fun onBackPressed() {
         onBack()

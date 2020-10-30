@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.sudoajay.historycachecleaner.activity.app.AllApp"
+            android:name="com.sudoajay.historycachecleaner.activity.main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -33,7 +33,7 @@
         </activity>
         <activity android:name="com.sudoajay.historycachecleaner.activity.BaseActivity" />
         <activity
-            android:name="com.sudoajay.historycachecleaner.activity.main.MainActivity"
+            android:name="com.sudoajay.historycachecleaner.activity.app.AllApp"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.sudoajay.historycachecleaner.activity.sendFeedback.SendFeedback"
