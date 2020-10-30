@@ -21,7 +21,7 @@
     <!--  MainActivity  Bottom Toolbar-->
     <string name="search_optionMenu">Search</string>
     <string name="darkMode_optionMenu">Dark Mode</string>
-    <string name="moreSetting_optionMenu">More Setting</string>
+    <string name="setting_optionMenu">Setting</string>
 
 
 <!--    App cache cleaner Bottom Toolbar-->
@@ -165,6 +165,8 @@
 <!--    Cache size Progress activity -->
     <string name="you_have_saved_text">You have saved %s</string>
 
+    <!--    Share App-->
+    <string name="shareMessage">Hey, check This App which helps you to Delete Duplicate and Unnecessary Data from the phone -</string>
 
 
     <!--        No Trans-->

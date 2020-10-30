@@ -8,6 +8,6 @@
         android:title="@string/darkMode_optionMenu" />
     <item
         android:id="@+id/moreSetting_optionMenu"
-        android:title="@string/moreSetting_optionMenu" />
+        android:title="@string/setting_optionMenu" />
 
 </menu>

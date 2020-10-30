@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="languageList">
+        <item name="english">English</item>
+        <item name="hindi">हिन्दी</item>
+        <item name="arabic">عربى</item>
+        <item name="bengali">বাঙালি</item>
+        <item name="german">deutsch</item>
+        <item name="spanish">español</item>
+        <item name="french">français</item>
+        <item name="portuguese">Português</item>
+        <item name="indonesian">indonesian</item>
+        <item name="italian">italiano</item>
+        <item name="japanese">日本語</item>
+        <item name="korean">한국어</item>
+        <item name="nepali">नेपाली</item>
+        <item name="dutch">dutch</item>
+        <item name="punjabi">ਪੰਜਾਬੀ</item>
+        <item name="russian">русский</item>
+        <item name="tamil">தமிழ்</item>
+        <item name="telugu">తెలుగు</item>
+        <item name="thai">ไทย</item>
+        <item name="turkish">Türk</item>
+        <item name="urdu">اردو</item>
+        <item name="vietnamese">Tiếng Việt</item>
+        <item name="chinese">中文</item>
+
+    </string-array>
+
+    <string-array name="languagesValues">
+        <item name="english">en</item>
+        <item name="hindi">hi</item>
+        <item name="arabic">ar</item>
+        <item name="bengali">bn</item>
+        <item name="german">de</item>
+        <item name="spanish">es</item>
+        <item name="french">fr</item>
+        <item name="portuguese">pt</item>
+        <item name="indonesian">id</item>
+        <item name="italian">it</item>
+        <item name="japanese">ja</item>
+        <item name="korean">ko</item>
+        <item name="nepali">ne</item>
+        <item name="dutch">nl</item>
+        <item name="punjabi">pa</item>
+        <item name="russian">ru</item>
+        <item name="tamil">ta</item>
+        <item name="telugu">te</item>
+        <item name="thai">th</item>
+        <item name="turkish">tr</item>
+        <item name="urdu">ur</item>
+        <item name="vietnamese">vi</item>
+        <item name="chinese">zh</item>
+    </string-array>
+
+
+
+</resources>

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
+import com.sudoajay.historycachecleaner.activity.settingActivity.SettingsActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
@@ -66,9 +67,9 @@ class MainActivity : BaseActivity() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
 
-//        if (!intent.action.isNullOrEmpty() && intent.action.toString() == settingShortcutId) {
-//           openSetting()
-//        }
+        if (!intent.action.isNullOrEmpty() && intent.action.toString() == settingShortcutId) {
+           openSetting()
+        }
 
 //        External and sd-Card permission
         permissionIssue()
@@ -193,17 +194,17 @@ class MainActivity : BaseActivity() {
     }
 //
 
-    //
-//    private fun openSetting() {
-//        val intent = Intent(applicationContext, SettingsActivity::class.java)
-//        startActivity(intent)
-//    }
+
+    private fun openSetting() {
+        val intent = Intent(applicationContext, SettingsActivity::class.java)
+        startActivity(intent)
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> showNavigationDrawer()
             R.id.darkMode_optionMenu -> showDarkMode()
-            R.id.moreSetting_optionMenu -> {
-            }
+            R.id.moreSetting_optionMenu -> openSetting()
+
             else -> return super.onOptionsItemSelected(item)
         }
 
