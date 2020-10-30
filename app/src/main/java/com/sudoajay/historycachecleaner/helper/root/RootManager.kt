@@ -1,10 +1,10 @@
-package com.sudoajay.historycachecleaner.activity.main.root
+package com.sudoajay.historycachecleaner.helper.root
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import com.sudoajay.historycachecleaner.activity.main.database.App
+import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.helper.DeleteCache
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import eu.chainfire.libsuperuser.Shell
@@ -72,52 +72,52 @@ class RootManager(var context: Context) {
 
 
     fun removeCacheFolderUnRoot(it: App) {
-        DeleteCache.deleteWithFile(File(RootManager.getInternalCachePath(context) + it.packageName + cachePath))
-        DeleteCache.deleteWithFile(File(RootManager.getInternalCachePath(context) + it.packageName + codeCache))
+        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + cachePath))
+        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + codeCache))
 
-        DeleteCache.deleteWithFile(File(RootManager.getExternalCachePath(context) + it.packageName + cachePath))
+        DeleteCache.deleteWithFile(File(getExternalCachePath(context) + it.packageName + cachePath))
 
-        DeleteCache.deleteWithFile(File(RootManager.getSdCardCachePath(context) + it.packageName + cachePath))
+        DeleteCache.deleteWithFile(File(getSdCardCachePath(context) + it.packageName + cachePath))
 
         Log.e(TAG, "Done File deleted with Un root ")
     }
 
     fun removeCacheFolderRoot(it: App) {
 
-        executeCommandSH("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + cachePath))
-        executeCommandSH("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + codeCache))
+        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + cachePath))
+        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + codeCache))
 
-        executeCommandSH("rm  -rf %s".format(getExternalCachePath(context) + it.packageName + cachePath))
+        executeCommandSU("rm  -rf %s".format(getExternalCachePath(context) + it.packageName + cachePath))
 
-        executeCommandSH("rm  -rf %s".format(getSdCardCachePath(context) + it.packageName + cachePath))
+        executeCommandSU("rm  -rf %s".format(getSdCardCachePath(context) + it.packageName + cachePath))
 
         Log.e(TAG, "Done File deleted with root ")
     }
 
-    private fun uninstallSystemApp(appApk: String): Boolean {
-        executeCommandSU("mount -o rw,remount /system")
-        executeCommandSU("rm $appApk")
-        executeCommandSU("mount -o ro,remount /system")
-        return checkUninstallSuccessful(appApk)
-    }
-
-    private fun uninstallSystemAppAlternativeMethod(packageName: String): Boolean {
-        val commandOutput = executeCommandSU("pm uninstall --user 0 $packageName")
-        return checkCommandSuccesfull(commandOutput)
-    }
-
-    private fun uninstallUserApp(packageName: String): Boolean {
-        val commandOutput = executeCommandSU("pm uninstall $packageName")
-        return checkCommandSuccesfull(commandOutput)
-    }
-
-    private fun uninstallUserAppUnRooted(packageName: String) {
-        val packageURI = Uri.parse("package:$packageName")
-        val uninstallIntent = Intent(Intent.ACTION_DELETE, packageURI)
-        uninstallIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-        context.startActivity(uninstallIntent)
-    }
+//    private fun uninstallSystemApp(appApk: String): Boolean {
+//        executeCommandSU("mount -o rw,remount /system")
+//        executeCommandSU("rm $appApk")
+//        executeCommandSU("mount -o ro,remount /system")
+//        return checkUninstallSuccessful(appApk)
+//    }
+//
+//    private fun uninstallSystemAppAlternativeMethod(packageName: String): Boolean {
+//        val commandOutput = executeCommandSU("pm uninstall --user 0 $packageName")
+//        return checkCommandSuccesfull(commandOutput)
+//    }
+//
+//    private fun uninstallUserApp(packageName: String): Boolean {
+//        val commandOutput = executeCommandSU("pm uninstall $packageName")
+//        return checkCommandSuccesfull(commandOutput)
+//    }
+//
+//    private fun uninstallUserAppUnRooted(packageName: String) {
+//        val packageURI = Uri.parse("package:$packageName")
+//        val uninstallIntent = Intent(Intent.ACTION_DELETE, packageURI)
+//        uninstallIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//
+//        context.startActivity(uninstallIntent)
+//    }
 
     private fun executeCommandSU(command: String): String {
         val stdout: List<String> = ArrayList()

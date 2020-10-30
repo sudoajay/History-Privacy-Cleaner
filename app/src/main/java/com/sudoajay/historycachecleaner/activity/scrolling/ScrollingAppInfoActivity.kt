@@ -15,11 +15,11 @@ import androidx.core.content.FileProvider
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.databinding.DataBindingUtil
 import com.sudoajay.historycachecleaner.activity.BaseActivity
-import com.sudoajay.historycachecleaner.activity.main.PagingAppRecyclerAdapter
-import com.sudoajay.historycachecleaner.activity.main.database.App
-import com.sudoajay.historycachecleaner.activity.main.database.AppDao
-import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
+import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
+import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.app.database.AppDao
+import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingAppInfoBinding

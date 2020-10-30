@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
+import com.sudoajay.historycachecleaner.activity.app.AllApp
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
-import com.sudoajay.historycachecleaner.activity.main.database.AppDao
-import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
-import com.sudoajay.historycachecleaner.activity.main.root.RootManager
-import com.sudoajay.historycachecleaner.activity.main.root.RootState
+import com.sudoajay.historycachecleaner.activity.app.database.AppDao
+import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
+import com.sudoajay.historycachecleaner.helper.root.RootManager
+import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
@@ -47,7 +48,7 @@ class ProgressActivity : AppCompatActivity() {
 
 //         After Progress finished code
         animatedCircleLoadingView!!.progressFinished.observe(this, {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, AllApp::class.java))
             if (it)
                 CustomToast.toastIt(
                     this,

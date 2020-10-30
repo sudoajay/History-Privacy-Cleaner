@@ -2,7 +2,7 @@ package com.sudoajay.historycachecleaner.helper
 
 import android.content.Context
 import android.util.Log
-import com.sudoajay.historycachecleaner.activity.main.root.RootManager
+import com.sudoajay.historycachecleaner.helper.root.RootManager
 import java.io.File
 import java.lang.Exception
 

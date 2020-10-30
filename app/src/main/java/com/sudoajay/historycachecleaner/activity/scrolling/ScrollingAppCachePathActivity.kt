@@ -14,11 +14,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
-import com.sudoajay.historycachecleaner.activity.main.PagingAppRecyclerAdapter
-import com.sudoajay.historycachecleaner.activity.main.database.App
-import com.sudoajay.historycachecleaner.activity.main.database.AppDao
-import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.AppRoomDatabase
+import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
+import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.app.database.AppDao
+import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.FileHelper
 import com.sudoajay.historyprivacycleaner.R

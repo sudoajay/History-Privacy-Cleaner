@@ -9,7 +9,7 @@
 
         <variable
             name="bottomSheet"
-            type="com.sudoajay.historycachecleaner.activity.main.FilterAppBottomSheet" />
+            type="com.sudoajay.historycachecleaner.activity.app.FilterAppBottomSheet" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

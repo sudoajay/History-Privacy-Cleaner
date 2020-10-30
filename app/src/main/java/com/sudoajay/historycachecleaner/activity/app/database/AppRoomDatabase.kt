@@ -1,4 +1,4 @@
-package com.sudoajay.historycachecleaner.activity.main.database
+package com.sudoajay.historycachecleaner.activity.app.database
 
 import android.content.Context
 import androidx.room.Database

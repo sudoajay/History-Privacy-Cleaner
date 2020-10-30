@@ -1,10 +1,10 @@
-package com.sudoajay.historycachecleaner.activity.main
+package com.sudoajay.historycachecleaner.activity.app
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import com.sudoajay.historycachecleaner.activity.main.database.App
-import com.sudoajay.historycachecleaner.activity.main.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.helper.FileHelper
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -51,31 +51,36 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
     private suspend fun createApp(applicationInfo: ApplicationInfo) {
 
-        val label = getApplicationLabel(applicationInfo)
-        val sourceDir = getApplicationSourceDir(applicationInfo)
         val packageName = getApplicationPackageName(applicationInfo)
-        val icon = getApplicationsIcon(applicationInfo)
-        val installedDate = getInstalledDate(packageName)
-        val systemApp = isSystemApps(applicationInfo)
-
         // return size in form of Bytes(Long)
-        val cacheSize = FileHelper(context,packageName).fileLength()
+        val cacheSize = FileHelper(context, packageName).fileLength()
 
-        appRepository.insert(
-            App(
-                null,
-                label,
-                sourceDir,
-                packageName,
-                icon,
-                installedDate,
-                cacheSize,
-                systemApp,
-                !systemApp,
-                isSelected = true,
-                isInstalled = true
+        if (cacheSize != 0L) {
+
+            val label = getApplicationLabel(applicationInfo)
+            val sourceDir = getApplicationSourceDir(applicationInfo)
+            val icon = getApplicationsIcon(applicationInfo)
+            val installedDate = getInstalledDate(packageName)
+            val systemApp = isSystemApps(applicationInfo)
+
+
+
+            appRepository.insert(
+                App(
+                    null,
+                    label,
+                    sourceDir,
+                    packageName,
+                    icon,
+                    installedDate,
+                    cacheSize,
+                    systemApp,
+                    !systemApp,
+                    isSelected = true,
+                    isInstalled = true
+                )
             )
-        )
+        }
     }
 
 

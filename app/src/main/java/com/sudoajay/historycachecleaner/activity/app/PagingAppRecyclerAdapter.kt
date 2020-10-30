@@ -1,4 +1,4 @@
-package com.sudoajay.historycachecleaner.activity.main
+package com.sudoajay.historycachecleaner.activity.app
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,7 +15,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.sudoajay.historycachecleaner.activity.main.database.App
+import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.android.synthetic.main.layout_app_item.view.*
@@ -24,7 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class PagingAppRecyclerAdapter(var context: Context, var main:MainActivity) :
+class PagingAppRecyclerAdapter(var context: Context, var main: AllApp) :
     PagedListAdapter<App, PagingAppRecyclerAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     private var packageManager = context.packageManager

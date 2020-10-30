@@ -1,4 +1,4 @@
-package com.sudoajay.historycachecleaner.activity.main
+package com.sudoajay.historycachecleaner.activity.app
 
 import android.content.Intent
 import android.os.Bundle

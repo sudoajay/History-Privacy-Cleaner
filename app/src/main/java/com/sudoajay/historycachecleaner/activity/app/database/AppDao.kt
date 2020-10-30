@@ -1,4 +1,4 @@
-package com.sudoajay.historycachecleaner.activity.main.database
+package com.sudoajay.historycachecleaner.activity.app.database
 
 import androidx.paging.DataSource
 import androidx.room.Dao
@@ -10,22 +10,22 @@ import androidx.room.Query
 @Dao
 interface AppDao {
 
-    @Query("Select * From AppTable Where (Cache_Size != 0 and System_App = :isSystemApp)  Or (Cache_Size != 0 and User_App = :isUserApp) Order By Name asc ")
+    @Query("Select * From AppTable Where System_App = :isSystemApp  or User_App = :isUserApp Order By Name asc ")
     fun getSortByAlpha(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("Select * From AppTable Where (Cache_Size != 0 and System_App = :isSystemApp)  Or (Cache_Size != 0 and User_App = :isUserApp) Order By Date Desc ")
+    @Query("Select * From AppTable Where System_App = :isSystemApp  or User_App = :isUserApp Order By Date Desc ")
     fun getSortByDate(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("Select * From AppTable Where (Cache_Size != 0 and System_App = :isSystemApp)  Or (Cache_Size != 0 and User_App = :isUserApp) Order By Cache_Size Desc ")
+    @Query("Select * From AppTable Where System_App = :isSystemApp  or User_App = :isUserApp Order By Cache_Size Desc ")
     fun getSortBySize(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
 
-    @Query("SELECT * FROM AppTable WHERE Name LIKE :search and Cache_Size != 0")
+    @Query("SELECT * FROM AppTable WHERE Name LIKE :search ")
     fun searchItem(search: String?): DataSource.Factory<Int, App>
 
     @Query("SELECT * FROM AppTable WHERE id= :id")
     suspend fun getAppFromId(id:Int): App
 
-    @Query("Select * FROM AppTable Where Selected =1")
+    @Query("Select * FROM AppTable Where Selected =1 ")
     suspend fun getSelectedApp(): MutableList<App>
 
 

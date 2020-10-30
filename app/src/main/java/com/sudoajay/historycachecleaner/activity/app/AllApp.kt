@@ -1,4 +1,4 @@
-package com.sudoajay.historycachecleaner.activity.main
+package com.sudoajay.historycachecleaner.activity.app
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -20,12 +21,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
-import com.sudoajay.historycachecleaner.activity.app.AppInfoBottomSheet
-import com.sudoajay.historycachecleaner.activity.app.FilterAppBottomSheet
-import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
@@ -36,17 +35,18 @@ import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternal
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
+import com.sudoajay.historyprivacycleaner.databinding.ActivityAllAppBinding
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.util.*
 
-class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
+class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
 
-    lateinit var viewModel: MainActivityViewModel
-    private lateinit var binding: ActivityMainBinding
+    lateinit var viewModel: AllAppViewModel
+    private lateinit var binding: ActivityAllAppBinding
     private var isDarkTheme: Boolean = false
     private var doubleBackToExitPressedOnce = false
-    private var TAG = "MainActivityTag"
+    private var TAG = "AllActivityTag"
     private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
     private var sdCardPermission: AndroidSdCardPermission? = null
     private lateinit var selectedList: MutableList<App>
@@ -62,11 +62,11 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
                     false
                 ) else window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_all_app)
 
         changeStatusBarColor()
 
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(AllAppViewModel::class.java)
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
 
@@ -88,6 +88,7 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
                 withContext(Dispatchers.IO) {
                     selectedList = viewModel.appRepository.getSelectedApp()
                 }
+                Log.e(TAG , "selectlist size - " + selectedList.size)
                 if (selectedList.isEmpty())
                     CustomToast.toastIt(
                         applicationContext,
@@ -166,18 +167,21 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-//        val pagingAppRecyclerAdapter = PagingAppRecyclerAdapter(applicationContext, this)
-//        recyclerView.adapter = pagingAppRecyclerAdapter
-//
-//        viewModel.appList!!.observe(this, {
-//            pagingAppRecyclerAdapter.submitList(it)
-//
-//            if (binding.swipeRefresh.isRefreshing)
-//                binding.swipeRefresh.isRefreshing = false
-//
-//            viewModel.hideProgress!!.value = it.isEmpty()
-//
-//        })
+        val pagingAppRecyclerAdapter = PagingAppRecyclerAdapter(applicationContext, this)
+        recyclerView.adapter = pagingAppRecyclerAdapter
+
+        viewModel.appList!!.observe(this, {
+            pagingAppRecyclerAdapter.submitList(it)
+
+            Log.e(TAG , "size - " + it.size)
+            if (binding.swipeRefresh.isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+
+            viewModel.hideProgress!!.value = false
+            if (it.isEmpty()) CustomToast.toastIt(applicationContext,"Empty List")
+
+
+        })
 
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -402,18 +406,18 @@ class MainActivity : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetF
         if (requestCode == 1 || requestCode == 2) {
             val sdCardURL: Uri? = data!!.data
             grantUriPermission(
-                this@MainActivity.packageName,
+                this@AllApp.packageName,
                 sdCardURL,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                this@MainActivity.contentResolver.takePersistableUriPermission(
+                this@AllApp.contentResolver.takePersistableUriPermission(
                     sdCardURL!!,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 )
             }
 
-            sdCardPathURL = SdCardPath.getFullPathFromTreeUri(sdCardURL, this@MainActivity)
+            sdCardPathURL = SdCardPath.getFullPathFromTreeUri(sdCardURL, this@AllApp)
             stringURI = sdCardURL.toString()
 
             // Its supports till android 9 & api 28

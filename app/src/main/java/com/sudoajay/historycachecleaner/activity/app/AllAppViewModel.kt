@@ -1,12 +1,12 @@
-package com.sudoajay.historycachecleaner.activity.main
+package com.sudoajay.historycachecleaner.activity.app
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
-import com.sudoajay.historycachecleaner.activity.app.LoadApps
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
@@ -18,9 +18,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+class AllAppViewModel(application: Application) : AndroidViewModel(application) {
 
-
+    private val TAG = "AllActivityView ModelTag"
     private var loadApps: LoadApps
     private var _application = application
     var appRepository: AppRepository
@@ -51,6 +51,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun filterChanges(filter: String = _application.getString(R.string.filter_changes_text)) {
+        Log.e(TAG , "Filter Change - $filterChanges")
         filterChanges.value = filter
     }
     fun onRefresh() {
