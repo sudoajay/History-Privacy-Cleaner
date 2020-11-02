@@ -22,6 +22,7 @@ class SystemInfoDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(context),
             R.layout.layout_system_info,

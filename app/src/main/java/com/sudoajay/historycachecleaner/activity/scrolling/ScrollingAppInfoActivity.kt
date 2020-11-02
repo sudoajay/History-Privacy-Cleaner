@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import androidx.core.content.FileProvider
 import androidx.core.content.pm.PackageInfoCompat
@@ -41,6 +42,12 @@ class ScrollingAppInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         isDarkTheme = isDarkMode(applicationContext)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!isDarkTheme )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(
+                    false
+                ) else window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_scrolling_app_info)
         binding.activity = this
         changeStatusBarColor()
