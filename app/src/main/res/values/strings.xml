@@ -24,10 +24,9 @@
     <string name="setting_optionMenu">Setting</string>
 
 
-<!--    App cache cleaner Bottom Toolbar-->
+    <!--    App cache cleaner Bottom Toolbar-->
     <string name="filterList_optionMenu">Filter List</string>
     <string name="selectOption_optionMenu">Select Option</string>
-
 
 
     <!--    Send Feedback -->
@@ -60,7 +59,7 @@
     <string name="change_language_text">"Change Language "</string>
     <string name="clear_cache_text">Clear Cache</string>
     <string name="help_support_text">Help &amp; Support</string>
-    <string name="privacy_policy_text">Privacy Policy</string>
+
     <string name="report_a_bug_text">Report A Bug</string>
     <string name="report_a_bug_summary_text">submit an issue on Github issue page</string>
     <string name="send_feedback_text">Send Feedback</string>
@@ -104,7 +103,7 @@
     <string name="alert_dialog_title_have_root">Root Access Obtained!</string>
     <string name="alert_dialog_message_have_root">Root access is properly installed on this device.</string>
 
-<!--    Empty App Info-->
+    <!--    Empty App Info-->
     <string name="alert_dialog_no_app_selected_title">There are no app selected!</string>
     <string name="alert_dialog_no_cache_app">There are no app for cache cleaner</string>
 
@@ -120,7 +119,7 @@
     <string name="menu_user_app_trans">User app</string>
 
 
-<!--    Select Bottom sheet-->
+    <!--    Select Bottom sheet-->
     <string name="title_menu_select_option_trans">Select Option</string>
     <string name="menu_all_apps_trans">All apps</string>
     <string name="menu_no_apps_trans">No apps</string>
@@ -162,11 +161,19 @@
     <string name="yes_text">Yes</string>
 
 
-<!--    Cache size Progress activity -->
+    <!--    Cache size Progress activity -->
     <string name="you_have_saved_text">You have saved %s</string>
 
     <!--    Share App-->
     <string name="shareMessage">Hey, check This App which helps you to Delete Duplicate and Unnecessary Data from the phone -</string>
+
+<!--    About activity -->
+    <string name="version_info_text">Version %s</string>
+    <string name="update_message_text">The latest version is here</string>
+    <string name="already_update_message_text">The latest version is already installed</string>
+    <string name="open_source_project_text">Open Source Project</string>
+    <string name="privacy_policy_text">Privacy Policy</string>
+
 
 
     <!--        No Trans-->
