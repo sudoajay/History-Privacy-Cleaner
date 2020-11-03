@@ -72,8 +72,8 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:alpha="0.5"
-                android:onClick="@{() ->activity.openImageManager() }"
                 android:background="@drawable/feedback_background_button"
+                android:onClick="@{() ->activity.openImageManager() }"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedback_EditText" />
@@ -84,58 +84,58 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="50dp"
                 android:layout_marginRight="50dp"
-                android:text="@string/add_screenshot_text"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/add_screenshot_text"
                 android:textColor="?attr/headingNormalTextColor"
                 android:textSize="26sp"
-                app:layout_constraintBottom_toTopOf="@+id/image_Button"
+                app:layout_constraintBottom_toBottomOf="@+id/image_Button"
                 app:layout_constraintEnd_toEndOf="@+id/image_Button"
-                app:layout_constraintStart_toEndOf="@+id/image_Button"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/image_Button"
-                app:layout_constraintTop_toBottomOf="@+id/image_Button"
-                app:layout_constraintVertical_bias="0.513"
-                 />
+                app:layout_constraintTop_toTopOf="@+id/image_Button"
+                app:layout_constraintVertical_bias="0.513" />
 
             <ImageView
                 android:id="@+id/addScreenshotSmall_ImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
                 app:layout_constraintBottom_toBottomOf="@+id/addScreenshot_TextView"
                 app:layout_constraintStart_toEndOf="@+id/addScreenshot_TextView"
                 app:layout_constraintTop_toTopOf="@+id/addScreenshot_TextView"
                 app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/ic_image_small"
-                tools:ignore="ContentDescription"
                 app:tint="?attr/boxTextColor"
-                android:layout_marginLeft="4dp" />
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/addScreenshotLarge_ImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/image_Button"
+                app:layout_constraintBottom_toBottomOf="@+id/image_Button"
                 app:layout_constraintEnd_toEndOf="@+id/image_Button"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/image_Button"
-                app:layout_constraintTop_toBottomOf="@+id/image_Button"
+                app:layout_constraintTop_toTopOf="@+id/image_Button"
                 app:srcCompat="@drawable/ic_image_large"
-                tools:ignore="ContentDescription"
-                app:tint="?attr/boxTextColor" />
+                app:tint="?attr/boxTextColor"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/systemInfo_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="32dp"
                 android:text="@string/systemInfo_text"
                 android:textColor="?attr/headingNormalTextColor"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_Button"
-                android:layout_marginLeft="16dp" />
+                app:layout_constraintTop_toBottomOf="@+id/image_Button" />
 
             <Button
                 android:id="@+id/sendFeedback_Button"
@@ -146,9 +146,9 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:maxLines="1"
-                android:ellipsize="end"
                 android:background="@drawable/feedback_background_button"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/send_feedback_text"
                 android:textAllCaps="false"
                 android:textColor="?attr/headingNormalTextColor"
