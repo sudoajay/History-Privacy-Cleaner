@@ -12,6 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/mainBgColor"
         tools:context="com.sudoajay.historycachecleaner.activity.aboutAppActivity.AboutApp">
 
         <androidx.appcompat.widget.Toolbar
@@ -40,7 +41,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_info"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"
+                    app:tint="?attr/boxTextColor" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
 
@@ -99,6 +101,7 @@
             android:maxLines="1"
             android:text="@string/privacy_policy_text"
             android:textAllCaps="false"
+            android:onClick="@{() ->activity.openPrivacyPolicy()}"
             android:textColor="?attr/headingNormalTextColor"
             android:textSize="16sp"
             android:textStyle="normal"
@@ -118,6 +121,7 @@
             android:layout_marginBottom="28dp"
             android:background="@drawable/about_background_button"
             android:ellipsize="end"
+            android:onClick="@{() ->activity.openGithub()}"
             android:maxLines="1"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"

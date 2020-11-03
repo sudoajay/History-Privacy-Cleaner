@@ -25,6 +25,7 @@
     <color name="swipeBgDarkColor">#121212</color>
     <color name="navigationIconColor">#353131</color>
     <color name="navigationIconDarkColor">#74A0EE</color>
+    <color name="backNightColor">#dae1e7</color>
 
 
     <color name="divider">#E6E6E6</color>
