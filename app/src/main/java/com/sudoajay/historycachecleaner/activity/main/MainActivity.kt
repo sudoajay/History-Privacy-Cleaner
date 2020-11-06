@@ -213,7 +213,7 @@ class MainActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_bottom_toolbar_menu, menu)
-        val actionSearch = menu.findItem(R.id.search_optionMenu)
+        menu.findItem(R.id.search_optionMenu)
 
         return super.onCreateOptionsMenu(menu)
     }

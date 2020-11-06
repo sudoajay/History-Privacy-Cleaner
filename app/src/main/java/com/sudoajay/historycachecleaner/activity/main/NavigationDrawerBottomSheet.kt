@@ -62,7 +62,7 @@ class NavigationDrawerBottomSheet : BottomSheetDialogFragment() {
 
     fun getVersionName():String{
         val versionName: String = BuildConfig.VERSION_NAME
-        return "Application version-$versionName"
+        return  "%s %s".format(getString(R.string.app_version_text),versionName)
     }
 
 }
