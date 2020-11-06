@@ -1,6 +1,19 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory app:title="@string/app_setting_text">
+
+
+        <ListPreference
+            android:defaultValue="en"
+            android:entries="@array/intervalList"
+            android:entryValues="@array/intervalList"
+            android:key="autoCleanInterval"
+            android:title="@string/auto_clean_interval_text" />
+
+    </PreferenceCategory>
+
+
     <PreferenceCategory app:title="@string/system_setting_text">
         <Preference
             app:key="useDarkTheme"
@@ -15,6 +28,7 @@
 
         <Preference
             app:key="clearCache"
+            android:summary="@string/clear_cache_summary_text"
             app:title="@string/clear_cache_text" />
 
     </PreferenceCategory>
@@ -49,7 +63,6 @@
             android:title="@string/more_app_text" />
         <Preference
             android:key="aboutApp"
-            android:summary="@string/about_app_summary_text"
             android:title="@string/about_app_text" />
 
     </PreferenceCategory>

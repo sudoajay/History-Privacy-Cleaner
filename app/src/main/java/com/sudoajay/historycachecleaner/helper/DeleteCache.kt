@@ -7,8 +7,12 @@ import java.io.File
 internal object DeleteCache {
     fun deleteCache(context: Context) {
         try {
-            val dir = context.cacheDir
-            deleteWithFile(dir)
+
+            deleteWithFile(context.cacheDir)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+                deleteWithFile(context.codeCacheDir)
+
+            deleteWithFile(context.externalCacheDir!!)
             CustomToast.toastIt(
                 context,
                 context.getString(R.string.successfully_cache_data_is_deleted_text)

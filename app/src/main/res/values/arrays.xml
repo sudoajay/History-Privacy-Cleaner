@@ -24,7 +24,6 @@
         <item name="urdu">اردو</item>
         <item name="vietnamese">Tiếng Việt</item>
         <item name="chinese">中文</item>
-
     </string-array>
 
     <string-array name="languagesValues">
@@ -52,7 +51,22 @@
         <item name="vietnamese">vi</item>
         <item name="chinese">zh</item>
     </string-array>
-
+    <string-array name="intervalList">
+        <item name ="never">Never</item>
+        <item name ="12_hours">12 hours</item>
+        <item name ="18_hours">18 hours</item>
+        <item name ="1_day">1 days</item>
+        <item name ="2_days">2 days</item>
+        <item name ="3_days">3 days</item>
+    </string-array>
+    <string-array name="intervalValues">
+        <item name ="never">0</item>
+        <item name ="12_hours">12</item>
+        <item name ="18_hours">18</item>
+        <item name ="1_day">24</item>
+        <item name ="2_days">48</item>
+        <item name ="3_days">72</item>
+    </string-array>
 
 
 </resources>

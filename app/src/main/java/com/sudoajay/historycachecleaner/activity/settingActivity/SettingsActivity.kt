@@ -10,6 +10,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.sudoajay.historycachecleaner.activity.aboutAppActivity.AboutApp
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.activity.sendFeedback.SendFeedback
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
@@ -51,6 +52,16 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.setting_preferences, rootKey)
+
+
+            val selectInterval = findPreference("autoCleanInterval") as ListPreference?
+            selectInterval!!.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue != 0) {
+
+                }
+//                Here we do work Manger task :)
+                true
+            }
 
 
             val useDarkTheme =
@@ -126,7 +137,7 @@ class SettingsActivity : AppCompatActivity() {
                 findPreference("aboutApp") as Preference?
             aboutApp!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 //open browser or intent here
-                openGithubApp()
+                openAboutApp()
                 true
             }
 
@@ -166,9 +177,9 @@ class SettingsActivity : AppCompatActivity() {
 
          private fun rateUs() {
             val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(ratingLink)
-            startActivity(i)
-        }
+             i.data = Uri.parse(ratingLink)
+             startActivity(i)
+         }
 
         private fun moreApp() {
             val link = "https://play.google.com/store/apps/dev?id=5309601131127361849"
@@ -176,22 +187,21 @@ class SettingsActivity : AppCompatActivity() {
             i.data = Uri.parse(link)
             startActivity(i)
         }
-        private fun openGithubApp() {
-            val link = "https://play.google.com/store/apps/dev?id=5309601131127361849"
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(link)
-            startActivity(i)
+
+        private fun openAboutApp() {
+            startActivity(Intent(requireContext(), AboutApp::class.java))
         }
-        private fun sendFeedback(){
-            val intent = Intent(requireContext(), SendFeedback::class.java)
-            startActivity(intent)
+
+        private fun sendFeedback() {
+            startActivity(Intent(requireContext(), SendFeedback::class.java))
         }
 
 
         companion object {
             fun getLanguage(context: Context): String {
                 return PreferenceManager
-                    .getDefaultSharedPreferences(context).getString("changeLanguage", setLanguage(context)).toString()
+                    .getDefaultSharedPreferences(context)
+                    .getString("changeLanguage", setLanguage(context)).toString()
             }
 
             private fun setLanguage(context: Context): String {
