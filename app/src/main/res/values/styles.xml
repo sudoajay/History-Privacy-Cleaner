@@ -22,6 +22,7 @@
         <item name="errorBoxColor">@color/errorBoxColor</item>
         <item name="dialogBgColorInfo">@color/dialogBgColorInfo</item>
         <item name="feedbackBoxBgColor">@color/feedbackBoxBgColor</item>
+        <item name="aboutAppBgColor">@color/aboutAppBgColor</item>
 
     </style>
 

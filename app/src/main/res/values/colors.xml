@@ -17,6 +17,7 @@
     <color name="errorBoxColor">#F44336</color>
     <color name="dialogBgColorInfo">#2546ABEB</color>
     <color name="feedbackBoxBgColor">#BEBEBE</color>
+    <color name="aboutAppBgColor">#EBEBEB</color>
 
     <!--    Not Modify Color Theme -->
     <color name="swipeSchemeColor">#376db6</color>

@@ -10,9 +10,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
@@ -25,9 +25,14 @@ import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.BuildConfig
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityAboutAppBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AboutApp : BaseActivity() {
     private val TAG= "AboutAppTAG"
+    var hideProgress:MutableLiveData<Boolean> = MutableLiveData()
     private val appUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
     private val appUpdatedListener: InstallStateUpdatedListener by lazy {
         object : InstallStateUpdatedListener {
@@ -56,13 +61,14 @@ class AboutApp : BaseActivity() {
         }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_about_app)
         binding.activity = this
+        binding.lifecycleOwner = this
         changeStatusBarColor()
     }
 
 
     override fun onResume() {
         super.onResume()
-
+        hideProgress.value = false
         setSupportActionBar(binding.toolbar)
 
 
@@ -118,7 +124,7 @@ class AboutApp : BaseActivity() {
     private fun checkForAppUpdate() {
         // Returns an intent object that you use to check for an update.
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
+        Log.d(TAG, "Check for update")
         // Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
@@ -143,6 +149,22 @@ class AboutApp : BaseActivity() {
                     e.printStackTrace()
                 }
             }
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_NOT_AVAILABLE)
+                Log.d(TAG, "Update Not Available")
+
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UNKNOWN)
+                Log.d(TAG, "Unknow ?? ")
+
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS)
+                Log.d(TAG, "DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS")
+
+            Log.e(TAG, appUpdateInfo.updateAvailability().toString())
+
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(3000)
+            hideProgress.value = true
         }
     }
 
@@ -151,11 +173,8 @@ class AboutApp : BaseActivity() {
         if (requestCode == APP_UPDATE_REQUEST_CODE) {
             if (resultCode != Activity.RESULT_OK)
                 CustomToast.toastIt(applicationContext,getString(R.string.update_failed_text))
-
         }
     }
-
-
     private fun popupCompleteToast() {
        CustomToast.toastIt(applicationContext, getString(R.string.apk_available_text))
     }

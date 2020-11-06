@@ -17,7 +17,7 @@
     <color name="errorBoxColor">#CF6679</color>
     <color name="dialogBgColorInfo">#272727</color>
     <color name="feedbackBoxBgColor">#272727</color>
-
+    <color name="aboutAppBgColor">#272727</color>
 
 
 </resources>
