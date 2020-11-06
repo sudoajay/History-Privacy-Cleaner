@@ -173,6 +173,8 @@
     <string name="already_update_message_text">The latest version is already installed</string>
     <string name="open_source_project_text">Open Source Project</string>
     <string name="privacy_policy_text">Privacy Policy</string>
+    <string name="apk_available_text">An update has just been downloaded.</string>
+    <string name="update_failed_text">App Update failed, please try again on the next app launch.</string>
 
 
 
