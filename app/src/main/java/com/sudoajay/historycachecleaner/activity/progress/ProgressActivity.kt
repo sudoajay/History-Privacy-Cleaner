@@ -8,7 +8,7 @@ import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
 import com.sudoajay.historycachecleaner.activity.app.AllApp
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
-import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historycachecleaner.helper.root.RootState
@@ -67,7 +67,7 @@ class ProgressActivity : AppCompatActivity() {
         val rootManager = RootManager(applicationContext)
         val appDao: AppDao =
             AppRoomDatabase.getDatabase(applicationContext).appDao()
-        val appRepository = AppRepository(applicationContext, appDao)
+        val appRepository = CacheRepository(applicationContext, appDao)
         CoroutineScope(Dispatchers.IO).launch {
             val selectedList = appRepository.getSelectedApp()
             val rootState: RootState = rootManager.checkRootPermission()!!

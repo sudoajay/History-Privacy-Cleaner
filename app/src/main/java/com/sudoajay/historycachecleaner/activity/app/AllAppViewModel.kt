@@ -9,7 +9,7 @@ import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
-import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
+import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historyprivacycleaner.R
@@ -23,7 +23,7 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     private val TAG = "AllActivityView ModelTag"
     private var loadApps: LoadApps
     private var _application = application
-    var appRepository: AppRepository
+    var appRepository: CacheRepository
     var  rootManager: RootManager = RootManager(application)
     private var appDao: AppDao =
         AppRoomDatabase.getDatabase(_application.applicationContext).appDao()
@@ -37,7 +37,7 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         //        Creating Object and Initialization
-        appRepository = AppRepository(_application.applicationContext, appDao)
+        appRepository = CacheRepository(_application.applicationContext, appDao)
         loadApps = LoadApps(_application.applicationContext, appRepository)
 
         getHideProgress()
