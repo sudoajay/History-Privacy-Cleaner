@@ -67,7 +67,7 @@ class ProgressActivity : AppCompatActivity() {
         val rootManager = RootManager(applicationContext)
         val appDao: AppDao =
             AppRoomDatabase.getDatabase(applicationContext).appDao()
-        val appRepository = CacheRepository(applicationContext, appDao)
+        val appRepository = CacheRepository(appDao)
         CoroutineScope(Dispatchers.IO).launch {
             val selectedList = appRepository.getSelectedApp()
             val rootState: RootState = rootManager.checkRootPermission()!!

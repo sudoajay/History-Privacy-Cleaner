@@ -4,29 +4,27 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.sudoajay.historycachecleaner.activity.app.database.App
-import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 
-@Database(entities = [App::class], version = 1 , exportSchema = false)
+@Database(entities = [Cache::class], version = 1 , exportSchema = false)
 abstract class CacheRoomDatabase : RoomDatabase() {
 
-    abstract fun cacheDao(): CacheDao
+    abstract fun cacheDao():CacheDao
 
 
     companion object {
         @Volatile
-        private var INSTANCE: AppRoomDatabase? = null
+        private var INSTANCE: CacheRoomDatabase? = null
 
         fun getDatabase(
             context: Context
-        ): AppRoomDatabase {
+        ): CacheRoomDatabase {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    AppRoomDatabase::class.java,
+                    CacheRoomDatabase::class.java,
                     "cacheItem_database"
                 )
 

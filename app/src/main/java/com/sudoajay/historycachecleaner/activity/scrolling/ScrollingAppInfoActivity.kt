@@ -54,7 +54,7 @@ class ScrollingAppInfoActivity : BaseActivity() {
 
         val appDao: AppDao =
             AppRoomDatabase.getDatabase(applicationContext).appDao()
-        val appRepository = CacheRepository(applicationContext, appDao)
+        val appRepository = CacheRepository(appDao)
         if (!intent.action.isNullOrEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 app = appRepository.getAppFromId(intent.action.toString().toInt())

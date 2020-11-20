@@ -37,7 +37,7 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         //        Creating Object and Initialization
-        appRepository = CacheRepository(_application.applicationContext, appDao)
+        appRepository = CacheRepository(appDao)
         loadApps = LoadApps(_application.applicationContext, appRepository)
 
         getHideProgress()

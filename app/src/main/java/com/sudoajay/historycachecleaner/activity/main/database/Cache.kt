@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "AppTable")
+@Entity(tableName = "CacheTable")
 class Cache(
     @PrimaryKey(autoGenerate = true ) var id: Long?,
     @ColumnInfo(name = "Name") val name: String,
