@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.helper.FileHelper
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LoadApps(private val context: Context, private  val appRepository: CacheRepository) {
+class LoadApps(private val context: Context, private  val appRepository: AppRepository) {
     private lateinit var packageManager: PackageManager
 
     suspend fun searchInstalledApps() {

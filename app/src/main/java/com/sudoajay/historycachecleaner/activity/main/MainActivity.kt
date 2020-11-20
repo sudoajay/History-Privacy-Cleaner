@@ -143,18 +143,18 @@ class MainActivity : BaseActivity() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-//        val pagingAppRecyclerAdapter = PagingAppRecyclerAdapter(applicationContext, this)
-//        recyclerView.adapter = pagingAppRecyclerAdapter
-//
-//        viewModel.appList!!.observe(this, {
-//            pagingAppRecyclerAdapter.submitList(it)
-//
-//            if (binding.swipeRefresh.isRefreshing)
-//                binding.swipeRefresh.isRefreshing = false
-//
-//            viewModel.hideProgress!!.value = it.isEmpty()
-//
-//        })
+        val cacheDnsAdapter = CacheDnsAdapter()
+        recyclerView.adapter = cacheDnsAdapter
+
+        viewModel.cacheList!!.observe(this, {
+            cacheDnsAdapter.items = it
+
+            if (binding.swipeRefresh.isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+
+            viewModel.hideProgress!!.value = it.isEmpty()
+
+        })
 
 
         binding.swipeRefresh.setOnRefreshListener {

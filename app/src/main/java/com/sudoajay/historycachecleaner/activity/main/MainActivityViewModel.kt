@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.sudoajay.historycachecleaner.activity.main.database.Cache
 import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.main.database.CacheRoomDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +19,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var hideProgress: MutableLiveData<Boolean>? = null
 
     var cacheRepository: CacheRepository
-
+    var cacheList: LiveData<List<Cache>>? = null
     private var dnsDao = CacheRoomDatabase.getDatabase(_application).cacheDao()
     private var loadCache:LoadCache
 
@@ -32,6 +33,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         getHideProgress()
 
         databaseConfiguration()
+
+
 
     }
 
@@ -53,6 +56,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         CoroutineScope(Dispatchers.IO).launch {
             if (cacheRepository.getCount() == 0)
                 loadCache.fillDefaultData()
+
+            cacheList = cacheRepository.getCacheList()
         }
     }
 

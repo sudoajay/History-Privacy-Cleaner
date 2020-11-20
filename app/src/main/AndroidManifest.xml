@@ -32,8 +32,6 @@
             <!-- android:resource="@xml/shortcuts" /> -->
         </activity>
         <activity android:name="com.sudoajay.historycachecleaner.activity.BaseActivity" />
-        <!-- <activity android:name="com.sudoajay.historycachecleaner.activity.main.MainActivity" -->
-        <!-- android:theme="@style/AppTheme.NoActionBar"/> -->
         <activity
             android:name="com.sudoajay.historycachecleaner.activity.settingActivity.SettingsActivity"
             android:label="@string/setting_optionMenu"
