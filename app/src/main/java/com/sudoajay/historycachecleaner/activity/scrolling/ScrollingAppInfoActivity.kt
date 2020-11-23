@@ -19,6 +19,7 @@ import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
+import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.FileSize
@@ -54,7 +55,7 @@ class ScrollingAppInfoActivity : BaseActivity() {
 
         val appDao: AppDao =
             AppRoomDatabase.getDatabase(applicationContext).appDao()
-        val appRepository = CacheRepository(appDao)
+        val appRepository = AppRepository(applicationContext,appDao)
         if (!intent.action.isNullOrEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 app = appRepository.getAppFromId(intent.action.toString().toInt())

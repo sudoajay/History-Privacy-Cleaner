@@ -17,4 +17,8 @@ class CacheRepository(private val cacheDao: CacheDao) {
     suspend fun getCount(): Int {
         return cacheDao.getCount()
     }
+
+    suspend fun updateSelectedApp(selected: Boolean, name: String) {
+        cacheDao.updateSelectedApp(selected, name)
+    }
 }

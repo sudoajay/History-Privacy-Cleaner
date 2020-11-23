@@ -27,7 +27,8 @@
 <!--    Alert dialog-->
     <dimen name="alert_dialog_message_size">14sp</dimen>
 
-
+    <!--    Layout Cache item Recycler view-->
+    <dimen name="image_cache_dimension">28dp</dimen>
 
     <!--    Navigation Drawer-->
     <dimen name="text_view_margin_gap">12dp</dimen>

@@ -180,6 +180,13 @@
     <string name="apk_available_text">An update has just been downloaded.</string>
     <string name="update_failed_text">App Update failed, please try again on the next app launch.</string>
 
+<!--    Load Cache Item -->
+    <string name="all_app_cache_text">Apps Cache</string>
+    <string name="browser_default_only_text">Browser (Default Only)</string>
+    <string name="clipboard_text">Clipboard</string>
+    <string name="clipboard_title_text">Clipboard Text</string>
+    <string name="empty_text">Empty !!</string>
+
 
 
     <!--        No Trans-->

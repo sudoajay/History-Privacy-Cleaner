@@ -11,8 +11,7 @@ import androidx.room.Query
 interface CacheDao {
 
 
-
-    @Query("Select * FROM AppTable ")
+    @Query("Select * FROM CacheTable ")
     fun getCacheList(): LiveData<List<Cache>>
 
     @Query("DELETE FROM CacheTable")
@@ -25,5 +24,9 @@ interface CacheDao {
 
     @Query("Select Count(id) FROM CacheTable ")
     suspend fun getCount(): Int
+
+    @Query("UPDATE CacheTable SET Selected = :selected  Where name = :name")
+    suspend fun updateSelectedApp(selected: Boolean, name: String)
+
 
 }

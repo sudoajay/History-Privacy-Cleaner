@@ -15,6 +15,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -52,6 +53,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
         isDarkTheme = isDarkMode(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDarkTheme)
@@ -61,6 +63,7 @@ class MainActivity : BaseActivity() {
         }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         changeStatusBarColor()
 
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
@@ -143,12 +146,12 @@ class MainActivity : BaseActivity() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val cacheDnsAdapter = CacheDnsAdapter()
+        val cacheDnsAdapter = CacheDnsAdapter(this)
         recyclerView.adapter = cacheDnsAdapter
 
         viewModel.cacheList!!.observe(this, {
             cacheDnsAdapter.items = it
-
+ 
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
 
