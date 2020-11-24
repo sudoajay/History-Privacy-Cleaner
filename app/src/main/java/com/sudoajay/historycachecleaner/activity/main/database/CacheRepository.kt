@@ -1,6 +1,7 @@
 package com.sudoajay.historycachecleaner.activity.main.database
 
 import androidx.lifecycle.LiveData
+import com.sudoajay.historycachecleaner.activity.app.database.App
 
 
 class CacheRepository(private val cacheDao: CacheDao) {
@@ -20,5 +21,9 @@ class CacheRepository(private val cacheDao: CacheDao) {
 
     suspend fun updateSelectedApp(selected: Boolean, name: String) {
         cacheDao.updateSelectedApp(selected, name)
+    }
+
+    suspend fun getSelectedApp(): MutableList<Cache> {
+        return cacheDao.getSelectedApp()
     }
 }

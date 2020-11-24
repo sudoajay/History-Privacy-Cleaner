@@ -109,6 +109,7 @@
 
     <!--    Empty App Info-->
     <string name="alert_dialog_no_app_selected_title">There are no app selected!</string>
+    <string name="alert_dialog_no_item_selected_title">There are no item selected!</string>
     <string name="alert_dialog_no_cache_app">There are no app for cache cleaner</string>
 
 
@@ -161,12 +162,15 @@
     <!--    Delete Data alert dialog-->
     <string name="alert_dialog_ask_permission_to_remove_apps_title">Unnecessary Data</string>
     <string name="alert_dialog_ask_permission_to_remove_apps_message">You are going to remove selected apps. It\'s an irreversible action, pay attention.</string>
+    <string name="alert_dialog_ask_permission_to_remove_cache_item_message">You are going to remove unnecessary Data. It\'s an irreversible action, pay attention.</string>
     <string name="no_text">NO</string>
     <string name="yes_text">Yes</string>
 
 
-    <!--    Cache size Progress activity -->
-    <string name="you_have_saved_text">You have saved %s</string>
+    <!-- Progress activity in  progressFinished -->
+    <string name="you_have_saved_app_cache_text">You Have Saved %s</string>
+    <string name="you_have_saved_cache_item_text" >You Have Clear Unnecessary Data</string>
+
 
     <!--    Share App-->
     <string name="shareMessage">Hey, check This App which helps you to Delete Duplicate and Unnecessary Data from the phone -</string>
@@ -181,9 +185,9 @@
     <string name="update_failed_text">App Update failed, please try again on the next app launch.</string>
 
 <!--    Load Cache Item -->
-    <string name="all_app_cache_text">Apps Cache</string>
-    <string name="browser_default_only_text">Browser (Default Only)</string>
-    <string name="clipboard_text">Clipboard</string>
+    <string name="all_app_cache_trans_text">Apps Cache</string>
+    <string name="browser_default_only_trans_text">Browser (Default Only)</string>
+    <string name="clipboard_trans_text">Clipboard</string>
     <string name="clipboard_title_text">Clipboard Text</string>
     <string name="empty_text">Empty !!</string>
 
@@ -231,4 +235,10 @@
     <string name="external_uri_text" translatable="false">External Uri</string>
     <string name="sdCard_path_text" translatable="false">SdCard Path</string>
     <string name="sdCard_uri_text" translatable="false">SdCard Uri</string>
+
+    <!--    Load Cache Item -->
+    <string name="all_app_cache_text" translatable="false" >Apps Cache</string>
+    <string name="browser_default_only_text" translatable="false">Browser (Default Only)</string>
+    <string name="clipboard_text" translatable="false">Clipboard</string>
+
 </resources>

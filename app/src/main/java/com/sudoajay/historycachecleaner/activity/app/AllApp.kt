@@ -25,6 +25,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.main.MainActivity
+import com.sudoajay.historycachecleaner.activity.main.MainActivity.Companion.isRootAccessAlreadyObtained
+import com.sudoajay.historycachecleaner.activity.main.MainActivity.Companion.setRootAccessAlreadyObtained
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
@@ -211,7 +214,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
 
     private fun showDarkMode() {
-        val darkModeBottomSheet = DarkModeBottomSheet(homeShortcutId)
+        val darkModeBottomSheet = DarkModeBottomSheet(MainActivity.allAppId)
         darkModeBottomSheet.show(
             supportFragmentManager.beginTransaction(),
             darkModeBottomSheet.tag
@@ -237,7 +240,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> startActivity(Intent(this, MainActivity::class.java))
 
             R.id.filterList_optionMenu -> showFilterAppBottomSheet()
             R.id.darkMode_optionMenu -> showDarkMode()
@@ -351,7 +354,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
                 if (positiveText == getString(R.string.yes_text)) {
                     val intent = Intent(this,ProgressActivity::class.java)
-                    intent.action = appCacheDataId
+                    intent.action = MainActivity.allAppId
                     startActivity(intent)
                 }
 
@@ -501,26 +504,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         }
     }
 
-    companion object {
-        const val settingShortcutId = "setting"
-        const val homeShortcutId = "home"
-        const val appCacheDataId = "appCacheData"
-        private fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putBoolean(
-                    context.getString(R.string.is_root_permission_text), status
-                ).apply()
-        }
 
-        fun isRootAccessAlreadyObtained(context: Context): Boolean {
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getBoolean(
-                    context.getString(R.string.is_root_permission_text), false
-                )
-        }
-
-
-    }
 
 
 }

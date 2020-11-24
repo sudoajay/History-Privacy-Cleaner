@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +23,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
+import com.sudoajay.historycachecleaner.activity.app.database.App
+import com.sudoajay.historycachecleaner.activity.main.database.Cache
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.activity.settingActivity.SettingsActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
@@ -34,10 +37,7 @@ import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPe
 import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainActivity : BaseActivity() {
 
@@ -48,7 +48,7 @@ class MainActivity : BaseActivity() {
     private var TAG = "MainActivityTag"
     private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
     private var sdCardPermission: AndroidSdCardPermission? = null
-
+    private lateinit var selectedList: MutableList<Cache>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -83,6 +83,27 @@ class MainActivity : BaseActivity() {
 
         checkRootState()
         binding.deleteFloatingActionButton.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.IO) {
+                    selectedList = viewModel.cacheRepository.getSelectedApp()
+                }
+                Log.e(TAG , "selectlist size - " + selectedList.size)
+                if (selectedList.isEmpty())
+                    CustomToast.toastIt(
+                        applicationContext,
+                        getString(R.string.alert_dialog_no_item_selected_title)
+                    )
+                else {
+
+                    generateAlertDialog(
+                        getString(R.string.alert_dialog_ask_permission_to_remove_apps_title),
+                        getString(R.string.alert_dialog_ask_permission_to_remove_cache_item_message),
+                        getString(R.string.no_text),
+                        getString(R.string.yes_text)
+                    )
+
+                }
+            }
 
         }
 
@@ -279,7 +300,7 @@ class MainActivity : BaseActivity() {
 
                 if (positiveText == getString(R.string.yes_text)) {
                     val intent = Intent(this,ProgressActivity::class.java)
-                    intent.action = appCacheDataId
+                    intent.action = homeShortcutId
                     startActivity(intent)
                 }
 
@@ -453,8 +474,8 @@ class MainActivity : BaseActivity() {
     companion object {
         const val settingShortcutId = "setting"
         const val homeShortcutId = "home"
-        const val appCacheDataId = "appCacheData"
-        private fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
+        const val allAppId = "allApp"
+        fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
             context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
                 .putBoolean(
                     context.getString(R.string.is_root_permission_text), status

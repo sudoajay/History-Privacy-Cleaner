@@ -1,20 +1,26 @@
 package com.sudoajay.historycachecleaner.activity.progress
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
 import com.sudoajay.historycachecleaner.activity.app.AllApp
-import com.sudoajay.historycachecleaner.activity.main.MainActivity
+import com.sudoajay.historycachecleaner.activity.app.LoadApps
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
-import com.sudoajay.historycachecleaner.helper.root.RootManager
-import com.sudoajay.historycachecleaner.helper.root.RootState
+import com.sudoajay.historycachecleaner.activity.main.MainActivity
+import com.sudoajay.historycachecleaner.activity.main.database.CacheDao
+import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
+import com.sudoajay.historycachecleaner.activity.main.database.CacheRoomDatabase
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.FileSize
+import com.sudoajay.historycachecleaner.helper.root.RootManager
+import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.android.synthetic.main.activity_progress.*
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +33,11 @@ class ProgressActivity : AppCompatActivity() {
     private var TAG = "ProgressActivityTAG"
     private var totalCacheSize = 0L
     private var stopProgress = false
+    private lateinit var appDao: AppDao
+    private lateinit var appRepository: AppRepository
+    private lateinit var loadApps: LoadApps
+    private lateinit var rootManager: RootManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_progress)
@@ -35,27 +46,41 @@ class ProgressActivity : AppCompatActivity() {
         animatedCircleLoadingView = circle_loading_view
         startLoading()
 
+        appDao = AppRoomDatabase.getDatabase(applicationContext).appDao()
+        appRepository = AppRepository(applicationContext, appDao)
+        loadApps = LoadApps(applicationContext, appRepository)
+        rootManager = RootManager(applicationContext)
 
-        if (action == MainActivity.appCacheDataId)
+        if (action == MainActivity.homeShortcutId)
+            deleteCacheItem()
+        else if (action == MainActivity.allAppId)
             deleteAppCacheData()
 
 
-        val closeProgress =imageView_closeProgress
+        val closeProgress = imageView_closeProgress
         closeProgress.setOnClickListener {
-            it.visibility= View.GONE
+            it.visibility = View.GONE
             animatedCircleLoadingView!!.stopFailure()
         }
 
 
 //         After Progress finished code
         animatedCircleLoadingView!!.progressFinished.observe(this, {
-            startActivity(Intent(this, AllApp::class.java))
-            if (it)
-                CustomToast.toastIt(
-                    this,
-                    getString(R.string.you_have_saved_text, FileSize.convertIt(totalCacheSize))
-                )
-
+            if (action == MainActivity.homeShortcutId) {
+                startActivity(Intent(this, MainActivity::class.java))
+                if (it)
+                    CustomToast.toastIt(
+                        this,
+                        getString(R.string.you_have_saved_cache_item_text)
+                    )
+            } else if (action == MainActivity.allAppId) {
+                startActivity(Intent(this, AllApp::class.java))
+                if (it)
+                    CustomToast.toastIt(
+                        this,
+                        getString(R.string.you_have_saved_app_cache_text, FileSize.convertIt(totalCacheSize))
+                    )
+            }
         })
     }
 
@@ -64,11 +89,6 @@ class ProgressActivity : AppCompatActivity() {
     }
 
     private fun deleteAppCacheData() {
-
-        val rootManager = RootManager(applicationContext)
-        val appDao: AppDao =
-            AppRoomDatabase.getDatabase(applicationContext).appDao()
-        val appRepository = AppRepository(applicationContext,appDao)
         CoroutineScope(Dispatchers.IO).launch {
             val selectedList = appRepository.getSelectedApp()
             val rootState: RootState = rootManager.checkRootPermission()!!
@@ -79,12 +99,46 @@ class ProgressActivity : AppCompatActivity() {
                     rootManager.removeCacheFolderRoot(app)
                 else rootManager.removeCacheFolderUnRoot(app)
 
+
                 withContext(Dispatchers.Main) {
                     changePercent(((index + 1) * 100) / selectedList.size)
                 }
             }
         }
+    }
 
+    private fun deleteCacheItem() {
+        val cacheDao: CacheDao =
+            CacheRoomDatabase.getDatabase(applicationContext).cacheDao()
+        val cacheRepository = CacheRepository(cacheDao)
+        CoroutineScope(Dispatchers.IO).launch {
+            val selectedList = cacheRepository.getSelectedApp()
+            selectedList.forEach {
+                when (it.name) {
+                    getString(R.string.all_app_cache_text) -> {
+                        withContext(Dispatchers.IO) {
+                            loadApps.searchInstalledApps()
+                        }
+                            deleteAppCacheData()
+                    }
+                    getString(R.string.browser_default_only_text) -> {
+                        if (rootManager.checkRootPermission()!! == RootState.HAVE_ROOT)
+                            rootManager.removeBrowserDataRoot()
+                    }
+                    else -> clearClipBoard()
+
+                }
+            }
+            withContext(Dispatchers.Main) {
+                animatedCircleLoadingView!!.stopOk()
+            }
+        }
+    }
+
+    private fun clearClipBoard() {
+        val clipBoardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("", "")
+        clipBoardManager.setPrimaryClip(clipData)
 
     }
 

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.sudoajay.historycachecleaner.activity.app.database.App
 
 
 @Dao
@@ -27,6 +28,9 @@ interface CacheDao {
 
     @Query("UPDATE CacheTable SET Selected = :selected  Where name = :name")
     suspend fun updateSelectedApp(selected: Boolean, name: String)
+
+    @Query("Select * FROM CacheTable Where Selected =1 ")
+    suspend fun getSelectedApp(): MutableList<Cache>
 
 
 }

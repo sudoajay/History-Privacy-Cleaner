@@ -94,6 +94,10 @@ class RootManager(var context: Context) {
         Log.e(TAG, "Done File deleted with root ")
     }
 
+    fun removeBrowserDataRoot(){
+        executeCommandSH("adb shell pm clear com.android.browser")
+    }
+
 //    private fun uninstallSystemApp(appApk: String): Boolean {
 //        executeCommandSU("mount -o rw,remount /system")
 //        executeCommandSU("rm $appApk")
