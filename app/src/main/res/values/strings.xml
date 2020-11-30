@@ -186,6 +186,7 @@
 
 <!--    Load Cache Item -->
     <string name="all_app_cache_trans_text">Apps Cache</string>
+    <string name="download_folder_trans_text" translatable="false">Download Folder</string>
     <string name="browser_default_only_trans_text">Browser (Default Only)</string>
     <string name="clipboard_trans_text">Clipboard</string>
     <string name="clipboard_title_text">Clipboard Text</string>
@@ -238,6 +239,7 @@
 
     <!--    Load Cache Item -->
     <string name="all_app_cache_text" translatable="false" >Apps Cache</string>
+    <string name="download_folder_text" translatable="false">Downloads Folder</string>
     <string name="browser_default_only_text" translatable="false">Browser (Default Only)</string>
     <string name="clipboard_text" translatable="false">Clipboard</string>
 

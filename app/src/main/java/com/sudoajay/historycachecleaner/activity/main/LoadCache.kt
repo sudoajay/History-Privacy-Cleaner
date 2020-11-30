@@ -11,9 +11,13 @@ class LoadCache(private var context: Context, private var cacheRepository: Cache
         val cacheItem: MutableList<Cache> = ArrayList()
         cacheItem.add(Cache(null,context.getString(R.string.all_app_cache_text) , "", true))
 
+        cacheItem.add(Cache(null,context.getString(R.string.download_folder_text) , "", true))
+
         cacheItem.add(Cache(null,context.getString(R.string.browser_default_only_text) , "", true))
 
         cacheItem.add(Cache(null,context.getString(R.string.clipboard_text) , "", true))
+
+
 
         // Fill in the data base
         for(i in cacheItem){

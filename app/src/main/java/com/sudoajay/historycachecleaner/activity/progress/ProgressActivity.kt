@@ -53,10 +53,11 @@ class ProgressActivity : AppCompatActivity() {
 
         if (action == MainActivity.homeShortcutId)
             deleteCacheItem()
-        else if (action == MainActivity.allAppId)
-            deleteAppCacheData()
-
-
+        else if (action == MainActivity.allAppId) {
+            CoroutineScope(Dispatchers.IO).launch {
+                deleteAppCacheData()
+            }
+        }
         val closeProgress = imageView_closeProgress
         closeProgress.setOnClickListener {
             it.visibility = View.GONE
@@ -78,31 +79,32 @@ class ProgressActivity : AppCompatActivity() {
                 if (it)
                     CustomToast.toastIt(
                         this,
-                        getString(R.string.you_have_saved_app_cache_text, FileSize.convertIt(totalCacheSize))
+                        getString(
+                            R.string.you_have_saved_app_cache_text,
+                            FileSize.convertIt(totalCacheSize)
+                        )
                     )
             }
         })
     }
 
-    private fun startLoading() {
+
+    private  fun startLoading() {
         animatedCircleLoadingView!!.startDeterminate()
     }
 
-    private fun deleteAppCacheData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val selectedList = appRepository.getSelectedApp()
-            val rootState: RootState = rootManager.checkRootPermission()!!
-            selectedList.forEachIndexed forEach@{ index, app ->
-                if (stopProgress) return@forEach
-                totalCacheSize += app.cacheSize
-                if (rootState == RootState.HAVE_ROOT)
-                    rootManager.removeCacheFolderRoot(app)
-                else rootManager.removeCacheFolderUnRoot(app)
+    private suspend fun deleteAppCacheData() {
+        val selectedList = appRepository.getSelectedApp()
+        val rootState: RootState = rootManager.checkRootPermission()!!
+        selectedList.forEachIndexed forEach@{ index, app ->
+            if (stopProgress) return@forEach
+            totalCacheSize += app.cacheSize
+            if (rootState == RootState.HAVE_ROOT)
+                rootManager.removeCacheFolderRoot(app)
+            else rootManager.removeCacheFolderUnRoot(app)
 
-
-                withContext(Dispatchers.Main) {
-                    changePercent(((index + 1) * 100) / selectedList.size)
-                }
+            withContext(Dispatchers.Main) {
+                changePercent(((index + 1) * 100) / selectedList.size)
             }
         }
     }
@@ -113,7 +115,7 @@ class ProgressActivity : AppCompatActivity() {
         val cacheRepository = CacheRepository(cacheDao)
         CoroutineScope(Dispatchers.IO).launch {
             val selectedList = cacheRepository.getSelectedApp()
-            selectedList.forEach {
+            selectedList.forEach forEach@{
                 when (it.name) {
                     getString(R.string.all_app_cache_text) -> {
                         withContext(Dispatchers.IO) {
@@ -126,8 +128,8 @@ class ProgressActivity : AppCompatActivity() {
                             rootManager.removeBrowserDataRoot()
                     }
                     else -> clearClipBoard()
-
                 }
+                Log.e(TAG,"it size - ${it.name}  + slected list size - ${selectedList.size} ")
             }
             withContext(Dispatchers.Main) {
                 animatedCircleLoadingView!!.stopOk()

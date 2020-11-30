@@ -61,6 +61,11 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
                 holder.icon.setImageResource(R.drawable.ic_more_app)
                 holder.title.text = context.getString(R.string.all_app_cache_trans_text)
             }
+            context.getString(R.string.download_folder_text) ->{
+                holder.icon.setImageResource(R.drawable.ic_download)
+                holder.title.text = context.getString(R.string.download_folder_trans_text)
+            }
+
             context.getString(R.string.browser_default_only_text) -> {
                 holder.icon.setImageResource(R.drawable.ic_browser)
                 holder.title.text = context.getString(R.string.browser_default_only_trans_text)

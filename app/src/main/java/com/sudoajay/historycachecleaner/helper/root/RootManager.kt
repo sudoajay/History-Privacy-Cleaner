@@ -72,30 +72,31 @@ class RootManager(var context: Context) {
 
 
     fun removeCacheFolderUnRoot(it: App) {
-        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + cachePath))
-        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + codeCache))
-
-        DeleteCache.deleteWithFile(File(getExternalCachePath(context) + it.packageName + cachePath))
-
-        DeleteCache.deleteWithFile(File(getSdCardCachePath(context) + it.packageName + cachePath))
+//        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + cachePath))
+//        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + codeCache))
+//
+//        DeleteCache.deleteWithFile(File(getExternalCachePath(context) + it.packageName + cachePath))
+//
+//        DeleteCache.deleteWithFile(File(getSdCardCachePath(context) + it.packageName + cachePath))
 
         Log.e(TAG, "Done File deleted with Un root ")
     }
 
     fun removeCacheFolderRoot(it: App) {
-
-        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + cachePath))
-        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + codeCache))
-
-        executeCommandSU("rm  -rf %s".format(getExternalCachePath(context) + it.packageName + cachePath))
-
-        executeCommandSU("rm  -rf %s".format(getSdCardCachePath(context) + it.packageName + cachePath))
+//
+//        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + cachePath))
+//        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + it.packageName + codeCache))
+//
+//        executeCommandSU("rm  -rf %s".format(getExternalCachePath(context) + it.packageName + cachePath))
+//
+//        executeCommandSU("rm  -rf %s".format(getSdCardCachePath(context) + it.packageName + cachePath))
 
         Log.e(TAG, "Done File deleted with root ")
     }
 
     fun removeBrowserDataRoot(){
-        executeCommandSH("adb shell pm clear com.android.browser")
+//        executeCommandSH("adb shell pm clear com.android.browser")
+        Log.e(TAG, "remove browser File root ")
     }
 
 //    private fun uninstallSystemApp(appApk: String): Boolean {
