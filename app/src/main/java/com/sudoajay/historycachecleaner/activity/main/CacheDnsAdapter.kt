@@ -4,7 +4,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.DocumentsContract
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +17,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.AllApp
 import com.sudoajay.historycachecleaner.activity.main.database.Cache
+import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.android.synthetic.main.layout_app_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 
 class CacheDnsAdapter(var mainActivity: MainActivity) :
@@ -61,7 +66,7 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
                 holder.icon.setImageResource(R.drawable.ic_more_app)
                 holder.title.text = context.getString(R.string.all_app_cache_trans_text)
             }
-            context.getString(R.string.download_folder_text) ->{
+            context.getString(R.string.download_folder_text) -> {
                 holder.icon.setImageResource(R.drawable.ic_download)
                 holder.title.text = context.getString(R.string.download_folder_trans_text)
             }
@@ -99,6 +104,8 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
             context.getString(R.string.all_app_cache_text) -> {
                 mainActivity.startActivity(Intent(context, AllApp::class.java))
             }
+            context.getString(R.string.download_folder_text) ->
+                openFolder()
             context.getString(R.string.clipboard_text) -> {
                 generateAlertDialog()
             }
@@ -107,6 +114,28 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
         }
     }
 
+
+    private fun openFolder() {
+        val location = "/storage/emulated/0/Download/";
+        val intent = Intent(Intent.ACTION_VIEW)
+        val myDir: Uri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", File(location))
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            intent.setDataAndType(myDir,  DocumentsContract.Document.MIME_TYPE_DIR)
+        else  intent.setDataAndType(myDir,  "*/*")
+
+        if (intent.resolveActivityInfo(context.packageManager, 0) != null)
+        {
+            context.startActivity(intent)
+        }
+        else
+        {
+            // if you reach this place, it means there is no any file
+            // explorer app installed on your device
+            CustomToast.toastIt(context,context.getString(R.string.there_is_no_file_explorer_app_present_text))
+        }
+    }
 
     private fun getClipBoardText(): String {
         val clipBoardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager

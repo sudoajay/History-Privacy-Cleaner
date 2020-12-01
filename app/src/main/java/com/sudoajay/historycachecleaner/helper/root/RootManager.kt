@@ -25,6 +25,7 @@ class RootManager(var context: Context) {
 
     private val cachePath = "/cache"
     private val codeCache = "/code_cache"
+    private val downloadFolder =" /Download/"
 
 
     fun hasRootedPermission(): Boolean {
@@ -70,6 +71,12 @@ class RootManager(var context: Context) {
 //        }
 //    }
 
+    fun removeDownloadsFolderUnRoot() {
+//        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + downloadFolder))
+    }
+    fun removeDownloadsFolderRoot() {
+//        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + downloadFolder))
+    }
 
     fun removeCacheFolderUnRoot(it: App) {
 //        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + it.packageName + cachePath))

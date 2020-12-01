@@ -123,6 +123,13 @@ class ProgressActivity : AppCompatActivity() {
                         }
                             deleteAppCacheData()
                     }
+
+                    getString(R.string.download_folder_text) -> {
+                        if (rootManager.checkRootPermission()!! == RootState.HAVE_ROOT)
+                            rootManager.removeDownloadsFolderRoot()
+                        else
+                            rootManager.removeDownloadsFolderUnRoot()
+                    }
                     getString(R.string.browser_default_only_text) -> {
                         if (rootManager.checkRootPermission()!! == RootState.HAVE_ROOT)
                             rootManager.removeBrowserDataRoot()
