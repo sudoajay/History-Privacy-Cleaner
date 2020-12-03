@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.helper.DeleteCache
+import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternalStoragePermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import eu.chainfire.libsuperuser.Shell
 import java.io.File
@@ -23,9 +24,9 @@ class RootManager(var context: Context) {
         "/sbin"
     )
 
-    private val cachePath = "/cache"
-    private val codeCache = "/code_cache"
-    private val downloadFolder =" /Download/"
+    private val cachePath = "cache/"
+    private val codeCache = "code_cache/"
+    private val downloadFolder ="Download/"
 
 
     fun hasRootedPermission(): Boolean {
@@ -72,10 +73,13 @@ class RootManager(var context: Context) {
 //    }
 
     fun removeDownloadsFolderUnRoot() {
-//        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + downloadFolder))
+        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + downloadFolder))
+        Log.e(TAG, "Done Download File deleted with Un root ")
     }
     fun removeDownloadsFolderRoot() {
-//        executeCommandSU("rm  -rf %s".format(getInternalCachePath(context) + downloadFolder))
+//        executeCommandSU( "rm -rf %s".format( AndroidExternalStoragePermission.getExternalPathFromCacheDir(context)+ downloadFolder))
+//        Log.e(TAG , "rm -rf %s".format( AndroidExternalStoragePermission.getExternalPathFromCacheDir(context)+ downloadFolder))
+        Log.e(TAG, "Done Download File deleted with root ")
     }
 
     fun removeCacheFolderUnRoot(it: App) {

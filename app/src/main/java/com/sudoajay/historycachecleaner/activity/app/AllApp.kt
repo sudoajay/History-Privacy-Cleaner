@@ -240,7 +240,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> startActivity(Intent(this, MainActivity::class.java))
+            android.R.id.home -> onBackPressed()
 
             R.id.filterList_optionMenu -> showFilterAppBottomSheet()
             R.id.darkMode_optionMenu -> showDarkMode()
@@ -250,6 +250,10 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         }
 
         return true
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

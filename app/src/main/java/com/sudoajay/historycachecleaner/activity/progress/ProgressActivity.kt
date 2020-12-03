@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
@@ -23,10 +22,7 @@ import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.android.synthetic.main.activity_progress.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class ProgressActivity : AppCompatActivity() {
     private var animatedCircleLoadingView: AnimatedCircleLoadingView? = null
@@ -93,7 +89,7 @@ class ProgressActivity : AppCompatActivity() {
         animatedCircleLoadingView!!.startDeterminate()
     }
 
-    private suspend fun deleteAppCacheData() {
+    private suspend fun deleteAppCacheData(showPercent: Boolean = true) {
         val selectedList = appRepository.getSelectedApp()
         val rootState: RootState = rootManager.checkRootPermission()!!
         selectedList.forEachIndexed forEach@{ index, app ->
@@ -102,9 +98,10 @@ class ProgressActivity : AppCompatActivity() {
             if (rootState == RootState.HAVE_ROOT)
                 rootManager.removeCacheFolderRoot(app)
             else rootManager.removeCacheFolderUnRoot(app)
-
-            withContext(Dispatchers.Main) {
-                changePercent(((index + 1) * 100) / selectedList.size)
+            if (showPercent) {
+                withContext(Dispatchers.Main) {
+                    changePercent(((index + 1) * 100) / selectedList.size)
+                }
             }
         }
     }
@@ -115,13 +112,17 @@ class ProgressActivity : AppCompatActivity() {
         val cacheRepository = CacheRepository(cacheDao)
         CoroutineScope(Dispatchers.IO).launch {
             val selectedList = cacheRepository.getSelectedApp()
-            selectedList.forEach forEach@{
+            selectedList.forEachIndexed forEach@{ index, it ->
+                delay(500)
+                withContext(Dispatchers.Main) {
+                    changePercent(((index) * 100) / selectedList.size)
+                }
                 when (it.name) {
                     getString(R.string.all_app_cache_text) -> {
                         withContext(Dispatchers.IO) {
                             loadApps.searchInstalledApps()
                         }
-                            deleteAppCacheData()
+                        deleteAppCacheData(false)
                     }
 
                     getString(R.string.download_folder_text) -> {
@@ -136,10 +137,9 @@ class ProgressActivity : AppCompatActivity() {
                     }
                     else -> clearClipBoard()
                 }
-                Log.e(TAG,"it size - ${it.name}  + slected list size - ${selectedList.size} ")
             }
             withContext(Dispatchers.Main) {
-                animatedCircleLoadingView!!.stopOk()
+                changePercent(100)
             }
         }
     }
