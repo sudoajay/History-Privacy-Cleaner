@@ -120,7 +120,7 @@ class ProgressActivity : AppCompatActivity() {
                 when (it.name) {
                     getString(R.string.all_app_cache_text) -> {
                         withContext(Dispatchers.IO) {
-                            loadApps.searchInstalledApps()
+                            loadApps.searchInstalledApps(false)
                         }
                         deleteAppCacheData(false)
                     }

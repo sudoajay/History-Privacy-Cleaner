@@ -1,16 +1,14 @@
 package com.sudoajay.historycachecleaner.helper.root
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import com.sudoajay.historycachecleaner.activity.app.database.App
-import com.sudoajay.historycachecleaner.helper.DeleteCache
-import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternalStoragePermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import eu.chainfire.libsuperuser.Shell
 import java.io.File
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class RootManager(var context: Context) {
@@ -72,8 +70,17 @@ class RootManager(var context: Context) {
 //        }
 //    }
 
+    fun getFileSizeForRoot(path: String) : Long{
+
+        val output =  executeCommandSU("du -ks $path ")
+        if (output.isEmpty()) return 0
+        val pattern1 = Regex("^\\d+")
+        val ans : MatchResult? = pattern1.find(output)
+       return ans!!.value.toLong() * 1000
+    }
+
     fun removeDownloadsFolderUnRoot() {
-        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + downloadFolder))
+//        DeleteCache.deleteWithFile(File(getInternalCachePath(context) + downloadFolder))
         Log.e(TAG, "Done Download File deleted with Un root ")
     }
     fun removeDownloadsFolderRoot() {
@@ -145,7 +152,6 @@ class RootManager(var context: Context) {
         }
         val stringBuilder = StringBuilder()
         for (line in stdout) {
-            Log.e(TAG, "  here - $line")
             stringBuilder.append(line).append("\n")
         }
         return stringBuilder.toString()

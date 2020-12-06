@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.helper.FileHelper
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -14,8 +13,8 @@ import java.util.*
 class LoadApps(private val context: Context, private  val appRepository: AppRepository) {
     private lateinit var packageManager: PackageManager
 
-    suspend fun searchInstalledApps() {
-        appDatabaseConfiguration(getInstalledApplication(context))
+    suspend fun searchInstalledApps(userView: Boolean = true) {
+        appDatabaseConfiguration(getInstalledApplication(context), userView)
 
     }
 
@@ -24,7 +23,10 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         return packageManager.getInstalledApplications(0)
     }
 
-    private suspend fun appDatabaseConfiguration(installedApplicationsInfo: List<ApplicationInfo>) {
+    private suspend fun appDatabaseConfiguration(
+        installedApplicationsInfo: List<ApplicationInfo>,
+        userView: Boolean
+    ) {
 
 
         //        Here we Just add default value of install app
@@ -36,11 +38,10 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
             if (appRepository.isPresent(packageName) == 0)
-                createApp(applicationInfo)
+                createApp(applicationInfo, userView)
             else
                 appRepository.updateInstalledAndCacheByPackage(
-                    packageName, FileHelper(context,packageName).fileLength()
-                )
+                    packageName, if (userView) FileHelper(context, packageName).fileLength() else 0)
         }
 
 //        Here we remove Uninstall App from Data base
@@ -50,11 +51,11 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
     }
 
-    private suspend fun createApp(applicationInfo: ApplicationInfo) {
+    private suspend fun createApp(applicationInfo: ApplicationInfo, userView: Boolean) {
 
         val packageName = getApplicationPackageName(applicationInfo)
         // return size in form of Bytes(Long)
-        val cacheSize = FileHelper(context, packageName).fileLength()
+        val cacheSize = if (userView) FileHelper(context, packageName).fileLength() else 0
 
         if (cacheSize != 0L) {
 

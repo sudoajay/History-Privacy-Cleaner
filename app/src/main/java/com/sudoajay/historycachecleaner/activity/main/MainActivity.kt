@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
-import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.main.database.Cache
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.activity.settingActivity.SettingsActivity
@@ -76,6 +75,8 @@ class MainActivity : BaseActivity() {
 
 //        External and sd-Card permission
         permissionIssue()
+
+
     }
 
 
@@ -87,7 +88,7 @@ class MainActivity : BaseActivity() {
                 withContext(Dispatchers.IO) {
                     selectedList = viewModel.cacheRepository.getSelectedApp()
                 }
-                Log.e(TAG , "selectlist size - " + selectedList.size)
+                Log.e(TAG, "selectlist size - " + selectedList.size)
                 if (selectedList.isEmpty())
                     CustomToast.toastIt(
                         applicationContext,
@@ -110,6 +111,8 @@ class MainActivity : BaseActivity() {
         setReference()
         super.onResume()
     }
+
+
 
     private fun permissionIssue() {
         //        Take Permission external permission
@@ -172,7 +175,7 @@ class MainActivity : BaseActivity() {
 
         viewModel.cacheList!!.observe(this, {
             cacheDnsAdapter.items = it
- 
+
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
 
@@ -299,7 +302,7 @@ class MainActivity : BaseActivity() {
             .setPositiveButton(positiveText) { _, _ ->
 
                 if (positiveText == getString(R.string.yes_text)) {
-                    val intent = Intent(this,ProgressActivity::class.java)
+                    val intent = Intent(this, ProgressActivity::class.java)
                     intent.action = homeShortcutId
                     startActivity(intent)
                 }
