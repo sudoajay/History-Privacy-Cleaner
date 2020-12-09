@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -44,8 +45,8 @@ class MainActivity : BaseActivity() {
     private var isDarkTheme: Boolean = false
     private var doubleBackToExitPressedOnce = false
     private var TAG = "MainActivityTag"
-    private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
-    private var sdCardPermission: AndroidSdCardPermission? = null
+    private lateinit var androidExternalStoragePermission: AndroidExternalStoragePermission
+    private lateinit var sdCardPermission: AndroidSdCardPermission
     private lateinit var rootManager: RootManager
     private lateinit var selectedList: MutableList<Cache>
 
@@ -75,16 +76,16 @@ class MainActivity : BaseActivity() {
 
 ////        External and sd-Card permission
 //        permissionIssue()
-
+//        Its goo and check if root permission is given or not
+        checkRootState()
 
     }
 
 
     override fun onResume() {
 
+        Log.e(TAG , "OnResume Calling")
 
-//        Its goo and check if root permission is given or not
-        checkRootState()
         binding.deleteFloatingActionButton.setOnClickListener {
             if (!permissionIssue()) {
                 CoroutineScope(Dispatchers.Main).launch {
@@ -117,16 +118,19 @@ class MainActivity : BaseActivity() {
     }
 
 
-    private fun permissionIssue(): Boolean {
+    fun permissionIssue(): Boolean {
         return if (rootManager.checkRootPermission() != RootState.HAVE_ROOT) {
             //        Take Permission external permission
             androidExternalStoragePermission =
                 AndroidExternalStoragePermission(applicationContext, this)
             sdCardPermission = AndroidSdCardPermission(applicationContext, this)
 
-            if (!androidExternalStoragePermission?.isExternalStorageWritable!!) androidExternalStoragePermission?.callPermission()
-            else sdCardPermission?.checkForSdCardExistAfterPermission()
-            true
+            if (!androidExternalStoragePermission.isExternalStorageWritable) androidExternalStoragePermission.callPermission()
+            else {
+              sdCardPermission.isSdCardDetected()
+                return false
+            }
+                true
         } else {
             false
         }
@@ -342,7 +346,7 @@ class MainActivity : BaseActivity() {
                     AndroidExternalStoragePermission.getExternalPathFromCacheDir(applicationContext)
                         .toString()
                 )
-                sdCardPermission?.checkForSdCardExistAfterPermission()
+                sdCardPermission.isSdCardDetected()
 
             } else // permission denied, boo! Disable the
             // functionality that depends on this permission.

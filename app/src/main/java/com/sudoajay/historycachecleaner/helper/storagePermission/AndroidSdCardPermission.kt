@@ -19,25 +19,17 @@ import java.io.File
 class AndroidSdCardPermission(private var context: Context, private var activity: Activity?) {
 
 
-    fun checkForSdCardExistAfterPermission() {
+    fun isSdCardDetected(){
         if (isSdStorageWritable) return
-
-        var isSdCardExist = false
         File("/storage/").listFiles()?.forEach loop@{
             if (Regex("[\\w\\d]+-[\\w\\d]+") in it.name) {
-                isSdCardExist = true
                 if (Build.VERSION.SDK_INT < 21) setSdCardPath(context, it.absolutePath)
+                CustomToast.toastIt(context, context.getString(R.string.we_detect_sd_card_text))
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+                    callPermission()
+                }
                 return@loop
-            }
-        }
-
-        if (!isSdCardExist) {
-            callPermissionDialog()
-        } else {
-            CustomToast.toastIt(context, context.getString(R.string.we_detect_sd_card_text))
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000)
-                callPermission()
             }
         }
     }

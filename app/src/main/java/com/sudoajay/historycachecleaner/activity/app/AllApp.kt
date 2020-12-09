@@ -114,18 +114,6 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         super.onResume()
     }
 
-    private fun permissionIssue() {
-        //        Take Permission external permission
-        androidExternalStoragePermission =
-            AndroidExternalStoragePermission(applicationContext, this)
-        sdCardPermission = AndroidSdCardPermission(applicationContext, this)
-
-
-        if (!androidExternalStoragePermission?.isExternalStorageWritable!!) androidExternalStoragePermission?.callPermission()
-        else sdCardPermission?.checkForSdCardExistAfterPermission()
-
-
-    }
 
 
     private fun setReference() {
@@ -327,7 +315,6 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
                     startActivity(intent)
                 }
 
-
             }
 
             .setCancelable(true)
@@ -338,124 +325,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
             TypedValue.COMPLEX_UNIT_PX,
             resources.getDimension(R.dimen.alert_dialog_message_size)
         )
-
     }
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray
-    ) {
-        if (requestCode == 1) { // If request is cancelled, the result arrays are empty.
-            if (grantResults.isNotEmpty()
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) {
-//                permission Granted :)
-                AndroidExternalStoragePermission.setExternalPath(
-                    applicationContext,
-                    AndroidExternalStoragePermission.getExternalPathFromCacheDir(applicationContext)
-                        .toString()
-                )
-                sdCardPermission?.checkForSdCardExistAfterPermission()
-
-            } else // permission denied, boo! Disable the
-            // functionality that depends on this permission.
-                CustomToast.toastIt(applicationContext, getString(R.string.giveUsPermission))
-        }
-    }
-
-    public override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) { // local variable
-        super.onActivityResult(requestCode, resultCode, data)
-        val sdCardPathURL: String?
-        val stringURI: String
-        val spiltPart: String?
-        if (resultCode != Activity.RESULT_OK) return
-
-        if (requestCode == 1 || requestCode == 2) {
-            val sdCardURL: Uri? = data!!.data
-            grantUriPermission(
-                this@AllApp.packageName,
-                sdCardURL,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                this@AllApp.contentResolver.takePersistableUriPermission(
-                    sdCardURL!!,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                )
-            }
-
-            sdCardPathURL = SdCardPath.getFullPathFromTreeUri(sdCardURL, this@AllApp)
-            stringURI = sdCardURL.toString()
-
-            // Its supports till android 9 & api 28
-            if (requestCode == 2) {
-                spiltPart = "%3A"
-                AndroidSdCardPermission.setSdCardPath(
-                    applicationContext,
-                    spiltThePath(stringURI, sdCardPathURL.toString())
-                )
-                AndroidSdCardPermission.setSdCardUri(
-                    applicationContext,
-                    spiltUri(stringURI, spiltPart)
-                )
-                val androidSdCardPermission = AndroidSdCardPermission(applicationContext, this)
-                if (!androidSdCardPermission.isSdStorageWritable) {
-                    CustomToast.toastIt(
-                        applicationContext,
-                        resources.getString(R.string.wrongDirectorySelected)
-                    )
-                    return
-                }
-
-            } else {
-                val realExternalPath =
-                    AndroidExternalStoragePermission.getExternalPath(applicationContext)
-                if (realExternalPath in "$sdCardPathURL/") {
-                    spiltPart = "primary%3A"
-                    AndroidExternalStoragePermission.setExternalPath(
-                        applicationContext,
-                        realExternalPath
-                    )
-                    AndroidExternalStoragePermission.setExternalUri(
-                        applicationContext,
-                        spiltUri(stringURI, spiltPart)
-                    )
-                } else {
-                    CustomToast.toastIt(
-                        applicationContext,
-                        getString(R.string.wrongDirectorySelected)
-                    )
-
-                    return
-                }
-
-
-            }
-
-        } else {
-            CustomToast.toastIt(applicationContext, getString(R.string.reportIt))
-        }
-    }
-
-    private fun spiltUri(uri: String, spiltPart: String): String {
-        return uri.split(spiltPart)[0] + spiltPart
-
-    }
-
-    private fun spiltThePath(url: String, path: String): String {
-        val spilt = url.split("%3A").toTypedArray()
-        val getPaths = spilt[0].split("/").toTypedArray()
-        val paths = path.split(getPaths[getPaths.size - 1]).toTypedArray()
-        return paths[0] + getPaths[getPaths.size - 1] + "/"
-
-    }
-
-
     override fun handleDialogClose() {
 //        viewModel.filterChanges()
     }

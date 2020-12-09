@@ -102,7 +102,8 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
     private fun onClickItems(name: String){
         when (name) {
             context.getString(R.string.all_app_cache_text) -> {
-                mainActivity.startActivity(Intent(context, AllApp::class.java))
+                if (!mainActivity.permissionIssue())
+                    mainActivity.startActivity(Intent(context, AllApp::class.java))
             }
             context.getString(R.string.download_folder_text) ->
                 openFolder()
