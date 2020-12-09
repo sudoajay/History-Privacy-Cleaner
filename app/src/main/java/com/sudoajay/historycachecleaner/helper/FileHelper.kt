@@ -6,11 +6,13 @@ import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historycachecleaner.helper.root.RootState
 import java.io.File
 
-class FileHelper(var context: Context, var packageName: String) {
+class FileHelper(var context: Context, var packageName: String = "" ) {
     private var list = mutableListOf<String>()
     private val cachePath = "/cache/"
     private val codeCache = "/code_cache/"
     private val TAG = "FileListTAG"
+    private val rootManager :RootManager = RootManager(context)
+    private val rootState = rootManager.checkRootPermission()
 
     fun fileList(): MutableList<String> {
 
@@ -47,13 +49,11 @@ class FileHelper(var context: Context, var packageName: String) {
     }
 
 
-    fun fileLength(): Long {
+    fun fileLength(packageName: String): Long {
         var fileLength = 0L
 
-        val rootManager = RootManager(context)
 //        //        Internal Path cache
-
-        if (rootManager.checkRootPermission()!! == RootState.HAVE_ROOT) {
+        if (rootState == RootState.HAVE_ROOT) {
 //            Internal Cache
 
             fileLength += rootManager.getFileSizeForRoot(RootManager.getInternalCachePath(context) + packageName + cachePath)

@@ -3,6 +3,7 @@ package com.sudoajay.historycachecleaner.activity.app
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.util.Log
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.helper.FileHelper
@@ -12,7 +13,8 @@ import java.util.*
 
 class LoadApps(private val context: Context, private  val appRepository: AppRepository) {
     private lateinit var packageManager: PackageManager
-
+    private var TAG = "LoadAppsTagg"
+    private lateinit var fileHelper :FileHelper
     suspend fun searchInstalledApps(userView: Boolean = true) {
         appDatabaseConfiguration(getInstalledApplication(context), userView)
 
@@ -27,6 +29,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         installedApplicationsInfo: List<ApplicationInfo>,
         userView: Boolean
     ) {
+        fileHelper = FileHelper(context,  "")
         //        Here we Just add default value of install app
         appRepository.setDefaultValueInstall()
 
@@ -34,11 +37,16 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
-            if (appRepository.isPresent(packageName) == 0)
+            if (appRepository.isPresent(packageName) == 0) {
                 createApp(applicationInfo, userView)
-            else
+                Log.e(TAG , "Not Avaliable in Data base $packageName")
+            }
+            else {
                 appRepository.updateInstalledAndCacheByPackage(
-                    packageName, if (userView) FileHelper(context, packageName).fileLength() else 0)
+                    packageName, if (userView) fileHelper.fileLength(packageName) else 0
+                )
+                Log.e(TAG , "Avaliable in Data base $packageName")
+            }
         }
 //        Here we remove Uninstall App from Data base
         appRepository.removeUninstallAppFromDB()
@@ -49,7 +57,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         val packageName = getApplicationPackageName(applicationInfo)
         // return size in form of Bytes(Long)
-        val cacheSize = if (userView) FileHelper(context, packageName).fileLength() else 0
+        val cacheSize = if (userView) fileHelper.fileLength(packageName) else 0
 
         if (cacheSize != 0L) {
 
