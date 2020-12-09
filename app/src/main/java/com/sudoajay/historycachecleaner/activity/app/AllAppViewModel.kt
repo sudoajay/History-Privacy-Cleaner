@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class AllAppViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val TAG = "AllActivityView ModelTag"
+    private val TAG = "AllActivityView"
     private var loadApps: LoadApps
     private var _application = application
     var appRepository: AppRepository
@@ -52,11 +52,9 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun filterChanges(filter: String = _application.getString(R.string.filter_changes_text)) {
-        Log.e(TAG , "Filter Change - $filterChanges")
         filterChanges.value = filter
     }
     fun onRefresh() {
-
         appList!!.value!!.dataSource.invalidate()
     }
 
@@ -74,10 +72,10 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun databaseConfiguration() {
-        getHideProgress()
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
                 loadApps.searchInstalledApps()
+                hideProgress!!.postValue(false)
             }
             filterChanges.postValue(_application.getString(R.string.filter_changes_text))
 

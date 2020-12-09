@@ -78,20 +78,20 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 //        }
 
 //        External and sd-Card permission
-        permissionIssue()
+//        permissionIssue()
     }
 
 
     override fun onResume() {
 
-        checkRootState()
+
         binding.deleteFloatingActionButton.setOnClickListener {
 
             CoroutineScope(Dispatchers.Main).launch {
                 withContext(Dispatchers.IO) {
                     selectedList = viewModel.appRepository.getSelectedApp()
                 }
-                Log.e(TAG , "selectlist size - " + selectedList.size)
+
                 if (selectedList.isEmpty())
                     CustomToast.toastIt(
                         applicationContext,
@@ -176,15 +176,11 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         viewModel.appList!!.observe(this, {
             pagingAppRecyclerAdapter.submitList(it)
 
-            Log.e(TAG, "size - " + it.size)
+
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
 
-            viewModel.hideProgress!!.value = false
-            if (it.isEmpty()) CustomToast.toastIt(
-                applicationContext,
-                getString(R.string.alert_dialog_no_cache_app)
-            )
+            if (it.isEmpty()) CustomToast.toastIt(applicationContext, getString(R.string.alert_dialog_no_cache_app))
 
 
         })
@@ -294,45 +290,14 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
             override fun onQueryTextChange(newText: String): Boolean {
                 val query: String = newText.toLowerCase(Locale.ROOT).trim { it <= ' ' }
-                viewModel.filterChanges(query)
+//                viewModel.filterChanges(query)
                 return true
             }
         })
     }
 
 
-    private fun checkRootState(): RootState? {
-        val rootState: RootState = viewModel.rootManager.checkRootPermission()!!
-        when (rootState) {
-            RootState.NO_ROOT -> {
-                setRootAccessAlreadyObtained(false, applicationContext)
-                generateAlertDialog(
-                    resources.getString(R.string.alert_dialog_title_no_root_permission),
-                    resources.getString(R.string.alert_dialog_message_no_root_permission),
-                    getString(R.string.ok_text)
-                )
-            }
-            RootState.BE_ROOT -> {
-                setRootAccessAlreadyObtained(false, applicationContext)
-                generateAlertDialog(
-                    resources.getString(R.string.alert_dialog_title_be_root),
-                    resources.getString(R.string.alert_dialog_message_be_root),
-                    getString(R.string.ok_text)
-                )
-            }
-            RootState.HAVE_ROOT -> {
 
-                if (isRootAccessAlreadyObtained(applicationContext)) return null
-                setRootAccessAlreadyObtained(true, applicationContext)
-                generateAlertDialog(
-                    resources.getString(R.string.alert_dialog_title_have_root),
-                    resources.getString(R.string.alert_dialog_message_have_root),
-                    getString(R.string.ok_text)
-                )
-            }
-        }
-        return rootState
-    }
 
     private fun generateAlertDialog(
         title: String,
@@ -492,7 +457,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
 
     override fun handleDialogClose() {
-        viewModel.filterChanges()
+//        viewModel.filterChanges()
     }
 
     /**

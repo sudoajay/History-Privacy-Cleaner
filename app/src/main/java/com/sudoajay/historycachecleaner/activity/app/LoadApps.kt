@@ -27,11 +27,8 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         installedApplicationsInfo: List<ApplicationInfo>,
         userView: Boolean
     ) {
-
-
         //        Here we Just add default value of install app
         appRepository.setDefaultValueInstall()
-
 
 //        Here we Just add new Install App Into Data base
 
@@ -43,11 +40,8 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                 appRepository.updateInstalledAndCacheByPackage(
                     packageName, if (userView) FileHelper(context, packageName).fileLength() else 0)
         }
-
 //        Here we remove Uninstall App from Data base
         appRepository.removeUninstallAppFromDB()
-
-
 
     }
 
@@ -64,8 +58,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
             val icon = getApplicationsIcon(applicationInfo)
             val installedDate = getInstalledDate(packageName)
             val systemApp = isSystemApps(applicationInfo)
-
-
 
             appRepository.insert(
                 App(

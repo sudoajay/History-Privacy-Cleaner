@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -47,6 +46,7 @@ class MainActivity : BaseActivity() {
     private var TAG = "MainActivityTag"
     private var androidExternalStoragePermission: AndroidExternalStoragePermission? = null
     private var sdCardPermission: AndroidSdCardPermission? = null
+    private lateinit var rootManager: RootManager
     private lateinit var selectedList: MutableList<Cache>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,11 +70,11 @@ class MainActivity : BaseActivity() {
         binding.lifecycleOwner = this
 
         if (!intent.action.isNullOrEmpty() && intent.action.toString() == settingShortcutId) {
-           openSetting()
+            openSetting()
         }
 
-//        External and sd-Card permission
-        permissionIssue()
+////        External and sd-Card permission
+//        permissionIssue()
 
 
     }
@@ -82,27 +82,31 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
 
+
+//        Its goo and check if root permission is given or not
         checkRootState()
         binding.deleteFloatingActionButton.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                withContext(Dispatchers.IO) {
-                    selectedList = viewModel.cacheRepository.getSelectedApp()
-                }
-                Log.e(TAG, "selectlist size - " + selectedList.size)
-                if (selectedList.isEmpty())
-                    CustomToast.toastIt(
-                        applicationContext,
-                        getString(R.string.alert_dialog_no_item_selected_title)
-                    )
-                else {
+            if (!permissionIssue()) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    withContext(Dispatchers.IO) {
+                        selectedList = viewModel.cacheRepository.getSelectedApp()
+                    }
 
-                    generateAlertDialog(
-                        getString(R.string.alert_dialog_ask_permission_to_remove_apps_title),
-                        getString(R.string.alert_dialog_ask_permission_to_remove_cache_item_message),
-                        getString(R.string.no_text),
-                        getString(R.string.yes_text)
-                    )
+                    if (selectedList.isEmpty())
+                        CustomToast.toastIt(
+                            applicationContext,
+                            getString(R.string.alert_dialog_no_item_selected_title)
+                        )
+                    else {
 
+                        generateAlertDialog(
+                            getString(R.string.alert_dialog_ask_permission_to_remove_apps_title),
+                            getString(R.string.alert_dialog_ask_permission_to_remove_cache_item_message),
+                            getString(R.string.no_text),
+                            getString(R.string.yes_text)
+                        )
+
+                    }
                 }
             }
 
@@ -113,22 +117,23 @@ class MainActivity : BaseActivity() {
     }
 
 
+    private fun permissionIssue(): Boolean {
+        return if (rootManager.checkRootPermission() != RootState.HAVE_ROOT) {
+            //        Take Permission external permission
+            androidExternalStoragePermission =
+                AndroidExternalStoragePermission(applicationContext, this)
+            sdCardPermission = AndroidSdCardPermission(applicationContext, this)
 
-    private fun permissionIssue() {
-        //        Take Permission external permission
-        androidExternalStoragePermission =
-            AndroidExternalStoragePermission(applicationContext, this)
-        sdCardPermission = AndroidSdCardPermission(applicationContext, this)
-
-
-        if (!androidExternalStoragePermission?.isExternalStorageWritable!!) androidExternalStoragePermission?.callPermission()
-        else sdCardPermission?.checkForSdCardExistAfterPermission()
-
-
+            if (!androidExternalStoragePermission?.isExternalStorageWritable!!) androidExternalStoragePermission?.callPermission()
+            else sdCardPermission?.checkForSdCardExistAfterPermission()
+            true
+        } else {
+            false
+        }
     }
 
 
-    private fun setReference() {
+    fun setReference() {
 
         //      Setup Swipe RecyclerView
         binding.swipeRefresh.setColorSchemeResources(
@@ -247,7 +252,8 @@ class MainActivity : BaseActivity() {
 
 
     private fun checkRootState(): RootState? {
-        val rootState: RootState = RootManager(applicationContext).checkRootPermission()!!
+        rootManager = RootManager(applicationContext)
+        val rootState = rootManager.checkRootPermission()
         when (rootState) {
             RootState.NO_ROOT -> {
                 setRootAccessAlreadyObtained(false, applicationContext)
