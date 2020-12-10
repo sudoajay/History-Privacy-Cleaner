@@ -19,8 +19,9 @@ import java.io.File
 class AndroidSdCardPermission(private var context: Context, private var activity: Activity?) {
 
 
-    fun isSdCardDetected(){
-        if (isSdStorageWritable) return
+    fun isSdCardDetected():Boolean{
+        if (isSdStorageWritable || !isFirstTimeDetected(context)) return false
+        setFirstTimeDetected(context)
         File("/storage/").listFiles()?.forEach loop@{
             if (Regex("[\\w\\d]+-[\\w\\d]+") in it.name) {
                 if (Build.VERSION.SDK_INT < 21) setSdCardPath(context, it.absolutePath)
@@ -29,10 +30,12 @@ class AndroidSdCardPermission(private var context: Context, private var activity
                     delay(1000)
                     callPermission()
                 }
-                return@loop
+                return true
             }
         }
+        return false
     }
+
 
     private fun callPermissionDialog() {
         val alertDialog: AlertDialog.Builder =
@@ -140,6 +143,21 @@ class AndroidSdCardPermission(private var context: Context, private var activity
                 ).apply()
         }
 
+        fun isFirstTimeDetected(context: Context) :Boolean{
+            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
+                .getBoolean(
+                    context.getString(R.string.is_first_time_detected_text), true
+                )
+        }
+
+
+        fun setFirstTimeDetected(context: Context){
+            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
+                .putBoolean(
+                    context.getString(R.string.is_first_time_detected_text),
+                    false
+                ).apply()
+        }
 
     }
 

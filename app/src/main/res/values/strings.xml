@@ -237,6 +237,7 @@
     <string name="external_uri_text" translatable="false">External Uri</string>
     <string name="sdCard_path_text" translatable="false">SdCard Path</string>
     <string name="sdCard_uri_text" translatable="false">SdCard Uri</string>
+    <string name="is_first_time_detected_text" translatable="false" >isFirstTimeDetected</string>
 
     <!--    Load Cache Item -->
     <string name="all_app_cache_text" translatable="false" >Apps Cache</string>

@@ -330,6 +330,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         viewModel.filterChanges()
     }
 
+
     /**
      * Making notification bar transparent
      */

@@ -58,7 +58,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         val packageName = getApplicationPackageName(applicationInfo)
         // return size in form of Bytes(Long)
         val cacheSize = if (userView) fileHelper.fileLength(packageName) else 0
-
+        Log.e(TAG , "Package - $packageName and cache size - $cacheSize")
         if (cacheSize != 0L) {
 
             val label = getApplicationLabel(applicationInfo)

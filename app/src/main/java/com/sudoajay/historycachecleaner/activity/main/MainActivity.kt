@@ -83,7 +83,6 @@ class MainActivity : BaseActivity() {
 
 
     override fun onResume() {
-
         Log.e(TAG , "OnResume Calling")
 
         binding.deleteFloatingActionButton.setOnClickListener {
@@ -127,8 +126,7 @@ class MainActivity : BaseActivity() {
 
             if (!androidExternalStoragePermission.isExternalStorageWritable) androidExternalStoragePermission.callPermission()
             else {
-              sdCardPermission.isSdCardDetected()
-                return false
+                return sdCardPermission.isSdCardDetected()
             }
                 true
         } else {
@@ -382,7 +380,7 @@ class MainActivity : BaseActivity() {
             sdCardPathURL = SdCardPath.getFullPathFromTreeUri(sdCardURL, this@MainActivity)
             stringURI = sdCardURL.toString()
 
-            // Its supports till android 9 & api 28
+            Log.e(TAG , "SdCardPathUrl - $sdCardPathURL  String uri - $stringURI requestCode - $requestCode" )
             if (requestCode == 2) {
                 spiltPart = "%3A"
                 AndroidSdCardPermission.setSdCardPath(
