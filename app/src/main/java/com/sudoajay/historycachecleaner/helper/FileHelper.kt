@@ -6,7 +6,7 @@ import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historycachecleaner.helper.root.RootState
 import java.io.File
 
-class FileHelper(var context: Context, var packageName: String = "" ) {
+class FileHelper(var context: Context) {
     private var list = mutableListOf<String>()
     private val cachePath = "/cache/"
     private val codeCache = "/code_cache/"
@@ -14,17 +14,34 @@ class FileHelper(var context: Context, var packageName: String = "" ) {
     private val rootManager :RootManager = RootManager(context)
     private val rootState = rootManager.checkRootPermission()
 
-    fun fileList(): MutableList<String> {
+    fun fileList(packageName: String): MutableList<String> {
 
-//        Internal Path cache
-        getFilePath(File(RootManager.getInternalCachePath(context) + packageName + cachePath))
-        getFilePath(File(RootManager.getInternalCachePath(context) + packageName + codeCache))
+
+        if (rootState == RootState.HAVE_ROOT) {
+            Log.e(TAG , "PackageName - $packageName  --  is Rooted" )
+            list.add(rootManager.getDirListForRoot(RootManager.getInternalCachePath(context) + packageName + cachePath))
+            list.add(rootManager.getDirListForRoot(RootManager.getInternalCachePath(context) + packageName + codeCache))
+
+            list.add(rootManager.getDirListForRoot(RootManager.getExternalCachePath(context) + packageName + cachePath))
+            list.add(rootManager.getDirListForRoot(RootManager.getSdCardCachePath(context) + packageName + cachePath))
+
+
+
+        }else{
+            Log.e(TAG , "PackageName - $packageName  --  is not Rooted" )
+//            //        Internal Path cache
+//            getFilePath(File(RootManager.getInternalCachePath(context) + packageName + cachePath))
+//            getFilePath(File(RootManager.getInternalCachePath(context) + packageName + codeCache))
 
 //        External Path Cache
-        getFilePath(File(RootManager.getExternalCachePath(context) + packageName + cachePath))
+            getFilePath(File(RootManager.getExternalCachePath(context) + packageName + cachePath))
 
-        //        Sd Card Path Cache
-        getFilePath(File(RootManager.getSdCardCachePath(context) + packageName + cachePath))
+            //        Sd Card Path Cache
+            getFilePath(File(RootManager.getSdCardCachePath(context) + packageName + cachePath))
+
+
+        }
+
         return list
     }
 
@@ -52,7 +69,6 @@ class FileHelper(var context: Context, var packageName: String = "" ) {
     fun fileLength(packageName: String): Long {
         var fileLength = 0L
 
-//        //        Internal Path cache
         if (rootState == RootState.HAVE_ROOT) {
 //            Internal Cache
 

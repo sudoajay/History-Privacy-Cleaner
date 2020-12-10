@@ -29,27 +29,27 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         installedApplicationsInfo: List<ApplicationInfo>,
         userView: Boolean
     ) {
-        fileHelper = FileHelper(context,  "")
+        fileHelper = FileHelper(context)
         //        Here we Just add default value of install app
-        appRepository.setDefaultValueInstall()
+//        appRepository.setDefaultValueInstall()
 
 //        Here we Just add new Install App Into Data base
 
-        for (applicationInfo in installedApplicationsInfo) {
-            val packageName = getApplicationPackageName(applicationInfo)
-            if (appRepository.isPresent(packageName) == 0) {
-                createApp(applicationInfo, userView)
-                Log.e(TAG , "Not Avaliable in Data base $packageName")
-            }
-            else {
-                appRepository.updateInstalledAndCacheByPackage(
-                    packageName, if (userView) fileHelper.fileLength(packageName) else 0
-                )
-                Log.e(TAG , "Avaliable in Data base $packageName")
-            }
-        }
+//        for (applicationInfo in installedApplicationsInfo) {
+//            val packageName = getApplicationPackageName(applicationInfo)
+//            if (appRepository.isPresent(packageName) == 0) {
+//                createApp(applicationInfo, userView)
+//                Log.e(TAG , "Not Avaliable in Data base $packageName")
+//            }
+//            else {
+//                appRepository.updateInstalledAndCacheByPackage(
+//                    packageName, if (userView) fileHelper.fileLength(packageName) else 0
+//                )
+//                Log.e(TAG , "Avaliable in Data base $packageName")
+//            }
+//        }
 //        Here we remove Uninstall App from Data base
-        appRepository.removeUninstallAppFromDB()
+//        appRepository.removeUninstallAppFromDB()
 
     }
 
@@ -59,7 +59,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         // return size in form of Bytes(Long)
         val cacheSize = if (userView) fileHelper.fileLength(packageName) else 0
         Log.e(TAG , "Package - $packageName and cache size - $cacheSize")
-        if (cacheSize != 0L) {
+        if (cacheSize > 8000L ) {
 
             val label = getApplicationLabel(applicationInfo)
             val sourceDir = getApplicationSourceDir(applicationInfo)

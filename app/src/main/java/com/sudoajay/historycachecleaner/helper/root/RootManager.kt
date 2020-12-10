@@ -70,6 +70,9 @@ class RootManager(var context: Context) {
 //        }
 //    }
 
+    fun getDirListForRoot(path:String) :String{
+       return executeCommandSU("ls -aR $path ")
+    }
     fun getFileSizeForRoot(path: String) : Long{
 
         val output =  executeCommandSU("du -ks $path ")

@@ -38,7 +38,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
     private var isDarkTheme: Boolean = false
     var hideProgress = MutableLiveData<Boolean>()
     private var TAG = "ScrollingAppCachePathActivityTAG"
-
+    private lateinit var fileHelper :FileHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,6 +69,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
     }
 
     override fun onResume() {
+        fileHelper= FileHelper(applicationContext)
         super.onResume()
         hideProgress.value = true
         Log.e(TAG, hideProgress.value.toString())
@@ -106,7 +107,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            list = FileHelper(applicationContext, app.packageName).fileList()
+            list = fileHelper.fileList(app.packageName)
 
             withContext(Dispatchers.Main) {
                 if (list.isEmpty())
