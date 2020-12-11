@@ -111,6 +111,10 @@ dependencies {
 
     implementation "androidx.paging:paging-runtime-ktx:$paging_version" // For Kotlin use paging-runtime-ktx
 
+    def versions_work = "2.4.0"
+
+    // WorkManger dependencies
+    implementation "androidx.work:work-runtime-ktx:$versions_work"
 
     // Add the Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-analytics:18.0.0'

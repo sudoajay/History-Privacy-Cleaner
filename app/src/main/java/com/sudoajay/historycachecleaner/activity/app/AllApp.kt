@@ -1,14 +1,9 @@
 package com.sudoajay.historycachecleaner.activity.app
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -26,16 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
-import com.sudoajay.historycachecleaner.activity.main.MainActivity.Companion.isRootAccessAlreadyObtained
-import com.sudoajay.historycachecleaner.activity.main.MainActivity.Companion.setRootAccessAlreadyObtained
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
 import com.sudoajay.historycachecleaner.helper.InsetDivider
-import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidExternalStoragePermission
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
-import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityAllAppBinding
 import kotlinx.coroutines.CoroutineScope
@@ -168,7 +159,10 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
             if (binding.swipeRefresh.isRefreshing)
                 binding.swipeRefresh.isRefreshing = false
 
-            if (it.isEmpty()) CustomToast.toastIt(applicationContext, getString(R.string.alert_dialog_no_cache_app))
+            if (it.isEmpty() && viewModel.hideProgress?.value == false) CustomToast.toastIt(
+                applicationContext,
+                getString(R.string.alert_dialog_no_cache_app)
+            )
 
 
         })
