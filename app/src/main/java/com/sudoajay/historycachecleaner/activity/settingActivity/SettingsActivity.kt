@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.work.Constraints
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.sudoajay.historycachecleaner.activity.aboutAppActivity.AboutApp
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.activity.sendFeedback.SendFeedback
@@ -19,8 +23,10 @@ import com.sudoajay.historyprivacycleaner.R
 
 
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class SettingsActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +54,8 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         private val ratingLink =
             "https://play.google.com/store/apps/details?id=com.sudoajay.duplication_data"
-
+        private var TAG = "SettingsActivityTAG"
+        private val workMangerTAG = "autoCleanIntervalTAG"
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.setting_preferences, rootKey)
@@ -56,10 +63,39 @@ class SettingsActivity : AppCompatActivity() {
 
             val selectInterval = findPreference("autoCleanInterval") as ListPreference?
             selectInterval!!.setOnPreferenceChangeListener { _, newValue ->
-                if (newValue != 0) {
+                if (newValue.toString() != getAutoCleanInterval(requireContext())) {
+                    //                Here we do work Manger task :)
+
+                    WorkManager.getInstance(requireContext()).cancelAllWorkByTag(workMangerTAG)
+
+                    if (newValue.toString() == "never") true
+
+                    val constraints = Constraints.Builder()
+                        .setRequiresBatteryNotLow(true)
+                        .setRequiresStorageNotLow(false)
+                        .build()
+
+                    val periodicWorkRequest =
+                        PeriodicWorkRequestBuilder<BackGroundTask>(getHourFromInterval(newValue.toString()), TimeUnit.HOURS)
+                            .setConstraints(constraints)
+                            .addTag(workMangerTAG)
+                            .build()
+
+
+                    val workManager = WorkManager.getInstance(requireContext())
+
+                    workManager.enqueue(periodicWorkRequest)
+
+                    workManager.getWorkInfoByIdLiveData(periodicWorkRequest.id).observeForever {
+                        if (it != null) {
+
+                            Log.d(TAG, "Status changed to ${it.state.isFinished}")
+
+                        }
+                    }
 
                 }
-//                Here we do work Manger task :)
+
                 true
             }
 
@@ -143,6 +179,18 @@ class SettingsActivity : AppCompatActivity() {
 
 
         }
+
+        private fun getHourFromInterval(value: String): Long {
+            return when (value) {
+                "12_hours" -> 12
+                "18_hours" -> 18
+                "1_day" -> 24
+                "2_day" -> 48
+                "3_day" -> 72
+                else -> 0
+            }
+        }
+
         private fun showDarkMode() {
             val darkModeBottomSheet = DarkModeBottomSheet(MainActivity.settingShortcutId)
             darkModeBottomSheet.show(
@@ -208,6 +256,12 @@ class SettingsActivity : AppCompatActivity() {
                 val lang = Locale.getDefault().language
                 val array = context.resources.getStringArray(R.array.languagesValues)
                 return if (lang in array) lang else "en"
+            }
+
+            fun getAutoCleanInterval(context: Context): String {
+                return PreferenceManager
+                    .getDefaultSharedPreferences(context)
+                    .getString("autoCleanInterval", setLanguage(context)).toString()
             }
         }
     }

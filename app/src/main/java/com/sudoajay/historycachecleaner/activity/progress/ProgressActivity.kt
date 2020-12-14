@@ -82,6 +82,8 @@ class ProgressActivity : AppCompatActivity() {
                     )
             }
         })
+
+
     }
 
 
@@ -143,6 +145,8 @@ class ProgressActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun clearClipBoard() {
         val clipBoardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager

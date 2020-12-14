@@ -70,7 +70,7 @@ dependencies {
 
 
 //    Update App Library
-    implementation 'com.google.android.play:core:1.8.3'
+    implementation 'com.google.android.play:core:1.9.0'
 
     // LibSuperUser
     implementation 'eu.chainfire:libsuperuser:1.1.0.+'
@@ -113,7 +113,7 @@ dependencies {
 
     def versions_work = "2.4.0"
 
-    // WorkManger dependencies
+    // Work Manger Kotlin + coroutines
     implementation "androidx.work:work-runtime-ktx:$versions_work"
 
     // Add the Firebase SDK for Google Analytics

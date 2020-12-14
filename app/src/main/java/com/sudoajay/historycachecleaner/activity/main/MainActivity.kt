@@ -486,6 +486,7 @@ class MainActivity : BaseActivity() {
         const val settingShortcutId = "setting"
         const val homeShortcutId = "home"
         const val allAppId = "allApp"
+
         fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
             context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
                 .putBoolean(
