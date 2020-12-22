@@ -4,6 +4,5 @@ option java_package = "com.sudoajay.historycachecleaner";
 option java_multiple_files = true;
 
 message StatePreferences {
-
-  string Dark_Mode = System Default;
+  string Dark_Mode = 1;
 }

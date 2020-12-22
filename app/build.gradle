@@ -89,6 +89,7 @@ dependencies {
 // Lifecycle components
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$archLifecycleVersion"
 
 
 //    Binding
@@ -100,6 +101,7 @@ dependencies {
 //    Kotlin coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
 
 
     def room_version = "2.2.6"
