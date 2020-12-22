@@ -18,6 +18,7 @@ import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.LayoutDarkModeBottomSheetBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ import java.io.IOException
 class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFragment() {
     private val TAG = "DarkModeBottomSheetTAG"
 
-    data class UserPreferences(val darkMode: String)
+//    data class UserPreferences(val darkMode: String)
 
     private lateinit var dataStore: DataStore<Preferences>
 
@@ -52,44 +53,43 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
         return binding.root
     }
 
-    private object PreferencesKeys {
-        val DARK_MODE = preferencesKey<String>("Dark_Mode")
-    }
-
-    fun setValue(darkMode: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dataStore.edit { preferences ->
-                preferences[PreferencesKeys.DARK_MODE] = darkMode
-            }
-            withContext(Dispatchers.Main) {
-                val intent = Intent(requireContext(), MainActivity::class.java)
-                intent.action = passAction
-                requireActivity().finish()
-                startActivity(intent)
-            }
-        }
-    }
-
-    fun getValue(): String {
-        var darkMode = ""
-        dataStore.data
-            .catch { exception ->
-                // dataStore.data throws an IOException when an error is encountered when reading data
-                if (exception is IOException) {
-                    emit(emptyPreferences())
-                } else {
-                    throw exception
-                }
-            }.map { preferences ->
-                // Get our show completed value, defaulting to false if not set:
-                darkMode = preferences[PreferencesKeys.DARK_MODE]
-                    ?: getString(R.string.system_default_text)
-                UserPreferences(darkMode)
-            }
-        Log.e(TAG, darkMode)
-
-        return darkMode
-    }
+//    private object PreferencesKeys {
+//        val DARK_MODE = preferencesKey<String>("Dark_Mode")
+//    }
+//
+//    val uiModeFlow: Flow<UserPreferences> = dataStore.data
+//        .catch {
+//            if (it is IOException) {
+//                it.printStackTrace()
+//                emit(emptyPreferences())
+//            } else {
+//                throw it
+//            }
+//        }
+//        .map { preferences ->
+//            // Get our show completed value, defaulting to false if not set:
+//            val darkMode = preferences[PreferencesKeys.DARK_MODE]
+//                ?: getString(R.string.system_default_text)
+//            UserPreferences(darkMode)
+//        }
+//
+//    fun setValue(darkMode: String) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            dataStore.edit { preferences ->
+//                preferences[PreferencesKeys.DARK_MODE] = darkMode
+//            }
+//            withContext(Dispatchers.Main) {
+//                val intent = Intent(requireContext(), MainActivity::class.java)
+//                intent.action = passAction
+//                requireActivity().finish()
+//                startActivity(intent)
+//            }
+//        }
+//    }
+//
+//    fun getValue(): String {
+//        return uiModeFlow.toString()
+//    }
 
 //    fun setValue(value: String) {
 //        if (getValue() == value) dismiss()
@@ -109,5 +109,8 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
 //    }
 
 
+
 }
+
+
 
