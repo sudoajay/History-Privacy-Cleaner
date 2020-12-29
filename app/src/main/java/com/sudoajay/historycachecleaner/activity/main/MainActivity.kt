@@ -20,11 +20,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.Cache
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
+import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historycachecleaner.activity.settingActivity.SettingsActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
@@ -37,6 +39,7 @@ import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 
 class MainActivity : BaseActivity() {
 
@@ -53,8 +56,13 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        Log.e("BaseActivityTAG", isDarkMode.value.toString())
+        lifecycleScope.launch {
+            isDarkTheme = ProtoManager(applicationContext).getStatePreferences.first().isDarkMode
+        }
+        Log.e("BaseActivityTAG", isDarkTheme.toString())
 
-        isDarkTheme = isDarkMode(applicationContext)
+        Log.e(TAG, isDarkTheme.toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDarkTheme)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(
@@ -83,7 +91,6 @@ class MainActivity : BaseActivity() {
 
 
     override fun onResume() {
-        Log.e(TAG , "OnResume Calling")
 
         binding.deleteFloatingActionButton.setOnClickListener {
             if (!permissionIssue()) {
@@ -226,7 +233,7 @@ class MainActivity : BaseActivity() {
         val navigationDrawerBottomSheet = NavigationDrawerBottomSheet()
         navigationDrawerBottomSheet.show(supportFragmentManager, navigationDrawerBottomSheet.tag)
     }
-//
+
 
 
     private fun openSetting() {
@@ -297,7 +304,7 @@ class MainActivity : BaseActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlertDialog.Builder(
                     this,
-                    if (!isDarkMode(applicationContext)) android.R.style.Theme_Material_Light_Dialog_Alert else android.R.style.Theme_Material_Dialog_Alert
+                    if (isDarkMode.value != true) android.R.style.Theme_Material_Light_Dialog_Alert else android.R.style.Theme_Material_Dialog_Alert
                 )
             } else {
                 AlertDialog.Builder(this)

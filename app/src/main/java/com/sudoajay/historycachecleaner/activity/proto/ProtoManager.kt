@@ -15,18 +15,22 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-data class StatePreferences(val darkMode: String)
+data class StatePreferences(
+    val darkMode: String,
+    val isDarkMode:Boolean
+)
 
 
 class ProtoManager(var context: Context) {
 
+    private  val TAG = "ProtoMangerTAG"
 
     private val dataStore: DataStore<StatePreferences> =
         context.createDataStore(
             fileName = "state_prefs.pb",
             serializer = StatePreferencesSerializer)
 
-    val getDarkMode = dataStore.data
+    val getStatePreferences = dataStore.data
         .catch {
         if (it is IOException) {
             Log.e(TAG, "Error reading sort order preferences.", it)
@@ -36,7 +40,8 @@ class ProtoManager(var context: Context) {
         }
     }.map {
             val darkMode = it.darkMode ?: context.getString(R.string.system_default_text)
-            StatePreferences(darkMode)
+            val isDarkMode = it.isDarkMode
+            StatePreferences(darkMode, isDarkMode)
     }
 
     suspend fun setDarkMode(darkMode: String?) {
@@ -48,11 +53,16 @@ class ProtoManager(var context: Context) {
                 .build()
         }
     }
+    suspend fun setIsDarkMode(isDarkMode: Boolean?) {
+        val value =isDarkMode ?: false
 
-
-    companion object {
-        const val TAG = "ProtoMangerTAG"
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setIsDarkMode(value)
+                .build()
+        }
     }
+
 }
 
 

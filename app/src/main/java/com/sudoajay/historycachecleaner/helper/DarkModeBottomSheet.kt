@@ -1,5 +1,6 @@
 package com.sudoajay.historycachecleaner.helper
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,16 +10,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.sudoajay.historycachecleaner.activity.BaseActivity
+import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.LayoutDarkModeBottomSheetBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFragment() {
-    private val TAG = "DarkModeBottomSheetTAG"
-    var getValue: MutableLiveData<String> = MutableLiveData()
 
 
     override fun onCreateView(
@@ -35,11 +38,8 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
         )
         binding.bottomSheet = this
         binding.lifecycleOwner = this
+        binding.baseActivity = BaseActivity
 
-
-        lifecycleScope.launch {
-            getValue.postValue(ProtoManager(requireContext()).getDarkMode.first().darkMode)
-        }
         return binding.root
     }
 
@@ -47,7 +47,12 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
     fun setValue(darkMode: String) {
         lifecycleScope.launch {
             ProtoManager(requireContext()).setDarkMode(darkMode)
-            getValue.postValue(darkMode)
+            withContext(Dispatchers.Main) {
+                val intent = Intent(requireContext(), MainActivity::class.java)
+                intent.action = passAction
+                requireActivity().finish()
+                startActivity(intent)
+            }
         }
     }
 }

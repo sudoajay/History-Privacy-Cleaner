@@ -10,6 +10,9 @@
         <variable
             name="bottomSheet"
             type="com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet" />
+        <variable
+            name="baseActivity"
+            type="com.sudoajay.historycachecleaner.activity.BaseActivity.Companion" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:visibility="@{(bottomSheet.getValue.equals(@string/off_text))  ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.getDarkMode.equals(@string/off_text))  ?  View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/off_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/off_TextView"
@@ -129,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:visibility="@{(bottomSheet.getValue.equals(@string/on_text))  ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.getDarkMode.equals(@string/on_text))  ?  View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/on_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/on_TextView"
@@ -178,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:visibility="@{(bottomSheet.getValue.equals(@string/automatic_at_sunset_text))  ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.getDarkMode.equals(@string/automatic_at_sunset_text))  ?  View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/automatic_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/automatic_TextView"
@@ -228,7 +231,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:visibility="@{(bottomSheet.getValue.equals(@string/set_by_battery_saver_text))  ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.getDarkMode.equals(@string/set_by_battery_saver_text))  ?  View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/batterySave_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/batterySave_TextView"
@@ -278,7 +281,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                android:visibility="@{(bottomSheet.getValue.equals(@string/system_default_text))  ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.getDarkMode.equals(@string/system_default_text))  ?  View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/systemDefault_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/systemDefault_TextView"
