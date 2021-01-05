@@ -28,7 +28,7 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val myDrawerView = layoutInflater.inflate(R.layout.layout_dark_mode_bottom_sheet, null)
         val binding = LayoutDarkModeBottomSheetBinding.inflate(

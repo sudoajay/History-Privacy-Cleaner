@@ -1,6 +1,7 @@
 package com.sudoajay.historycachecleaner.activity
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -9,12 +10,16 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historycachecleaner.helper.LocalizationUtil.changeLocale
 import com.sudoajay.historyprivacycleaner.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
@@ -22,10 +27,10 @@ import java.util.*
 
 open class BaseActivity : AppCompatActivity() {
     private lateinit var currentTheme: String
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val TAG = "BaseActivityTAG"
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        val TAG = "BaseActivityTAG"
         ProtoManager(applicationContext).getStatePreferences.asLiveData().observe(this) {
             if (it.darkMode != getDarkMode.value) {
                 Log.e(TAG, "${it.darkMode} and ${getDarkMode.value}")
@@ -36,6 +41,8 @@ open class BaseActivity : AppCompatActivity() {
                 isDarkMode.value = it.isDarkMode
             }
         }
+
+        super.onCreate(savedInstanceState)
 
         currentTheme = getDarkMode.value ?: getString(R.string.system_default_text)
 
@@ -115,9 +122,11 @@ open class BaseActivity : AppCompatActivity() {
 
 
     private fun setValue(isDarkMode: Boolean) {
+        getSharedPreferences("state", Context.MODE_PRIVATE).edit()
+            .putBoolean(getString(R.string.is_dark_mode_text), isDarkMode).apply()
+
         lifecycleScope.launch {
             ProtoManager(applicationContext).setIsDarkMode(isDarkMode)
-
         }
     }
 
@@ -155,6 +164,12 @@ open class BaseActivity : AppCompatActivity() {
         var getDarkMode: MutableLiveData<String> = MutableLiveData()
         var isDarkMode: MutableLiveData<Boolean> = MutableLiveData()
 
+        fun isDarkMode(context: Context): Boolean {
+            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
+                .getBoolean(
+                    context.getString(R.string.is_dark_mode_text), false
+                )
+        }
     }
 
 
