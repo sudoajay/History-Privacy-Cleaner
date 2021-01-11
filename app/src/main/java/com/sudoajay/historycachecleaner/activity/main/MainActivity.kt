@@ -1,7 +1,6 @@
 package com.sudoajay.historycachecleaner.activity.main
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -20,11 +19,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.database.Cache
 import com.sudoajay.historycachecleaner.activity.progress.ProgressActivity
+import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historycachecleaner.activity.settingActivity.SettingsActivity
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.DarkModeBottomSheet
@@ -49,14 +50,14 @@ class MainActivity : BaseActivity() {
     private lateinit var sdCardPermission: AndroidSdCardPermission
     private lateinit var rootManager: RootManager
     private lateinit var selectedList: MutableList<Cache>
+    private var dialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
+        isDarkTheme = isDarkMode.value ?: true
 
-        isDarkTheme = isDarkMode(applicationContext)
-        Log . e (TAG, "${isDarkTheme} --MainActivity")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDarkTheme)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(
@@ -78,13 +79,15 @@ class MainActivity : BaseActivity() {
 
 ////        External and sd-Card permission
 //        permissionIssue()
-//        Its goo and check if root permission is given or not
-        checkRootState()
 
+        //        Its goo and check if root permission is given or not
+        checkRootState()
     }
 
 
     override fun onResume() {
+
+
 
         binding.deleteFloatingActionButton.setOnClickListener {
             if (!permissionIssue()) {
@@ -140,24 +143,24 @@ class MainActivity : BaseActivity() {
 
         //      Setup Swipe RecyclerView
         binding.swipeRefresh.setColorSchemeResources(
-            if (!isDarkTheme) R.color.swipeSchemeDarkColor else R.color.swipeSchemeColor
+            if (isDarkTheme) R.color.swipeSchemeDarkColor else R.color.swipeSchemeColor
         )
         binding.swipeRefresh.setProgressBackgroundColorSchemeColor(
             ContextCompat.getColor(
                 applicationContext,
-                if (!isDarkTheme) R.color.swipeBgDarkColor else R.color.swipeBgColor
+                if (isDarkTheme) R.color.swipeBgDarkColor else R.color.swipeBgColor
 
             )
         )
 
 
-//         Setup BottomAppBar Navigation Setup
+        //         Setup BottomAppBar Navigation Setup
         binding.bottomAppBar.navigationIcon?.mutate()?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 it.setTint(
                     ContextCompat.getColor(
                         applicationContext,
-                        if (!isDarkTheme) R.color.navigationIconDarkColor else R.color.navigationIconColor
+                        if (isDarkTheme) R.color.navigationIconDarkColor else R.color.navigationIconColor
                     )
                 )
             }
@@ -259,7 +262,7 @@ class MainActivity : BaseActivity() {
         val rootState = rootManager.checkRootPermission()
         when (rootState) {
             RootState.NO_ROOT -> {
-                setRootAccessAlreadyObtained(false, applicationContext)
+                setRootAccessAlreadyObtained(false)
                 generateAlertDialog(
                     resources.getString(R.string.alert_dialog_title_no_root_permission),
                     resources.getString(R.string.alert_dialog_message_no_root_permission),
@@ -267,7 +270,7 @@ class MainActivity : BaseActivity() {
                 )
             }
             RootState.BE_ROOT -> {
-                setRootAccessAlreadyObtained(false, applicationContext)
+                setRootAccessAlreadyObtained(false)
                 generateAlertDialog(
                     resources.getString(R.string.alert_dialog_title_be_root),
                     resources.getString(R.string.alert_dialog_message_be_root),
@@ -275,9 +278,8 @@ class MainActivity : BaseActivity() {
                 )
             }
             RootState.HAVE_ROOT -> {
-
-                if (isRootAccessAlreadyObtained(applicationContext)) return null
-                setRootAccessAlreadyObtained(true, applicationContext)
+                if (isRootPermission.value == true) return null
+                setRootAccessAlreadyObtained(true)
                 generateAlertDialog(
                     resources.getString(R.string.alert_dialog_title_have_root),
                     resources.getString(R.string.alert_dialog_message_have_root),
@@ -298,7 +300,7 @@ class MainActivity : BaseActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlertDialog.Builder(
                     this,
-                    if (isDarkTheme != true) android.R.style.Theme_Material_Light_Dialog_Alert else android.R.style.Theme_Material_Dialog_Alert
+                    if (isDarkTheme) android.R.style.Theme_Material_Dialog_Alert else android.R.style.Theme_Material_Light_Dialog_Alert
                 )
             } else {
                 AlertDialog.Builder(this)
@@ -316,13 +318,12 @@ class MainActivity : BaseActivity() {
                     startActivity(intent)
                 }
 
-
             }
 
             .setCancelable(true)
-        val dialog = builder.create()
-        dialog.show()
-        val textView = dialog.findViewById<View>(android.R.id.message) as TextView?
+        dialog = builder.create()
+        dialog!!.show()
+        val textView = dialog!!.findViewById<View>(android.R.id.message) as TextView?
         textView!!.setTextSize(
             TypedValue.COMPLEX_UNIT_PX,
             resources.getDimension(R.dimen.alert_dialog_message_size)
@@ -469,6 +470,17 @@ class MainActivity : BaseActivity() {
         startActivity(homeIntent)
     }
 
+    private fun setRootAccessAlreadyObtained(status: Boolean) {
+        lifecycleScope.launch {
+            ProtoManager(applicationContext).setIsRootPermission(status)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+            dialog?.dismiss()
+    }
+
 
     /**
      * Making notification bar transparent
@@ -487,21 +499,6 @@ class MainActivity : BaseActivity() {
         const val settingShortcutId = "setting"
         const val homeShortcutId = "home"
         const val allAppId = "allApp"
-
-        fun setRootAccessAlreadyObtained(status: Boolean, context: Context) {
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putBoolean(
-                    context.getString(R.string.is_root_permission_text), status
-                ).apply()
-        }
-
-        fun isRootAccessAlreadyObtained(context: Context): Boolean {
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getBoolean(
-                    context.getString(R.string.is_root_permission_text), false
-                )
-        }
-
 
     }
 

@@ -2,12 +2,9 @@ package com.sudoajay.historycachecleaner.helper
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sudoajay.historycachecleaner.activity.BaseActivity
@@ -16,7 +13,6 @@ import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.LayoutDarkModeBottomSheetBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -36,6 +32,7 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
             myDrawerView as ViewGroup,
             false
         )
+
         binding.bottomSheet = this
         binding.lifecycleOwner = this
         binding.baseActivity = BaseActivity
@@ -44,9 +41,10 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
     }
 
 
-    fun setValue(darkMode: String) {
+    fun setValue(darkModeValue: String) {
+        if (BaseActivity.getDarkMode.value == darkModeValue) dismiss()
         lifecycleScope.launch {
-            ProtoManager(requireContext()).setDarkMode(darkMode)
+            ProtoManager(requireContext()).setDarkMode(darkModeValue)
             withContext(Dispatchers.Main) {
                 val intent = Intent(requireContext(), MainActivity::class.java)
                 intent.action = passAction
@@ -55,6 +53,7 @@ class DarkModeBottomSheet(private var passAction: String) : BottomSheetDialogFra
             }
         }
     }
+
 }
 
 

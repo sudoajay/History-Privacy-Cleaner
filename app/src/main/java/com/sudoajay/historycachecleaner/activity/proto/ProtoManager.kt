@@ -16,8 +16,9 @@ import java.io.InputStream
 import java.io.OutputStream
 
 data class StatePreferences(
-    val darkMode: String,
-    val isDarkMode:Boolean
+    val darkMode: String?,
+    val isDarkMode:Boolean?,
+    val isRootPermission:Boolean
 )
 
 
@@ -40,8 +41,7 @@ class ProtoManager(var context: Context) {
         }
     }.map {
             val darkMode = it.darkMode ?: context.getString(R.string.system_default_text)
-            val isDarkMode = it.isDarkMode
-            StatePreferences(darkMode, isDarkMode)
+            StatePreferences(darkMode, it.isDarkMode,it.isRootPermission)
     }
 
     suspend fun setDarkMode(darkMode: String?) {
@@ -62,6 +62,16 @@ class ProtoManager(var context: Context) {
                 .build()
         }
     }
+    suspend fun setIsRootPermission(isRootPermission: Boolean?) {
+        val value =isRootPermission ?: false
+
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setIsRootPermission(value)
+                .build()
+        }
+    }
+
 
 }
 

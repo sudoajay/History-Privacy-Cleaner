@@ -154,7 +154,7 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlertDialog.Builder(
                     mainActivity,
-                    if (BaseActivity.isDarkMode.value != true) android.R.style.Theme_Material_Light_Dialog_Alert else android.R.style.Theme_Material_Dialog_Alert
+                    if ((BaseActivity.isDarkMode.value != false)) android.R.style.Theme_Material_Light_Dialog_Alert else android.R.style.Theme_Material_Dialog_Alert
                 )
             } else {
                 AlertDialog.Builder(context)
