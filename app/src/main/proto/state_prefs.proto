@@ -7,4 +7,5 @@ message StatePreferences {
   string darkMode = 1;
   bool isDarkMode = 2 ;
   bool isRootPermission = 3;
+  bool isSdCardFirstTimeDetected = 4;
 }

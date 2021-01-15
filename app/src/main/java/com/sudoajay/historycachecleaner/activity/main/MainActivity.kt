@@ -77,11 +77,11 @@ class MainActivity : BaseActivity() {
             openSetting()
         }
 
-////        External and sd-Card permission
-//        permissionIssue()
 
-        //        Its goo and check if root permission is given or not
+        //     Check if root permission is given or not
         checkRootState()
+//        External and sd-Card permission if there is no root permission
+        Log.e(TAG, permissionIssue().toString())
     }
 
 
@@ -122,7 +122,8 @@ class MainActivity : BaseActivity() {
 
 
     fun permissionIssue(): Boolean {
-        return if (rootManager.checkRootPermission() != RootState.HAVE_ROOT) {
+//        If no root permission given  then we need external and sd card permission for further operation
+        return if (rootManager.checkRootPermission() == RootState.HAVE_ROOT) {
             //        Take Permission external permission
             androidExternalStoragePermission =
                 AndroidExternalStoragePermission(applicationContext, this)

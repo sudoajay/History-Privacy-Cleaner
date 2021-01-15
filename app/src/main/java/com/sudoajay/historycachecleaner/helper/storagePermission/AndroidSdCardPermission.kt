@@ -28,7 +28,7 @@ class AndroidSdCardPermission(private var context: Context, private var activity
                 CustomToast.toastIt(context, context.getString(R.string.we_detect_sd_card_text))
                 CoroutineScope(Dispatchers.Main).launch {
                     delay(1000)
-                    callPermission()
+                    callPermissionDialog()
                 }
                 return true
             }
