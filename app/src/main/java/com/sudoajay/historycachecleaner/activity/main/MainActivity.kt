@@ -386,14 +386,17 @@ class MainActivity : BaseActivity() {
             Log.e(TAG , "SdCardPathUrl - $sdCardPathURL  String uri - $stringURI requestCode - $requestCode" )
             if (requestCode == 2) {
                 spiltPart = "%3A"
-                AndroidSdCardPermission.setSdCardPath(
-                    applicationContext,
-                    spiltThePath(stringURI, sdCardPathURL.toString())
-                )
-                AndroidSdCardPermission.setSdCardUri(
-                    applicationContext,
-                    spiltUri(stringURI, spiltPart)
-                )
+                lifecycleScope.launch {
+                    ProtoManager(applicationContext).setSdCardPath(
+                        spiltThePath(
+                            stringURI,
+                            sdCardPathURL.toString()
+                        )
+                    )
+                    ProtoManager(applicationContext).setSdCardUri(
+                        spiltUri(stringURI, spiltPart)
+                    )
+                }
                 val androidSdCardPermission = AndroidSdCardPermission(applicationContext, this)
                 if (!androidSdCardPermission.isSdStorageWritable) {
                     CustomToast.toastIt(

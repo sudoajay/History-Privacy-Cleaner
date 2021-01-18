@@ -57,6 +57,20 @@ open class BaseActivity : AppCompatActivity() {
                 Log.e(TAG, "${it.isRootPermission}  isRootPermission and ${isRootPermission.value}")
                 isRootPermission.value = it.isRootPermission
             }
+            if( it.isSdCardFirstTimeDetected != isSdCardFirstTimeDetected.value){
+                Log.e(TAG, "${it.isSdCardFirstTimeDetected}  isSdCardFirstTimeDetected and ${isSdCardFirstTimeDetected.value}")
+                isSdCardFirstTimeDetected.value = !it.isSdCardFirstTimeDetected!!
+            }
+            if( it.sdCardPath != sdCardPath.value){
+                Log.e(TAG, "${it.sdCardPath}  sdCardPath and ${sdCardPath.value}")
+                sdCardPath.value = it.sdCardPath
+            }
+            if( it.sdCardUri != sdCardUri.value){
+                Log.e(TAG, "${it.sdCardUri}  sdCardUri and ${sdCardUri.value}")
+                sdCardUri.value = it.sdCardUri
+            }
+
+
         }
 
 
@@ -179,6 +193,9 @@ open class BaseActivity : AppCompatActivity() {
         var getDarkMode: MutableLiveData<String> = MutableLiveData()
         var isDarkMode: MutableLiveData<Boolean> = MutableLiveData()
         var isRootPermission: MutableLiveData<Boolean> = MutableLiveData()
+        var isSdCardFirstTimeDetected: MutableLiveData<Boolean> = MutableLiveData()
+        var sdCardPath:MutableLiveData<String> = MutableLiveData()
+        var sdCardUri : MutableLiveData<String> = MutableLiveData()
 
     }
 

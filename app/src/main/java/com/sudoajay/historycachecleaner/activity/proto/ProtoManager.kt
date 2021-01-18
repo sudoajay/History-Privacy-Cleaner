@@ -8,6 +8,7 @@ import androidx.datastore.core.Serializer
 import androidx.datastore.createDataStore
 import com.google.protobuf.InvalidProtocolBufferException
 import com.sudoajay.historycachecleaner.StatePreferences
+import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -18,7 +19,10 @@ import java.io.OutputStream
 data class StatePreferences(
     val darkMode: String?,
     val isDarkMode:Boolean?,
-    val isRootPermission:Boolean
+    val isRootPermission:Boolean?,
+    val isSdCardFirstTimeDetected:Boolean?,
+    val sdCardPath: String?,
+    val sdCardUri:String?
 )
 
 
@@ -41,7 +45,7 @@ class ProtoManager(var context: Context) {
         }
     }.map {
             val darkMode = it.darkMode ?: context.getString(R.string.system_default_text)
-            StatePreferences(darkMode, it.isDarkMode,it.isRootPermission)
+            StatePreferences(darkMode, it.isDarkMode,it.isRootPermission,it.isSdCardFirstTimeDetected ,it.sdCardPath,it.sdCardUri )
     }
 
     suspend fun setDarkMode(darkMode: String?) {
@@ -72,7 +76,31 @@ class ProtoManager(var context: Context) {
         }
     }
 
+    suspend fun setIsSdCardFirstTimeDetected(isSdCardFirstTimeDetected: Boolean?){
+        val value = isSdCardFirstTimeDetected ?: false
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setIsSdCardFirstTimeDetected(value)
+                .build()
+        }
+    }
 
+    suspend fun setSdCardPath(sdCardPath: String?){
+        val value = sdCardPath ?: ""
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setSdCardPath(value)
+                .build()
+        }
+    }
+    suspend fun setSdCardUri(sdCardUri: String?){
+        val value = sdCardUri ?: ""
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setSdCardUri(value)
+                .build()
+        }
+    }
 }
 
 

@@ -5,26 +5,31 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import com.sudoajay.historycachecleaner.activity.BaseActivity
+import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 
 class AndroidSdCardPermission(private var context: Context, private var activity: Activity?) {
 
 
-    fun isSdCardDetected():Boolean{
-        if (isSdStorageWritable || !isFirstTimeDetected(context)) return false
-        setFirstTimeDetected(context)
+    fun isSdCardDetected(): Boolean {
+        if (isSdStorageWritable || BaseActivity.isSdCardFirstTimeDetected.value == false) return false
+
+        CoroutineScope(Dispatchers.IO).launch {
+            ProtoManager(context).setIsSdCardFirstTimeDetected(false)
+        }
+
         File("/storage/").listFiles()?.forEach loop@{
             if (Regex("[\\w\\d]+-[\\w\\d]+") in it.name) {
-                if (Build.VERSION.SDK_INT < 21) setSdCardPath(context, it.absolutePath)
+                if (Build.VERSION.SDK_INT < 21) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        ProtoManager(context).setSdCardPath(it.absolutePath)
+                    }
+                }
                 CustomToast.toastIt(context, context.getString(R.string.we_detect_sd_card_text))
                 CoroutineScope(Dispatchers.Main).launch {
                     delay(1000)
@@ -69,7 +74,7 @@ class AndroidSdCardPermission(private var context: Context, private var activity
                     CustomToast.toastIt(context, context.getString(R.string.selectSdCardMes))
                     storageAccessFrameWork()
                 } else {
-                    if (!File(getSdCardPath(context)).exists())
+                    if (!File(BaseActivity.sdCardPath.value ?: "").exists())
                         CustomToast.toastIt(context, context.getString(R.string.supportAboveSdCard))
                 }
 
@@ -95,13 +100,13 @@ class AndroidSdCardPermission(private var context: Context, private var activity
         get() {
             return when {
                 //  Here use of DocumentFile in android 10 not File is using anymore
-                Build.VERSION.SDK_INT > 28 -> getSdCardUri(context).isNotEmpty()
-                        && getSdCardUri(context) != AndroidExternalStoragePermission.getExternalPathFromCacheDir(
+                Build.VERSION.SDK_INT > 28 -> !(BaseActivity.sdCardUri.value.isNullOrEmpty())
+                        && BaseActivity.sdCardUri.value != AndroidExternalStoragePermission.getExternalPathFromCacheDir(
                     context
                 )
                         && !isSameUri
-                Build.VERSION.SDK_INT >= 21 -> File(getSdCardPath(context)).exists()
-                        && getSdCardPath(context) != AndroidExternalStoragePermission.getExternalPathFromCacheDir(
+                Build.VERSION.SDK_INT >= 21 -> File(BaseActivity.sdCardPath.value ?: "").exists()
+                        && BaseActivity.sdCardPath.value != AndroidExternalStoragePermission.getExternalPathFromCacheDir(
                     context
                 )
                 else -> {
@@ -111,54 +116,37 @@ class AndroidSdCardPermission(private var context: Context, private var activity
         }
 
     private val isSameUri
-        get() = AndroidExternalStoragePermission.getExternalUri(context) == getSdCardUri(context)
+        get() = AndroidExternalStoragePermission.getExternalUri(context) == BaseActivity.sdCardUri.value
 
     companion object {
 
-        fun getSdCardPath(context: Context) :String{
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getString(
-                    context.getString(R.string.sdCard_path_text), ""
-                ).toString()
-        }
-        fun setSdCardPath(context: Context,path:String){
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putString(
-                    context.getString(R.string.sdCard_path_text),
-                    path
-                ).apply()
-        }
+        //        fun getSdCardPath(context: Context) :String{
+//            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
+//                .getString(
+//                    context.getString(R.string.sdCard_path_text), ""
+//                ).toString()
+//        }
+//        fun setSdCardPath(context: Context, path: String) {
+//            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
+//                .putString(
+//                    context.getString(R.string.sdCard_path_text),
+//                    path
+//                ).apply()
+//        }
 
-        fun getSdCardUri(context: Context) :String{
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getString(
-                    context.getString(R.string.sdCard_uri_text), ""
-                ).toString()
-        }
-        fun setSdCardUri(context: Context,uri:String){
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putString(
-                    context.getString(R.string.sdCard_uri_text),
-                    uri
-                ).apply()
-        }
-
-        fun isFirstTimeDetected(context: Context) :Boolean{
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getBoolean(
-                    context.getString(R.string.is_first_time_detected_text), true
-                )
-        }
-
-
-        fun setFirstTimeDetected(context: Context){
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putBoolean(
-                    context.getString(R.string.is_first_time_detected_text),
-                    false
-                ).apply()
-        }
-
+//        fun getSdCardUri(context: Context): String {
+//            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
+//                .getString(
+//                    context.getString(R.string.sdCard_uri_text), ""
+//                ).toString()
+//        }
+//        fun setSdCardUri(context: Context,uri:String){
+//            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
+//                .putString(
+//                    context.getString(R.string.sdCard_uri_text),
+//                    uri
+//                ).apply()
+//        }
     }
 
 }

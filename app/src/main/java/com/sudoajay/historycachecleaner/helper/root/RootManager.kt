@@ -2,6 +2,7 @@ package com.sudoajay.historycachecleaner.helper.root
 
 import android.content.Context
 import android.util.Log
+import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.helper.storagePermission.AndroidSdCardPermission
 import eu.chainfire.libsuperuser.Shell
@@ -206,7 +207,7 @@ class RootManager(var context: Context) {
             context.cacheDir.absolutePath.toString().substringBefore(context.packageName)
 
         fun getSdCardCachePath(context: Context): String =
-            AndroidSdCardPermission.getSdCardPath(context) + "Android/data/"
+            BaseActivity.sdCardPath + "Android/data/"
 
     }
 }
