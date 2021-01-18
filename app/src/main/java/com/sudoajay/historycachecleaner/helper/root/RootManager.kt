@@ -99,7 +99,7 @@ class RootManager(var context: Context) {
 //
 //        DeleteCache.deleteWithFile(File(getExternalCachePath(context) + it.packageName + cachePath))
 //
-//        DeleteCache.deleteWithFile(File(getSdCardCachePath(context) + it.packageName + cachePath))
+//        DeleteCache.deleteWithFile(File(getSdCardCachePath() + it.packageName + cachePath))
 
         Log.e(TAG, "Done File deleted with Un root ")
     }
@@ -111,7 +111,7 @@ class RootManager(var context: Context) {
 //
 //        executeCommandSU("rm  -rf %s".format(getExternalCachePath(context) + it.packageName + cachePath))
 //
-//        executeCommandSU("rm  -rf %s".format(getSdCardCachePath(context) + it.packageName + cachePath))
+//        executeCommandSU("rm  -rf %s".format(getSdCardCachePath() + it.packageName + cachePath))
 
         Log.e(TAG, "Done File deleted with root ")
     }
@@ -206,8 +206,8 @@ class RootManager(var context: Context) {
         fun getInternalCachePath(context: Context): String =
             context.cacheDir.absolutePath.toString().substringBefore(context.packageName)
 
-        fun getSdCardCachePath(context: Context): String =
-            BaseActivity.sdCardPath + "Android/data/"
+        fun getSdCardCachePath(): String =
+            BaseActivity.sdCardPath.value + "Android/data/"
 
     }
 }

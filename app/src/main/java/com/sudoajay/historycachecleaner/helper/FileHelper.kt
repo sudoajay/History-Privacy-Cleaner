@@ -23,7 +23,7 @@ class FileHelper(var context: Context) {
             list.add(rootManager.getDirListForRoot(RootManager.getInternalCachePath(context) + packageName + codeCache))
 
             list.add(rootManager.getDirListForRoot(RootManager.getExternalCachePath(context) + packageName + cachePath))
-            list.add(rootManager.getDirListForRoot(RootManager.getSdCardCachePath(context) + packageName + cachePath))
+            list.add(rootManager.getDirListForRoot(RootManager.getSdCardCachePath() + packageName + cachePath))
 
 
 
@@ -37,7 +37,7 @@ class FileHelper(var context: Context) {
             getFilePath(File(RootManager.getExternalCachePath(context) + packageName + cachePath))
 
             //        Sd Card Path Cache
-            getFilePath(File(RootManager.getSdCardCachePath(context) + packageName + cachePath))
+            getFilePath(File(RootManager.getSdCardCachePath() + packageName + cachePath))
 
 
         }
@@ -77,7 +77,7 @@ class FileHelper(var context: Context) {
 
 //            External and sd Card Cache
             fileLength += rootManager.getFileSizeForRoot(RootManager.getExternalCachePath(context) + packageName + cachePath)
-            fileLength += rootManager.getFileSizeForRoot(RootManager.getSdCardCachePath(context) + packageName + cachePath)
+            fileLength += rootManager.getFileSizeForRoot(RootManager.getSdCardCachePath() + packageName + cachePath)
         }else {
 
 //            if no toot permission we cant access them
@@ -89,7 +89,7 @@ class FileHelper(var context: Context) {
         fileLength += dirSize(File(RootManager.getExternalCachePath(context) + packageName + cachePath))
 
 //       Sd Card Path Cache
-        fileLength += dirSize(File(RootManager.getSdCardCachePath(context) + packageName + cachePath))
+        fileLength += dirSize(File(RootManager.getSdCardCachePath() + packageName + cachePath))
         }
         return fileLength
     }

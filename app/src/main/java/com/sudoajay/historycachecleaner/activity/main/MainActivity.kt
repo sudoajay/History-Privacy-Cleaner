@@ -81,7 +81,7 @@ class MainActivity : BaseActivity() {
         //     Check if root permission is given or not
         checkRootState()
 //        External and sd-Card permission if there is no root permission
-        Log.e(TAG, permissionIssue().toString())
+       permissionIssue()
     }
 
 
@@ -130,10 +130,10 @@ class MainActivity : BaseActivity() {
             sdCardPermission = AndroidSdCardPermission(applicationContext, this)
 
             if (!androidExternalStoragePermission.isExternalStorageWritable) androidExternalStoragePermission.callPermission()
-            else {
+            else
                 return sdCardPermission.isSdCardDetected()
-            }
-                true
+
+            true
         } else {
             false
         }
@@ -342,11 +342,14 @@ class MainActivity : BaseActivity() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
 //                permission Granted :)
-                AndroidExternalStoragePermission.setExternalPath(
-                    applicationContext,
-                    AndroidExternalStoragePermission.getExternalPathFromCacheDir(applicationContext)
-                        .toString()
-                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    ProtoManager(applicationContext).setExternalPath(
+                        AndroidExternalStoragePermission.getExternalPathFromCacheDir(
+                            applicationContext
+                        )
+                    )
+                }
+
                 sdCardPermission.isSdCardDetected()
 
             } else // permission denied, boo! Disable the
@@ -408,17 +411,22 @@ class MainActivity : BaseActivity() {
 
             } else {
                 val realExternalPath =
-                    AndroidExternalStoragePermission.getExternalPath(applicationContext)
+                    externalPath.value.toString()
                 if (realExternalPath in "$sdCardPathURL/") {
                     spiltPart = "primary%3A"
-                    AndroidExternalStoragePermission.setExternalPath(
-                        applicationContext,
-                        realExternalPath
-                    )
-                    AndroidExternalStoragePermission.setExternalUri(
-                        applicationContext,
-                        spiltUri(stringURI, spiltPart)
-                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        ProtoManager(applicationContext).setExternalPath(
+                            realExternalPath
+                        )
+                        externalPath.value = realExternalPath
+                    }
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        ProtoManager(applicationContext).setExternalUri(
+                            spiltUri(stringURI, spiltPart)
+                        )
+                    }
+
                 } else {
                     CustomToast.toastIt(
                         applicationContext,

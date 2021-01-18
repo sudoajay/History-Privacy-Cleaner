@@ -17,6 +17,7 @@ class AndroidSdCardPermission(private var context: Context, private var activity
 
 
     fun isSdCardDetected(): Boolean {
+
         if (isSdStorageWritable || BaseActivity.isSdCardFirstTimeDetected.value == false) return false
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -116,38 +117,6 @@ class AndroidSdCardPermission(private var context: Context, private var activity
         }
 
     private val isSameUri
-        get() = AndroidExternalStoragePermission.getExternalUri(context) == BaseActivity.sdCardUri.value
-
-    companion object {
-
-        //        fun getSdCardPath(context: Context) :String{
-//            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-//                .getString(
-//                    context.getString(R.string.sdCard_path_text), ""
-//                ).toString()
-//        }
-//        fun setSdCardPath(context: Context, path: String) {
-//            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-//                .putString(
-//                    context.getString(R.string.sdCard_path_text),
-//                    path
-//                ).apply()
-//        }
-
-//        fun getSdCardUri(context: Context): String {
-//            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-//                .getString(
-//                    context.getString(R.string.sdCard_uri_text), ""
-//                ).toString()
-//        }
-//        fun setSdCardUri(context: Context,uri:String){
-//            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-//                .putString(
-//                    context.getString(R.string.sdCard_uri_text),
-//                    uri
-//                ).apply()
-//        }
-    }
-
+        get() = BaseActivity.externalUri.value == BaseActivity.sdCardUri.value
 }
 

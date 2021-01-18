@@ -21,6 +21,8 @@ data class StatePreferences(
     val isDarkMode:Boolean?,
     val isRootPermission:Boolean?,
     val isSdCardFirstTimeDetected:Boolean?,
+    val externalPath: String?,
+    val externalUri:String?,
     val sdCardPath: String?,
     val sdCardUri:String?
 )
@@ -45,7 +47,7 @@ class ProtoManager(var context: Context) {
         }
     }.map {
             val darkMode = it.darkMode ?: context.getString(R.string.system_default_text)
-            StatePreferences(darkMode, it.isDarkMode,it.isRootPermission,it.isSdCardFirstTimeDetected ,it.sdCardPath,it.sdCardUri )
+            StatePreferences(darkMode, it.isDarkMode,it.isRootPermission,it.isSdCardFirstTimeDetected ,it.externalPath,it.externalUri ,it.sdCardPath,it.sdCardUri )
     }
 
     suspend fun setDarkMode(darkMode: String?) {
@@ -81,6 +83,22 @@ class ProtoManager(var context: Context) {
         dataStore.updateData { preferences ->
             preferences.toBuilder()
                 .setIsSdCardFirstTimeDetected(value)
+                .build()
+        }
+    }
+    suspend fun setExternalPath(externalPath: String?){
+        val value = externalPath ?: ""
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setExternalPath(value)
+                .build()
+        }
+    }
+    suspend fun setExternalUri(externalUri: String?){
+        val value = externalUri ?: ""
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setExternalUri(value)
                 .build()
         }
     }

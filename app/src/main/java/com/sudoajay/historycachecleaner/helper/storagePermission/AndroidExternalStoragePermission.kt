@@ -11,9 +11,9 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.documentfile.provider.DocumentFile
 import com.sudoajay.historycachecleaner.activity.BaseActivity
+import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.R
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -105,7 +105,13 @@ class AndroidExternalStoragePermission(
                 //  Here use of DocumentFile in android 10 not File is using anymore
                 Build.VERSION.SDK_INT <= 28 -> {
                     if (Build.VERSION.SDK_INT <= 22) {
-                        setExternalPath(context, getExternalPathFromCacheDir(context).toString())
+                        CoroutineScope(Dispatchers.IO).launch {
+                            ProtoManager(context).setExternalPath(
+                                getExternalPathFromCacheDir(
+                                    context
+                                )
+                            )
+                        }
                         return true
                     } else {
                         val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -115,9 +121,9 @@ class AndroidExternalStoragePermission(
                 }
                 else -> {
                     isSamePath ||
-                            getExternalUri(context).isNotEmpty() && DocumentFile.fromTreeUri(
+                            !(BaseActivity.externalUri.value.isNullOrEmpty()) && DocumentFile.fromTreeUri(
                         context,
-                        Uri.parse(getExternalUri(context))
+                        Uri.parse(BaseActivity.externalUri.value)
                     )!!.exists() && isSamePath
                 }
             }
@@ -125,47 +131,13 @@ class AndroidExternalStoragePermission(
         }
 
     private val isSamePath: Boolean
-        get() = getExternalUri(context).isNotEmpty() && getExternalPathFromCacheDir(
+        get() = !(BaseActivity.externalUri.value.isNullOrEmpty()) && getExternalPathFromCacheDir(
             context
-        ).equals(
-            getExternalPath(context)
-        )
+        ) == BaseActivity.externalPath.value
 
 
     companion object {
-        fun getExternalPathFromCacheDir(context: Context?): String? =
+        fun getExternalPathFromCacheDir(context: Context?): String =
             context!!.externalCacheDir!!.absolutePath.toString().substringBefore("Android/data/")
-
-        fun getExternalPath(context: Context): String {
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getString(
-                    context.getString(R.string.external_path_text), ""
-                ).toString()
-        }
-
-        fun setExternalPath(context: Context, path: String) {
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putString(
-                    context.getString(R.string.external_path_text),
-                    path
-                ).apply()
-        }
-
-        fun getExternalUri(context: Context): String {
-            return context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                .getString(
-                    context.getString(R.string.external_uri_text), ""
-                ).toString()
-        }
-
-        fun setExternalUri(context: Context, uri: String) {
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).edit()
-                .putString(
-                    context.getString(R.string.external_uri_text),
-                    uri
-                ).apply()
-        }
-
-
     }
 }
