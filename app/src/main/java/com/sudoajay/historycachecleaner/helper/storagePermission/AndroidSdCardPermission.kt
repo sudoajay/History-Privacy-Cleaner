@@ -19,16 +19,16 @@ class AndroidSdCardPermission(private var context: Context, private var activity
     fun isSdCardDetected(): Boolean {
 
         if (isSdStorageWritable || BaseActivity.isSdCardFirstTimeDetected.value == false) return false
-
+        val protoManager = ProtoManager(context)
         CoroutineScope(Dispatchers.IO).launch {
-            ProtoManager(context).setIsSdCardFirstTimeDetected(false)
+            protoManager.setIsSdCardFirstTimeDetected(false)
         }
 
         File("/storage/").listFiles()?.forEach loop@{
             if (Regex("[\\w\\d]+-[\\w\\d]+") in it.name) {
                 if (Build.VERSION.SDK_INT < 21) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        ProtoManager(context).setSdCardPath(it.absolutePath)
+                        protoManager.setSdCardPath(it.absolutePath)
                     }
                 }
                 CustomToast.toastIt(context, context.getString(R.string.we_detect_sd_card_text))

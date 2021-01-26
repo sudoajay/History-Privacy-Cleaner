@@ -88,9 +88,6 @@ class MainActivity : BaseActivity() {
 
 
     override fun onResume() {
-
-
-
         binding.deleteFloatingActionButton.setOnClickListener {
             if (!permissionIssue()) {
                 CoroutineScope(Dispatchers.Main).launch {

@@ -23,28 +23,29 @@ import java.util.*
 
 open class BaseActivity : AppCompatActivity() {
     private lateinit var currentTheme: String
-
+    private lateinit var protoManager: ProtoManager
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val TAG = "BaseActivityTAG"
 
-        val proto = ProtoManager(applicationContext).getStatePreferences
+        protoManager = ProtoManager(applicationContext)
 
         runBlocking {
             Log.e(TAG, "Enter in blocking thread")
-            val valueDarkMode = proto.first().darkMode
+            val valueDarkMode = protoManager.getStatePreferences.first().darkMode
             if (valueDarkMode.isNullOrEmpty()) {
                 getDarkMode.value = getString(R.string.system_default_text)
-                ProtoManager(applicationContext).setDarkMode(getString(R.string.system_default_text))
+                protoManager.setDarkMode(getString(R.string.system_default_text))
             } else
                 getDarkMode.value = valueDarkMode
 
-            isRootPermission.value =proto.first().isRootPermission
-            isSdCardFirstTimeDetected.value = !(proto.first().isSdCardFirstTimeDetected)!!
+            isRootPermission.value = protoManager.getStatePreferences.first().isRootPermission
+            isSdCardFirstTimeDetected.value =
+                !(protoManager.getStatePreferences.first().isSdCardFirstTimeDetected)!!
         }
 
 
-        ProtoManager(applicationContext).getStatePreferences.asLiveData().observe(this) {
+        protoManager.getStatePreferences.asLiveData().observe(this) {
             if (it.darkMode != getDarkMode.value) {
                 getDarkMode.value = it.darkMode
                 Log.e(TAG, "${it.darkMode}  darkMode and ${getDarkMode.value}")
@@ -175,7 +176,7 @@ open class BaseActivity : AppCompatActivity() {
     private fun setValue(isDarkMode: Boolean) {
         BaseActivity.isDarkMode.value = isDarkMode
         lifecycleScope.launch {
-            ProtoManager(applicationContext).setIsDarkMode(isDarkMode)
+            protoManager.setIsDarkMode(isDarkMode)
         }
 
     }
