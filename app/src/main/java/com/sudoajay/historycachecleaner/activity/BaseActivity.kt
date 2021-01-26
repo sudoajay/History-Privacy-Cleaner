@@ -40,7 +40,7 @@ open class BaseActivity : AppCompatActivity() {
                 getDarkMode.value = valueDarkMode
 
             isRootPermission.value =proto.first().isRootPermission
-            isSdCardFirstTimeDetected.value = proto.first().isSdCardFirstTimeDetected
+            isSdCardFirstTimeDetected.value = !(proto.first().isSdCardFirstTimeDetected)!!
         }
 
 
@@ -58,7 +58,7 @@ open class BaseActivity : AppCompatActivity() {
                 Log.e(TAG, "${it.isRootPermission}  isRootPermission and ${isRootPermission.value}")
                 isRootPermission.value = it.isRootPermission
             }
-            if( it.isSdCardFirstTimeDetected != isSdCardFirstTimeDetected.value){
+            if( it.isSdCardFirstTimeDetected == isSdCardFirstTimeDetected.value || isSdCardFirstTimeDetected.value == null ){
                 Log.e(TAG, "${it.isSdCardFirstTimeDetected}  isSdCardFirstTimeDetected and ${isSdCardFirstTimeDetected.value}")
                 isSdCardFirstTimeDetected.value = !it.isSdCardFirstTimeDetected!!
             }
@@ -80,7 +80,18 @@ open class BaseActivity : AppCompatActivity() {
                 sdCardUri.value = it.sdCardUri
             }
 
-
+            if( it.orderBy != orderBy.value){
+                Log.e(TAG, "${it.orderBy}  orderBy and ${orderBy.value}")
+                orderBy.value = it.orderBy
+            }
+            if( it.systemApps == systemApps.value || systemApps.value == null){
+                Log.e(TAG, "${it.systemApps}  systemApps and ${systemApps.value}")
+                systemApps.value = !it.systemApps!!
+            }
+            if( it.userApps == userApps.value|| userApps.value == null){
+                Log.e(TAG, "${it.userApps}  userApps and ${userApps.value}")
+                userApps.value = !it.userApps
+            }
         }
 
 
@@ -208,6 +219,9 @@ open class BaseActivity : AppCompatActivity() {
         var externalUri : MutableLiveData<String> = MutableLiveData()
         var sdCardPath:MutableLiveData<String> = MutableLiveData()
         var sdCardUri : MutableLiveData<String> = MutableLiveData()
+        val orderBy : MutableLiveData<String> = MutableLiveData()
+        val systemApps : MutableLiveData<Boolean> = MutableLiveData()
+        val userApps : MutableLiveData<Boolean> = MutableLiveData()
 
     }
 

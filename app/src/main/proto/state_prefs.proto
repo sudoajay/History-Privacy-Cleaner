@@ -12,4 +12,7 @@ message StatePreferences {
   string externalUri = 6 ;
   string sdCardPath = 7 ;
   string sdCardUri = 8 ;
+  string orderBy = 9 ;
+  bool systemApps = 10 ;
+  bool userApps =11;
 }

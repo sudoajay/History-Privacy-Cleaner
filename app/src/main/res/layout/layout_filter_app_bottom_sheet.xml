@@ -10,6 +10,9 @@
         <variable
             name="bottomSheet"
             type="com.sudoajay.historycachecleaner.activity.app.FilterAppBottomSheet" />
+        <variable
+            name="baseActivity"
+            type="com.sudoajay.historycachecleaner.activity.BaseActivity.Companion" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +101,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/alphabeticalOrder_TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/alphabeticalOrder_TextView"
-                android:visibility="@{bottomSheet.isOrderBy(@string/menu_alphabetical_order)   ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.orderBy.equals(@string/menu_alphabetical_order))   ?  View.VISIBLE : View.GONE}"
                 app:srcCompat="@drawable/ic_tick"
                 app:tint="?attr/fadeTextColor"
                 tools:ignore="ContentDescription"
@@ -146,7 +149,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/installationDate_TextView"
                 app:layout_constraintVertical_bias="0.261"
-                android:visibility="@{bottomSheet.isOrderBy(@string/menu_installation_date)   ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.orderBy.equals(@string/menu_installation_date))   ?  View.VISIBLE : View.GONE}"
                 app:tint="?attr/fadeTextColor"
                 app:srcCompat="@drawable/ic_tick"
                 tools:ignore="ContentDescription"
@@ -195,7 +198,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/cacheSize_TextView"
                 app:layout_constraintVertical_bias="0.261"
-                android:visibility="@{bottomSheet.isOrderBy(@string/menu_app_size)   ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.orderBy.equals(@string/menu_app_size))   ?  View.VISIBLE : View.GONE}"
                 app:srcCompat="@drawable/ic_tick"
                 app:tint="?attr/fadeTextColor"
                 tools:ignore="ContentDescription" />

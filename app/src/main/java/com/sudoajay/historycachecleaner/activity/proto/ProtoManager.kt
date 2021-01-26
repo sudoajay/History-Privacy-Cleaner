@@ -8,7 +8,6 @@ import androidx.datastore.core.Serializer
 import androidx.datastore.createDataStore
 import com.google.protobuf.InvalidProtocolBufferException
 import com.sudoajay.historycachecleaner.StatePreferences
-import com.sudoajay.historycachecleaner.helper.storagePermission.SdCardPath
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -18,13 +17,16 @@ import java.io.OutputStream
 
 data class StatePreferences(
     val darkMode: String?,
-    val isDarkMode:Boolean?,
-    val isRootPermission:Boolean?,
-    val isSdCardFirstTimeDetected:Boolean?,
+    val isDarkMode: Boolean?,
+    val isRootPermission: Boolean?,
+    val isSdCardFirstTimeDetected: Boolean?,
     val externalPath: String?,
-    val externalUri:String?,
+    val externalUri: String?,
     val sdCardPath: String?,
-    val sdCardUri:String?
+    val sdCardUri: String?,
+    val orderBy: String?,
+    val systemApps: Boolean?,
+    val userApps: Boolean
 )
 
 
@@ -47,7 +49,20 @@ class ProtoManager(var context: Context) {
         }
     }.map {
             val darkMode = it.darkMode ?: context.getString(R.string.system_default_text)
-            StatePreferences(darkMode, it.isDarkMode,it.isRootPermission,it.isSdCardFirstTimeDetected ,it.externalPath,it.externalUri ,it.sdCardPath,it.sdCardUri )
+            val orderBy = it.orderBy ?: context.getString(R.string.menu_alphabetical_order)
+            StatePreferences(
+                darkMode,
+                it.isDarkMode,
+                it.isRootPermission,
+                it.isSdCardFirstTimeDetected,
+                it.externalPath,
+                it.externalUri,
+                it.sdCardPath,
+                it.sdCardUri,
+                orderBy,
+                it.systemApps,
+                it.userApps
+            )
     }
 
     suspend fun setDarkMode(darkMode: String?) {
@@ -82,7 +97,7 @@ class ProtoManager(var context: Context) {
         val value = isSdCardFirstTimeDetected ?: false
         dataStore.updateData { preferences ->
             preferences.toBuilder()
-                .setIsSdCardFirstTimeDetected(value)
+                .setIsSdCardFirstTimeDetected(!value)
                 .build()
         }
     }
@@ -116,6 +131,33 @@ class ProtoManager(var context: Context) {
         dataStore.updateData { preferences ->
             preferences.toBuilder()
                 .setSdCardUri(value)
+                .build()
+        }
+    }
+
+    suspend fun setOrderBy(orderBy: String?){
+        val value = orderBy ?: context.getString(R.string.menu_alphabetical_order)
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setOrderBy(value)
+                .build()
+        }
+    }
+
+    suspend fun setSystemApps(systemApps: Boolean?){
+        val value = systemApps ?: false
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setSystemApps(value)
+                .build()
+        }
+    }
+
+    suspend fun setUserApps(userApps: Boolean ?){
+        val value = userApps ?: false
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setUserApps(value)
                 .build()
         }
     }
