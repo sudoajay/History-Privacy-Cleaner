@@ -81,7 +81,7 @@ dependencies {
     implementation 'eu.chainfire:libsuperuser:1.1.0.+'
 
     //    Setting Preferences
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
 
     def archLifecycleVersion = '2.2.0'
@@ -141,7 +141,7 @@ dependencies {
     // Add the SDK for Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-messaging:21.0.1'
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 

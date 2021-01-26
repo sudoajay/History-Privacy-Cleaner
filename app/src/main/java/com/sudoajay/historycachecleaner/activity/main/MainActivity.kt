@@ -51,6 +51,7 @@ class MainActivity : BaseActivity() {
     private lateinit var rootManager: RootManager
     private lateinit var selectedList: MutableList<Cache>
     private var dialog: AlertDialog? = null
+    private lateinit var protoManager:ProtoManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -77,6 +78,7 @@ class MainActivity : BaseActivity() {
             openSetting()
         }
 
+        protoManager = ProtoManager(applicationContext)
 
         //     Check if root permission is given or not
         checkRootState()
@@ -130,9 +132,7 @@ class MainActivity : BaseActivity() {
             sdCardPermission = AndroidSdCardPermission(applicationContext, this)
 
             if (!androidExternalStoragePermission.isExternalStorageWritable) androidExternalStoragePermission.callPermission()
-            else
-                return sdCardPermission.isSdCardDetected()
-
+//            else return sdCardPermission.isSdCardDetected()
             true
         } else {
             false
@@ -343,7 +343,7 @@ class MainActivity : BaseActivity() {
             ) {
 //                permission Granted :)
                 CoroutineScope(Dispatchers.IO).launch {
-                    ProtoManager(applicationContext).setExternalPath(
+                    protoManager.setExternalPath(
                         AndroidExternalStoragePermission.getExternalPathFromCacheDir(
                             applicationContext
                         )
@@ -389,18 +389,18 @@ class MainActivity : BaseActivity() {
             Log.e(TAG , "SdCardPathUrl - $sdCardPathURL  String uri - $stringURI requestCode - $requestCode" )
             if (requestCode == 2) {
                 spiltPart = "%3A"
-                lifecycleScope.launch {
-
-                    ProtoManager(applicationContext).setSdCardPath(
-                        spiltThePath(
-                            stringURI,
-                            sdCardPathURL.toString()
-                        )
-                    )
-                    ProtoManager(applicationContext).setSdCardUri(
-                        spiltUri(stringURI, spiltPart)
-                    )
-                }
+//                lifecycleScope.launch {
+//
+//                    protoManager.setSdCardPath(
+//                        spiltThePath(
+//                            stringURI,
+//                            sdCardPathURL.toString()
+//                        )
+//                    )
+//                    protoManager.setSdCardUri(
+//                        spiltUri(stringURI, spiltPart)
+//                    )
+//                }
                 sdCardPath.value =  spiltThePath(
                     stringURI,
                     sdCardPathURL.toString()
@@ -421,14 +421,14 @@ class MainActivity : BaseActivity() {
                 if (realExternalPath in "$sdCardPathURL/") {
                     spiltPart = "primary%3A"
                     CoroutineScope(Dispatchers.IO).launch {
-                        ProtoManager(applicationContext).setExternalPath(
+                        protoManager.setExternalPath(
                             realExternalPath
                         )
                         externalPath.value = realExternalPath
                     }
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        ProtoManager(applicationContext).setExternalUri(
+                        protoManager.setExternalUri(
                             spiltUri(stringURI, spiltPart)
                         )
                     }
@@ -490,7 +490,7 @@ class MainActivity : BaseActivity() {
 
     private fun setRootAccessAlreadyObtained(status: Boolean) {
         lifecycleScope.launch {
-            ProtoManager(applicationContext).setIsRootPermission(status)
+            protoManager.setIsRootPermission(status)
         }
     }
 
