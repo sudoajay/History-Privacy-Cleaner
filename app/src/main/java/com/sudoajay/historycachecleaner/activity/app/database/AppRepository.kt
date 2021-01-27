@@ -147,12 +147,9 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         return appDao.getAppFromId(id)
     }
 
-    suspend fun isPresent(packageName: String): Int {
-        return appDao.isPresent(packageName)
-    }
 
-    suspend fun updateInstalledAndCacheByPackage(packageName: String, cacheSize:Long) {
-        appDao.updateInstalledAndCacheByPackage(packageName,cacheSize)
+    suspend fun updateInstalledByPackage(packageName: String){
+        appDao.updateInstalledByPackage(packageName)
     }
 
     suspend fun setDefaultValueInstall() {
@@ -165,6 +162,9 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         }
     }
 
+    suspend fun getPackageList(): List<String>{
+        return appDao.getPackageList()
+    }
 
 
     suspend fun getSelectedApp(): MutableList<App> {

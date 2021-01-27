@@ -33,18 +33,19 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         //        Here we Just add default value of install app
         appRepository.setDefaultValueInstall()
 
-//        Here we Just add new Install App Into Data base
+
+//        Here we first get all package list
+        val packageList = appRepository.getPackageList()
+        //        Here we Just add new Install App Into Data base
 
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
-            if (appRepository.isPresent(packageName) == 0) {
+            if (packageName !in packageList) {
                 createApp(applicationInfo, userView)
                 Log.e(TAG , "Not Avaliable in Data base $packageName")
             }
             else {
-                appRepository.updateInstalledAndCacheByPackage(
-                    packageName, if (userView) fileHelper.fileLength(packageName) else 0
-                )
+                appRepository.updateInstalledByPackage(packageName)
                 Log.e(TAG , "Avaliable in Data base $packageName")
             }
         }
@@ -57,10 +58,14 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         val packageName = getApplicationPackageName(applicationInfo)
         // return size in form of Bytes(Long)
-        val cacheSize = if (userView) fileHelper.fileLength(packageName) else 0
+//        val cacheSize = if (userView) fileHelper.fileLength(packageName) else 0
+        val cacheSize = 0L
         Log.e(TAG , "Package - $packageName and cache size - $cacheSize")
-        if (cacheSize > 8000L ) {
-
+//        if (cacheSize > 8000L ) {
+            Log.e(
+                TAG,
+                "Store in data base Cache size more than - $packageName and cache size - $cacheSize"
+            )
             val label = getApplicationLabel(applicationInfo)
             val sourceDir = getApplicationSourceDir(applicationInfo)
             val icon = getApplicationsIcon(applicationInfo)
@@ -82,7 +87,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                     isInstalled = true
                 )
             )
-        }
+//        }
     }
 
 

@@ -39,19 +39,21 @@ interface AppDao {
     @Query("Select Count(*) FROM AppTable ")
     suspend fun getCount(): Int
 
-    @Query("SELECT Count(id) FROM AppTable WHERE Package_Name = :packageName ")
-    suspend fun isPresent(packageName: String): Int
 
     @Query("SELECT id FROM AppTable WHERE Installed = '0' ")
     suspend fun getUninstallList(): List<Int>
+
+    @Query("SELECT Package_Name FROM AppTable ")
+    suspend fun getPackageList(): List<String>
 
 
     @Query("UPDATE AppTable SET Installed = '0' ")
     suspend fun setDefaultValueInstall()
 
+    @Query("UPDATE AppTable SET Installed = 1 where Package_Name = :packageName")
+    suspend fun updateInstalledByPackage(packageName: String )
 
-    @Query("UPDATE AppTable SET Installed = 1 and Cache_Size =:cacheSize  WHERE id IN (SELECT id FROM ( select id from AppTable where Package_Name = :packageName  limit 0,1)l)")
-    suspend fun updateInstalledAndCacheByPackage(packageName: String,cacheSize:Long )
+
 
     @Query("UPDATE AppTable SET Selected = :selected  Where Package_Name = :packageName")
     suspend fun updateSelectedApp(selected: Boolean, packageName: String)
