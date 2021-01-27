@@ -30,6 +30,7 @@ open class BaseActivity : AppCompatActivity() {
 
         protoManager = ProtoManager(applicationContext)
 
+
         runBlocking {
             Log.e(TAG, "Enter in blocking thread")
             val valueDarkMode = protoManager.getStatePreferences.first().darkMode
@@ -40,6 +41,8 @@ open class BaseActivity : AppCompatActivity() {
                 getDarkMode.value = valueDarkMode
 
             isRootPermission.value = protoManager.getStatePreferences.first().isRootPermission
+
+            Log.e(TAG, "${(protoManager.getStatePreferences.first().isSdCardFirstTimeDetected)!!}  isSdCardFirstTimeDetected and ${isSdCardFirstTimeDetected.value}")
             isSdCardFirstTimeDetected.value =
                 !(protoManager.getStatePreferences.first().isSdCardFirstTimeDetected)!!
         }
@@ -59,6 +62,8 @@ open class BaseActivity : AppCompatActivity() {
                 Log.e(TAG, "${it.isRootPermission}  isRootPermission and ${isRootPermission.value}")
                 isRootPermission.value = it.isRootPermission
             }
+
+
             if( it.isSdCardFirstTimeDetected == isSdCardFirstTimeDetected.value || isSdCardFirstTimeDetected.value == null ){
                 Log.e(TAG, "${it.isSdCardFirstTimeDetected}  isSdCardFirstTimeDetected and ${isSdCardFirstTimeDetected.value}")
                 isSdCardFirstTimeDetected.value = !it.isSdCardFirstTimeDetected!!

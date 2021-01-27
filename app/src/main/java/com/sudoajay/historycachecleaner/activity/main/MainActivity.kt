@@ -54,7 +54,7 @@ class MainActivity : BaseActivity() {
     private lateinit var protoManager:ProtoManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
+        Log.e(TAG , "OnCreate")
         super.onCreate(savedInstanceState)
 
         isDarkTheme = isDarkMode.value ?: true
@@ -83,10 +83,8 @@ class MainActivity : BaseActivity() {
         //     Check if root permission is given or not
         checkRootState()
 //        External and sd-Card permission if there is no root permission
-       permissionIssue()
+        permissionIssue()
     }
-
-
     override fun onResume() {
         binding.deleteFloatingActionButton.setOnClickListener {
             if (!permissionIssue()) {
@@ -129,7 +127,7 @@ class MainActivity : BaseActivity() {
             sdCardPermission = AndroidSdCardPermission(applicationContext, this)
 
             if (!androidExternalStoragePermission.isExternalStorageWritable) androidExternalStoragePermission.callPermission()
-//            else return sdCardPermission.isSdCardDetected()
+            else return sdCardPermission.isSdCardDetected()
             true
         } else {
             false
@@ -137,7 +135,7 @@ class MainActivity : BaseActivity() {
     }
 
 
-    fun setReference() {
+    private fun setReference() {
 
         //      Setup Swipe RecyclerView
         binding.swipeRefresh.setColorSchemeResources(
@@ -339,7 +337,7 @@ class MainActivity : BaseActivity() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
 //                permission Granted :)
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.Main).launch {
                     protoManager.setExternalPath(
                         AndroidExternalStoragePermission.getExternalPathFromCacheDir(
                             applicationContext
@@ -386,23 +384,22 @@ class MainActivity : BaseActivity() {
             Log.e(TAG , "SdCardPathUrl - $sdCardPathURL  String uri - $stringURI requestCode - $requestCode" )
             if (requestCode == 2) {
                 spiltPart = "%3A"
-//                lifecycleScope.launch {
-//
-//                    protoManager.setSdCardPath(
-//                        spiltThePath(
-//                            stringURI,
-//                            sdCardPathURL.toString()
-//                        )
-//                    )
-//                    protoManager.setSdCardUri(
-//                        spiltUri(stringURI, spiltPart)
-//                    )
-//                }
-                sdCardPath.value =  spiltThePath(
+                lifecycleScope.launch{
+                protoManager.setSdCardPath(
+                        spiltThePath(
+                            stringURI,
+                            sdCardPathURL.toString()
+                        )
+                    )
+                    protoManager.setSdCardUri(
+                        spiltUri(stringURI, spiltPart)
+                    )
+                }
+                sdCardPath.value = spiltThePath(
                     stringURI,
                     sdCardPathURL.toString()
                 )
-                sdCardUri.value =  spiltUri(stringURI, spiltPart)
+                sdCardUri.value = spiltUri(stringURI, spiltPart)
                 val androidSdCardPermission = AndroidSdCardPermission(applicationContext, this)
                 if (!androidSdCardPermission.isSdStorageWritable) {
                     CustomToast.toastIt(
@@ -417,19 +414,16 @@ class MainActivity : BaseActivity() {
                     externalPath.value.toString()
                 if (realExternalPath in "$sdCardPathURL/") {
                     spiltPart = "primary%3A"
-                    CoroutineScope(Dispatchers.IO).launch {
-                        protoManager.setExternalPath(
+                    lifecycleScope.launch{
+                    protoManager.setExternalPath(
                             realExternalPath
                         )
-                        externalPath.value = realExternalPath
-                    }
-
-                    CoroutineScope(Dispatchers.IO).launch {
                         protoManager.setExternalUri(
                             spiltUri(stringURI, spiltPart)
                         )
                     }
-
+                    externalPath.value = realExternalPath
+                    externalUri.value = spiltUri(stringURI, spiltPart)
                 } else {
                     CustomToast.toastIt(
                         applicationContext,
@@ -486,6 +480,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setRootAccessAlreadyObtained(status: Boolean) {
+        isRootPermission.value = status
         lifecycleScope.launch {
             protoManager.setIsRootPermission(status)
         }

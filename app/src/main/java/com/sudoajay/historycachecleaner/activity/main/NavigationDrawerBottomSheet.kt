@@ -18,7 +18,7 @@ class NavigationDrawerBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val myDrawerView =
             layoutInflater.inflate(R.layout.layout_navigation_drawer_bottom_sheet, null)

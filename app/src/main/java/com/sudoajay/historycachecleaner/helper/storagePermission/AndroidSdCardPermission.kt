@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.proto.ProtoManager
@@ -14,10 +15,10 @@ import kotlinx.coroutines.*
 import java.io.File
 
 class AndroidSdCardPermission(private var context: Context, private var activity: Activity?) {
-
+    private val TAG = "AndroidSdCardTAG"
 
     fun isSdCardDetected(): Boolean {
-
+        Log.e(TAG , BaseActivity.isSdCardFirstTimeDetected.value.toString() + " --- BaseActivity.isSdCardFirstTimeDetected")
         if (isSdStorageWritable || BaseActivity.isSdCardFirstTimeDetected.value == false) return false
         val protoManager = ProtoManager(context)
         CoroutineScope(Dispatchers.IO).launch {
@@ -48,8 +49,8 @@ class AndroidSdCardPermission(private var context: Context, private var activity
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlertDialog.Builder(
                     activity,
-                    if (BaseActivity.isDarkMode.value != false) android.R.style.Theme_Material_Light_Dialog_Alert
-                    else android.R.style.Theme_Material_Dialog_Alert
+                    if (BaseActivity.isDarkMode.value == true) android.R.style.Theme_Material_Dialog_Alert
+                    else android.R.style.Theme_Material_Light_Dialog_Alert
                 )
             } else {
                 AlertDialog.Builder(activity)
