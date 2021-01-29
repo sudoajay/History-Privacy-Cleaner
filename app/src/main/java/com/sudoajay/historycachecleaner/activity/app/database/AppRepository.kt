@@ -1,14 +1,12 @@
 package com.sudoajay.historycachecleaner.activity.app.database
 
 import android.content.Context
-import android.content.Intent
-import android.content.pm.ResolveInfo
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,31 +25,22 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         if (filter == context.getString(R.string.filter_changes_text)) {
             //         Sorting Data in Alpha or Install date
             val getOrderBy =
-                context.getSharedPreferences("state", Context.MODE_PRIVATE).getString(
-                    context.getString(R.string.title_menu_order_by),
-                    context.getString(R.string.menu_alphabetical_order)
-                )
+                BaseActivity.orderBy.value ?: context.getString(R.string.menu_alphabetical_order)
 
 //         Is System App Show
-            val isSystemApp = if (context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                    .getBoolean(context.getString(R.string.menu_system_app), true)
-            ) 1 else 2
+            val isSystemApp = if (BaseActivity.systemApps.value == true) 1 else 2
 //         Is User App Show
 
-            val isUserApp = if (context.getSharedPreferences("state", Context.MODE_PRIVATE)
-                    .getBoolean(context.getString(R.string.menu_user_app), true)
-            ) 1 else 2
+            val isUserApp = if (BaseActivity.userApps.value == true) 1 else 2
 
             //         get Changes If the Selected App
             modifyDatabase()
 
-
-
-            app = when {
-                getOrderBy!! == context.getString(R.string.menu_alphabetical_order) -> {
+            app = when (getOrderBy) {
+                context.getString(R.string.menu_alphabetical_order) -> {
                     appDao.getSortByAlpha(isSystemApp, isUserApp)
                 }
-                getOrderBy == context.getString(R.string.menu_installation_date) -> {
+                context.getString(R.string.menu_installation_date) -> {
                     appDao.getSortByDate(isSystemApp, isUserApp)
                 }
                 else -> {
@@ -60,6 +49,8 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
             }
             return app.toLiveData(
                 PagedList.Config.Builder()
+                    .setPageSize(50)
+                    .setEnablePlaceholders(false) //
                     .build()
             )
         } else {
@@ -69,7 +60,7 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
 
             return appDao.searchItem(value).toLiveData(
                 PagedList.Config.Builder()
-                    .setPageSize(20) //
+                    .setPageSize(10) //
                     .setEnablePlaceholders(true) //
                     .build()
             )
@@ -81,13 +72,8 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
     private fun modifyDatabase() {
 
         //        Option Selected
-        val selectedOption =
-            context.getSharedPreferences("state", Context.MODE_PRIVATE).getString(
-                context.getString(R.string.title_menu_select_option),
-                context.getString(R.string.menu_custom_app)
-            ).toString()
 
-        when (selectedOption) {
+        when (BaseActivity.selectOption.value ?: context.getString(R.string.menu_custom_app)) {
             context.getString(R.string.menu_no_apps_trans) ->
                 getId(1, SimpleSQLiteQuery("Select id From AppTable Where Selected = '1'"))
             context.getString(R.string.menu_all_apps_trans) ->
@@ -162,7 +148,11 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         }
     }
 
-    suspend fun getPackageList(): List<String>{
+    fun deleteRowFromPackage(packageName: String) {
+        appDao.deleteRowFromPackage(packageName)
+    }
+
+    suspend fun getPackageList(): List<String> {
         return appDao.getPackageList()
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -12,7 +13,6 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -157,19 +157,21 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
         viewModel.appList!!.observe(this, {
             if (!viewModel.stopObservingData) {
+                if (it.isNotEmpty()) viewModel.hideProgress.value = true
+                Log.e(TAG, "HideProgres -- ${viewModel.hideProgress.value.toString()}")
                 pagingAppRecyclerAdapter.submitList(it)
-
-
                 if (binding.swipeRefresh.isRefreshing)
                     binding.swipeRefresh.isRefreshing = false
-
-                if (it.isEmpty() && viewModel.hideProgress?.value == false) CustomToast.toastIt(
+                if (it.isEmpty() && viewModel.hideProgress.value == true)
+                    CustomToast.toastIt(
                     applicationContext,
                     getString(R.string.alert_dialog_no_cache_app)
                 )
             }
 
         })
+
+
 
 
         binding.swipeRefresh.setOnRefreshListener {

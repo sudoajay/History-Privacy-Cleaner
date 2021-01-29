@@ -1,9 +1,12 @@
+
 package com.sudoajay.historycachecleaner.activity.app
 
 import android.app.Application
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
@@ -13,8 +16,8 @@ import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class AllAppViewModel(application: Application) : AndroidViewModel(application) {
@@ -23,13 +26,12 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     private var loadApps: LoadApps
     private var _application = application
     var appRepository: AppRepository
-    var  rootManager: RootManager = RootManager(application)
     private var appDao: AppDao =
         AppRoomDatabase.getDatabase(_application.applicationContext).appDao()
 
-    var hideProgress: MutableLiveData<Boolean>? = null
+    var hideProgress: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val filterChanges: MutableLiveData<String> = MutableLiveData()
+    val filterChanges: MutableLiveData<String> = MutableLiveData()
     var stopObservingData:Boolean = false
 
 
@@ -39,19 +41,14 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
         //        Creating Object and Initialization
         appRepository = AppRepository(application, appDao)
         loadApps = LoadApps(_application.applicationContext, appRepository)
-
-        getHideProgress()
+        loadHideProgress()
         appList = Transformations.switchMap(filterChanges) {
             appRepository.handleFilterChanges(it)
         }
-
-
         filterChanges()
 
         databaseConfiguration()
-
     }
-
     fun filterChanges(filter: String = _application.getString(R.string.filter_changes_text)) {
         filterChanges.value = filter
     }
@@ -59,37 +56,17 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
         appList!!.value!!.dataSource.invalidate()
     }
 
-
-    private fun getHideProgress(): LiveData<Boolean> {
-        if (hideProgress == null) {
-            hideProgress = MutableLiveData()
-            loadHideProgress()
-        }
-        return hideProgress as MutableLiveData<Boolean>
-    }
-
     private fun loadHideProgress() {
-        hideProgress!!.value = true
+        hideProgress.value = false
     }
-
     private fun databaseConfiguration() {
+
         CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO) {
-                loadApps.searchInstalledApps()
-                hideProgress!!.postValue(false)
-            }
-            filterChanges.postValue(_application.getString(R.string.filter_changes_text))
-            Log.e(TAG , "STopOberving 1- $stopObservingData")
-            withContext(Dispatchers.IO){
-                stopObservingData = true
-               loadApps.calculateFileSize()
-                Log.e(TAG , "STopOberving 2- $stopObservingData")
-
-            }
-            Log.e(TAG , "STopOberving 3- $stopObservingData")
-
+            delay(500)
+            stopObservingData = true
+            loadApps.searchInstalledApps()
+            onRefresh()
             stopObservingData = false
-
         }
 
     }

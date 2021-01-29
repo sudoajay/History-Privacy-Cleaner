@@ -45,6 +45,14 @@ open class BaseActivity : AppCompatActivity() {
             Log.e(TAG, "${(protoManager.getStatePreferences.first().isSdCardFirstTimeDetected)!!}  isSdCardFirstTimeDetected and ${isSdCardFirstTimeDetected.value}")
             isSdCardFirstTimeDetected.value =
                 !(protoManager.getStatePreferences.first().isSdCardFirstTimeDetected)!!
+
+            val orderBy = protoManager.getStatePreferences.first().orderBy
+            if (orderBy.isNullOrEmpty()) {
+                BaseActivity.orderBy.value = getString(R.string.menu_alphabetical_order)
+                protoManager.setOrderBy(getString(R.string.menu_alphabetical_order))
+            } else
+                BaseActivity.orderBy.value = orderBy
+
         }
 
 
@@ -98,10 +106,16 @@ open class BaseActivity : AppCompatActivity() {
                 Log.e(TAG, "${it.userApps}  userApps and ${userApps.value}")
                 userApps.value = !it.userApps
             }
+
+            if( it.selectOption != selectOption.value){
+                Log.e(TAG, "${it.selectOption}  selectOption and ${selectOption.value}")
+                selectOption.value = it.selectOption
+            }
         }
 
 
         super.onCreate(savedInstanceState)
+
 
         currentTheme = getDarkMode.value ?: getString(R.string.system_default_text)
         setAppTheme(currentTheme)
@@ -228,6 +242,7 @@ open class BaseActivity : AppCompatActivity() {
         val orderBy : MutableLiveData<String> = MutableLiveData()
         val systemApps : MutableLiveData<Boolean> = MutableLiveData()
         val userApps : MutableLiveData<Boolean> = MutableLiveData()
+        val selectOption: MutableLiveData<String> = MutableLiveData()
 
     }
 

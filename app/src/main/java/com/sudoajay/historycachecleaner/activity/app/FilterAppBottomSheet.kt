@@ -47,7 +47,9 @@ class FilterAppBottomSheet : BottomSheetDialogFragment() {
     fun setOrderBy(value: String) {
         lifecycleScope.launch {
             protoManager.setOrderBy(value)
+
         }
+        BaseActivity.orderBy.value = value
         isSelectedBottomSheetFragment!!.handleDialogClose()
         dismiss()
     }
@@ -57,23 +59,26 @@ class FilterAppBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setShow(key: String) {
+        if (key == getString(R.string.menu_system_app)) {
+            BaseActivity.systemApps.value = (!(BaseActivity.systemApps.value)!!)
+        }
+        else {
+            BaseActivity.userApps.value = (!(BaseActivity.userApps.value)!!)
+        }
         lifecycleScope.launch {
             if (key == getString(R.string.menu_system_app)) {
                 protoManager.setSystemApps(!(BaseActivity.systemApps.value)!!)
-                BaseActivity.systemApps.value = !(BaseActivity.systemApps.value)!!
             }
             else {
                 protoManager.setUserApps(!(BaseActivity.userApps.value)!!)
-                BaseActivity.userApps.value = !(BaseActivity.userApps.value)!!
             }
         }
     }
     fun setUpShow(key: String) {
-        setShow(key)
         if (BaseActivity.systemApps.value == false && BaseActivity.userApps.value == false) {
             CustomToast.toastIt(requireContext(), getString(R.string.at_least_one_item_text))
-            setShow(key)
         } else {
+            setShow(key)
             isSelectedBottomSheetFragment!!.handleDialogClose()
             dismiss()
         }

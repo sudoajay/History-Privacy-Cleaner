@@ -26,7 +26,8 @@ data class StatePreferences(
     val sdCardUri: String?,
     val orderBy: String?,
     val systemApps: Boolean?,
-    val userApps: Boolean
+    val userApps: Boolean,
+    val selectOption: String
 )
 
 
@@ -50,6 +51,7 @@ class ProtoManager(var context: Context) {
     }.map {
             val darkMode = it.darkMode ?: context.getString(R.string.system_default_text)
             val orderBy = it.orderBy ?: context.getString(R.string.menu_alphabetical_order)
+            val selectOption = it.selectOption ?: context.getString(R.string.menu_custom_app)
             StatePreferences(
                 darkMode,
                 it.isDarkMode,
@@ -61,7 +63,7 @@ class ProtoManager(var context: Context) {
                 it.sdCardUri,
                 orderBy,
                 it.systemApps,
-                it.userApps
+                it.userApps, selectOption
             )
     }
 
@@ -158,6 +160,15 @@ class ProtoManager(var context: Context) {
         dataStore.updateData { preferences ->
             preferences.toBuilder()
                 .setUserApps(value)
+                .build()
+        }
+    }
+
+    suspend fun setSelectOption(selectOption: String ?){
+        val value = selectOption ?: context.getString(R.string.menu_custom_app)
+        dataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setSelectOption(selectOption)
                 .build()
         }
     }

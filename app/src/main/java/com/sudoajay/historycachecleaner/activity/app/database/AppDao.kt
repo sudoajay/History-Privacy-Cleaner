@@ -74,6 +74,9 @@ interface AppDao {
     @Query("DELETE FROM AppTable Where id = :ID")
     fun deleteRow(ID: Int)
 
+    @Query("DELETE FROM AppTable Where Package_Name = :packageName")
+    fun deleteRowFromPackage(packageName: String)
+
 
 
 }

@@ -210,7 +210,7 @@
     <string name="title_menu_order_by" translatable="false">Order by</string>
     <string name="menu_alphabetical_order" translatable="false">Alphabetical order</string>
     <string name="menu_installation_date" translatable="false">Installation date</string>
-    <string name="menu_app_size" translatable="false">App size</string>
+    <string name="menu_cache_size" translatable="false">Cache size</string>
     <string name="menu_system_app" translatable="false">System apps</string>
     <string name="menu_user_app" translatable="false">User apps</string>
 

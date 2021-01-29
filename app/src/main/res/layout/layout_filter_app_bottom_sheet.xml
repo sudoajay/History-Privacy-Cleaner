@@ -163,7 +163,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            android:onClick="@{() -> bottomSheet.setOrderBy(@string/menu_app_size)}"
+            android:onClick="@{() -> bottomSheet.setOrderBy(@string/menu_cache_size)}"
             android:background="?selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -198,7 +198,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/cacheSize_TextView"
                 app:layout_constraintVertical_bias="0.261"
-                android:visibility="@{(baseActivity.orderBy.equals(@string/menu_app_size))   ?  View.VISIBLE : View.GONE}"
+                android:visibility="@{(baseActivity.orderBy.equals(@string/menu_cache_size))   ?  View.VISIBLE : View.GONE}"
                 app:srcCompat="@drawable/ic_tick"
                 app:tint="?attr/fadeTextColor"
                 tools:ignore="ContentDescription" />

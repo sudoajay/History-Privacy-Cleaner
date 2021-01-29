@@ -1,6 +1,5 @@
 package com.sudoajay.historycachecleaner.activity.app
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -18,7 +17,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
     private lateinit var fileHelper :FileHelper
     suspend fun searchInstalledApps( ){
         appDatabaseConfiguration(getInstalledApplication(context))
-
     }
 
     private fun getInstalledApplication(context: Context): List<ApplicationInfo> {
@@ -30,9 +28,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         installedApplicationsInfo: List<ApplicationInfo>
     ) {
         fileHelper = FileHelper(context)
-        //        Here we Just add default value of install app
-        appRepository.setDefaultValueInstall()
-
 
 //        Here we first get all package list
         val packageList = appRepository.getPackageList()
@@ -40,32 +35,28 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
+            val cacheSize = fileHelper.fileLength(packageName)
             if (packageName !in packageList) {
-                createApp(applicationInfo)
-                Log.e(TAG , "Not Avaliable in Data base $packageName")
-            }
-            else {
-                appRepository.updateCacheSizeAndInstalledByPackage(packageName)
-                Log.e(TAG , "Avaliable in Data base $packageName")
+                if (cacheSize > 8000L) {
+                    createApp(applicationInfo, cacheSize)
+                    Log.e(TAG, "Not Avaliable in Data base $packageName")
+                }
+            } else {
+                if (cacheSize > 8000L) {
+                    Log.e(TAG, "package - $packageName cache size - $cacheSize")
+                    appRepository.updateCacheSizeByPackage(packageName, cacheSize)
+                } else {
+                    Log.e(TAG, "package - $packageName Remove element")
+                    appRepository.deleteRowFromPackage(packageName)
+                }
+
+                Log.e(TAG, "Avaliable in Data base $packageName")
             }
         }
-//        Here we remove Uninstall App from Data base
-        appRepository.removeUninstallAppFromDB()
-
+        Log.e(TAG, " Done appDatabaseConfiguration")
     }
 
-    suspend fun calculateFileSize(){
-
-//        Here we first get all package list
-        val packageList = appRepository.getPackageList()
-
-        packageList.forEach {
-            Log.e(TAG , "File Size grabbing   $it -- size ")
-            appRepository.updateCacheSizeByPackage(it, fileHelper.fileLength(it))
-        }
-    }
-
-    private suspend fun createApp(applicationInfo: ApplicationInfo) {
+    private suspend fun createApp(applicationInfo: ApplicationInfo, cacheSize:Long) {
 
         val packageName = getApplicationPackageName(applicationInfo)
 
@@ -74,7 +65,6 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
             val icon = getApplicationsIcon(applicationInfo)
             val installedDate = getInstalledDate(packageName)
             val systemApp = isSystemApps(applicationInfo)
-            val cacheSize = -1L
             appRepository.insert(
                 App(
                     null,

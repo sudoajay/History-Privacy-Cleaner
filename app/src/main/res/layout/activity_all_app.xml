@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="?attr/actionBarSize"
-            android:visibility="@{viewmodel.hideProgress ? View.GONE :View.VISIBLE }"
+            android:visibility="@{viewmodel.hideProgress ? View.VISIBLE :View.GONE }"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -90,7 +90,7 @@
             android:layout_width="@dimen/progress_circular_dimension"
             android:layout_height="@dimen/progress_circular_dimension"
             android:layout_gravity="center"
-            android:visibility="@{viewmodel.hideProgress ? View.VISIBLE :View.GONE }"
+            android:visibility="@{viewmodel.hideProgress ? View.GONE :View.VISIBLE }"
             android:indeterminate="true" />
 
 

@@ -15,4 +15,5 @@ message StatePreferences {
   string orderBy = 9 ;
   bool systemApps = 10 ;
   bool userApps =11;
+  string selectOption =12;
 }
