@@ -50,9 +50,11 @@ interface AppDao {
     @Query("UPDATE AppTable SET Installed = '0' ")
     suspend fun setDefaultValueInstall()
 
-    @Query("UPDATE AppTable SET Installed = 1 where Package_Name = :packageName")
-    suspend fun updateInstalledByPackage(packageName: String )
+    @Query("UPDATE AppTable SET Installed = 1 and Cache_Size = -1 where Package_Name = :packageName")
+    suspend fun updateCacheSizeAndInstalledByPackage(packageName: String )
 
+    @Query("UPDATE AppTable SET Cache_Size = :cacheSize where Package_Name = :packageName")
+    suspend fun updateCacheSizeByPackage(packageName: String, cacheSize : Long )
 
 
     @Query("UPDATE AppTable SET Selected = :selected  Where Package_Name = :packageName")

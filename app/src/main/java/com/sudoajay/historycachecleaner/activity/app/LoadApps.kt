@@ -1,5 +1,6 @@
 package com.sudoajay.historycachecleaner.activity.app
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -15,8 +16,8 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
     private lateinit var packageManager: PackageManager
     private var TAG = "LoadAppsTagg"
     private lateinit var fileHelper :FileHelper
-    suspend fun searchInstalledApps(userView: Boolean = true) {
-        appDatabaseConfiguration(getInstalledApplication(context), userView)
+    suspend fun searchInstalledApps( ){
+        appDatabaseConfiguration(getInstalledApplication(context))
 
     }
 
@@ -26,8 +27,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
     }
 
     private suspend fun appDatabaseConfiguration(
-        installedApplicationsInfo: List<ApplicationInfo>,
-        userView: Boolean
+        installedApplicationsInfo: List<ApplicationInfo>
     ) {
         fileHelper = FileHelper(context)
         //        Here we Just add default value of install app
@@ -41,11 +41,11 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
             if (packageName !in packageList) {
-                createApp(applicationInfo, userView)
+                createApp(applicationInfo)
                 Log.e(TAG , "Not Avaliable in Data base $packageName")
             }
             else {
-                appRepository.updateInstalledByPackage(packageName)
+                appRepository.updateCacheSizeAndInstalledByPackage(packageName)
                 Log.e(TAG , "Avaliable in Data base $packageName")
             }
         }
@@ -54,24 +54,27 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
     }
 
-    private suspend fun createApp(applicationInfo: ApplicationInfo, userView: Boolean) {
+    suspend fun calculateFileSize(){
+
+//        Here we first get all package list
+        val packageList = appRepository.getPackageList()
+
+        packageList.forEach {
+            Log.e(TAG , "File Size grabbing   $it -- size ")
+            appRepository.updateCacheSizeByPackage(it, fileHelper.fileLength(it))
+        }
+    }
+
+    private suspend fun createApp(applicationInfo: ApplicationInfo) {
 
         val packageName = getApplicationPackageName(applicationInfo)
-        // return size in form of Bytes(Long)
-//        val cacheSize = if (userView) fileHelper.fileLength(packageName) else 0
-        val cacheSize = 0L
-        Log.e(TAG , "Package - $packageName and cache size - $cacheSize")
-//        if (cacheSize > 8000L ) {
-            Log.e(
-                TAG,
-                "Store in data base Cache size more than - $packageName and cache size - $cacheSize"
-            )
+
             val label = getApplicationLabel(applicationInfo)
             val sourceDir = getApplicationSourceDir(applicationInfo)
             val icon = getApplicationsIcon(applicationInfo)
             val installedDate = getInstalledDate(packageName)
             val systemApp = isSystemApps(applicationInfo)
-
+            val cacheSize = -1L
             appRepository.insert(
                 App(
                     null,
@@ -87,7 +90,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
                     isInstalled = true
                 )
             )
-//        }
+
     }
 
 

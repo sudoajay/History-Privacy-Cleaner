@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +12,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+
 
 class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragment {
 
@@ -155,17 +156,18 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         recyclerView.adapter = pagingAppRecyclerAdapter
 
         viewModel.appList!!.observe(this, {
-            pagingAppRecyclerAdapter.submitList(it)
+            if (!viewModel.stopObservingData) {
+                pagingAppRecyclerAdapter.submitList(it)
 
 
-            if (binding.swipeRefresh.isRefreshing)
-                binding.swipeRefresh.isRefreshing = false
+                if (binding.swipeRefresh.isRefreshing)
+                    binding.swipeRefresh.isRefreshing = false
 
-            if (it.isEmpty() && viewModel.hideProgress?.value == false) CustomToast.toastIt(
-                applicationContext,
-                getString(R.string.alert_dialog_no_cache_app)
-            )
-
+                if (it.isEmpty() && viewModel.hideProgress?.value == false) CustomToast.toastIt(
+                    applicationContext,
+                    getString(R.string.alert_dialog_no_cache_app)
+                )
+            }
 
         })
 
@@ -306,7 +308,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
             .setPositiveButton(positiveText) { _, _ ->
 
                 if (positiveText == getString(R.string.yes_text)) {
-                    val intent = Intent(this,ProgressActivity::class.java)
+                    val intent = Intent(this, ProgressActivity::class.java)
                     intent.action = MainActivity.allAppId
                     startActivity(intent)
                 }

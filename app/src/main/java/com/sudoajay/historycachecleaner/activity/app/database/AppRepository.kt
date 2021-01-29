@@ -60,9 +60,6 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
             }
             return app.toLiveData(
                 PagedList.Config.Builder()
-                    .setPageSize(20) //
-                    .setInitialLoadSizeHint(20) //
-                    .setEnablePlaceholders(false) //
                     .build()
             )
         } else {
@@ -73,8 +70,7 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
             return appDao.searchItem(value).toLiveData(
                 PagedList.Config.Builder()
                     .setPageSize(20) //
-                    .setInitialLoadSizeHint(20) //
-                    .setEnablePlaceholders(false) //
+                    .setEnablePlaceholders(true) //
                     .build()
             )
 
@@ -148,8 +144,12 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
     }
 
 
-    suspend fun updateInstalledByPackage(packageName: String){
-        appDao.updateInstalledByPackage(packageName)
+    suspend fun updateCacheSizeAndInstalledByPackage(packageName: String){
+        appDao.updateCacheSizeAndInstalledByPackage(packageName)
+    }
+
+    suspend fun updateCacheSizeByPackage(packageName: String, cacheSize : Long){
+        appDao.updateCacheSizeByPackage(packageName,cacheSize)
     }
 
     suspend fun setDefaultValueInstall() {
