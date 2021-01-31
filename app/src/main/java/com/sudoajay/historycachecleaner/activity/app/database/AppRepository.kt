@@ -120,6 +120,12 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
         }
     }
 
+    suspend fun updateAllCacheSize(packageList: List<String>) {
+        for (packageName in packageList) {
+            appDao.updateCacheSizeByPackage(packageName, -1)
+        }
+    }
+
 
     suspend fun insert(app: App) {
         appDao.insert(app)

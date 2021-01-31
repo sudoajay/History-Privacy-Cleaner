@@ -12,12 +12,9 @@ import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
-import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historyprivacycleaner.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
 
 
 class AllAppViewModel(application: Application) : AndroidViewModel(application) {
@@ -31,8 +28,8 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
     var hideProgress: MutableLiveData<Boolean> = MutableLiveData()
 
-    val filterChanges: MutableLiveData<String> = MutableLiveData()
-    var stopObservingData:Boolean = false
+    private val filterChanges: MutableLiveData<String> = MutableLiveData()
+    var stopObservingData: Boolean = false
 
 
     var appList: LiveData<PagedList<App>>? = null
@@ -49,9 +46,11 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
         databaseConfiguration()
     }
+
     fun filterChanges(filter: String = _application.getString(R.string.filter_changes_text)) {
         filterChanges.value = filter
     }
+
     fun onRefresh() {
         appList!!.value!!.dataSource.invalidate()
     }
@@ -59,17 +58,47 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     private fun loadHideProgress() {
         hideProgress.value = false
     }
-    private fun databaseConfiguration() {
 
+    private fun databaseConfiguration() {
         CoroutineScope(Dispatchers.IO).launch {
-            delay(500)
-            stopObservingData = true
-            loadApps.searchInstalledApps()
-            onRefresh()
-            stopObservingData = false
+            asyncTask()
         }
+    }
+
+    private fun asyncTask() = runBlocking {
+        val time = measureTimeMillis {
+            withContext(Dispatchers.Default) { firstTaskAppList() }
+        }
+        Log.e(TAG , "Completed in first Task $time ms")
+        val anotherTime = measureTimeMillis {
+            withContext(Dispatchers.Default) { secondTaskSetAppSize() }
+        }
+        Log.e(TAG , "Completed in Second $anotherTime ms")
+    }
+
+    private suspend fun firstTaskAppList() {
+        val packageList: List<String> = appRepository.getPackageList()
+
+        if (packageList.isEmpty()) {
+            withContext(Dispatchers.IO) {
+                stopObservingData = true
+                loadApps.searchInstalledApps()
+                stopObservingData = false
+            }
+        } else {
+            appRepository.updateAllCacheSize(packageList)
+        }
+        onRefresh()
 
     }
 
+    private suspend fun secondTaskSetAppSize() {
+//        It will delay the process for 1 sec
+        delay(1000)
+        stopObservingData = true
+        loadApps.searchInstalledApps("Not Empty DataBase")
+        stopObservingData = false
+        onRefresh()
+    }
 
 }

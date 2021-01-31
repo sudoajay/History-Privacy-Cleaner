@@ -14,9 +14,12 @@ import java.util.*
 class LoadApps(private val context: Context, private  val appRepository: AppRepository) {
     private lateinit var packageManager: PackageManager
     private var TAG = "LoadAppsTagg"
-    private lateinit var fileHelper :FileHelper
-    suspend fun searchInstalledApps( ){
-        appDatabaseConfiguration(getInstalledApplication(context))
+    private lateinit var fileHelper: FileHelper
+    suspend fun searchInstalledApps(type: String = "Empty DataBase") {
+        if (type == "Empty DataBase")
+            addAppIntoDataBase(getInstalledApplication(context))
+        else
+            setAppSizeIntoDataBase(getInstalledApplication(context))
     }
 
     private fun getInstalledApplication(context: Context): List<ApplicationInfo> {
@@ -24,7 +27,13 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         return packageManager.getInstalledApplications(0)
     }
 
-    private suspend fun appDatabaseConfiguration(
+    private suspend fun addAppIntoDataBase(installedApplicationsInfo: List<ApplicationInfo>) {
+        for (applicationInfo in installedApplicationsInfo) {
+            createApp(applicationInfo, -1)
+        }
+    }
+
+    private suspend fun setAppSizeIntoDataBase(
         installedApplicationsInfo: List<ApplicationInfo>
     ) {
         fileHelper = FileHelper(context)
@@ -33,27 +42,29 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         val packageList = appRepository.getPackageList()
         //        Here we Just add new Install App Into Data base
 
-        for (applicationInfo in installedApplicationsInfo) {
-            val packageName = getApplicationPackageName(applicationInfo)
-            val cacheSize = fileHelper.fileLength(packageName)
-            if (packageName !in packageList) {
-                if (cacheSize > 8000L) {
-                    createApp(applicationInfo, cacheSize)
-                    Log.e(TAG, "Not Avaliable in Data base $packageName")
-                }
-            } else {
-                if (cacheSize > 8000L) {
-                    Log.e(TAG, "package - $packageName cache size - $cacheSize")
-                    appRepository.updateCacheSizeByPackage(packageName, cacheSize)
-                } else {
-                    Log.e(TAG, "package - $packageName Remove element")
-                    appRepository.deleteRowFromPackage(packageName)
-                }
+        if (packageList.isEmpty()) {
 
-                Log.e(TAG, "Avaliable in Data base $packageName")
+            for (applicationInfo in installedApplicationsInfo) {
+                createApp(applicationInfo, -1)
+            }
+        } else {
+
+            for (applicationInfo in installedApplicationsInfo) {
+                val packageName = getApplicationPackageName(applicationInfo)
+                val cacheSize = fileHelper.fileLength(packageName)
+                if (packageName !in packageList) {
+                    if (cacheSize > 8000L) {
+                        createApp(applicationInfo, cacheSize)
+                    }
+                } else {
+                    if (cacheSize > 8000L) {
+                        appRepository.updateCacheSizeByPackage(packageName, cacheSize)
+                    } else {
+                        appRepository.deleteRowFromPackage(packageName)
+                    }
+                }
             }
         }
-        Log.e(TAG, " Done appDatabaseConfiguration")
     }
 
     private suspend fun createApp(applicationInfo: ApplicationInfo, cacheSize:Long) {
@@ -125,5 +136,7 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
         return df.format(date)
 
     }
+
+
 
 }

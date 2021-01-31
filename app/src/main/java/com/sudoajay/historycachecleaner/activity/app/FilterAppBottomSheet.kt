@@ -75,7 +75,9 @@ class FilterAppBottomSheet : BottomSheetDialogFragment() {
         }
     }
     fun setUpShow(key: String) {
-        if (BaseActivity.systemApps.value == false && BaseActivity.userApps.value == false) {
+        if ((key == getString(R.string.menu_system_app) && BaseActivity.systemApps.value == true && BaseActivity.userApps.value == false) or
+            (key == getString(R.string.menu_user_app) && BaseActivity.systemApps.value == false && BaseActivity.userApps.value == true)
+        ) {
             CustomToast.toastIt(requireContext(), getString(R.string.at_least_one_item_text))
         } else {
             setShow(key)
