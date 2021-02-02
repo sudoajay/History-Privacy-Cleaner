@@ -30,15 +30,16 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
     private val filterChanges: MutableLiveData<String> = MutableLiveData()
     var stopObservingData: Boolean = false
-
+    var isCacheUpdateInDatBase = false
 
     var appList: LiveData<PagedList<App>>? = null
 
     init {
         //        Creating Object and Initialization
         appRepository = AppRepository(application, appDao)
-        loadApps = LoadApps(_application.applicationContext, appRepository)
+        loadApps = LoadApps(_application.applicationContext, appRepository,this)
         loadHideProgress()
+
         appList = Transformations.switchMap(filterChanges) {
             appRepository.handleFilterChanges(it)
         }
@@ -78,25 +79,19 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
     private suspend fun firstTaskAppList() {
         val packageList: List<String> = appRepository.getPackageList()
-
         if (packageList.isEmpty()) {
-            withContext(Dispatchers.IO) {
-                stopObservingData = true
-                loadApps.searchInstalledApps()
-                stopObservingData = false
-            }
-        } else {
-            appRepository.updateAllCacheSize(packageList)
+            stopObservingData = true
+            loadApps.searchInstalledApps("Empty DataBase")
+            stopObservingData = false
+            //        It will delay the process for 1 sec
+            delay(1000)
+            onRefresh()
         }
-        onRefresh()
-
     }
 
     private suspend fun secondTaskSetAppSize() {
-//        It will delay the process for 1 sec
-        delay(1000)
-        stopObservingData = true
         loadApps.searchInstalledApps("Not Empty DataBase")
+        isCacheUpdateInDatBase = true
         stopObservingData = false
         onRefresh()
     }

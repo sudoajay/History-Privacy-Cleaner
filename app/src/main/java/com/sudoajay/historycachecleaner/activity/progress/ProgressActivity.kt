@@ -44,7 +44,7 @@ class ProgressActivity : AppCompatActivity() {
 
         appDao = AppRoomDatabase.getDatabase(applicationContext).appDao()
         appRepository = AppRepository(applicationContext, appDao)
-        loadApps = LoadApps(applicationContext, appRepository)
+//        loadApps = LoadApps(applicationContext, appRepository)
         rootManager = RootManager(applicationContext)
 
         if (action == MainActivity.homeShortcutId)

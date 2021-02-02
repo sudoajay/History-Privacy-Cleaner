@@ -11,7 +11,11 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LoadApps(private val context: Context, private  val appRepository: AppRepository) {
+class LoadApps(
+    private val context: Context,
+    private val appRepository: AppRepository,
+    private val allAppViewModel: AllAppViewModel
+) {
     private lateinit var packageManager: PackageManager
     private var TAG = "LoadAppsTagg"
     private lateinit var fileHelper: FileHelper
@@ -40,31 +44,26 @@ class LoadApps(private val context: Context, private  val appRepository: AppRepo
 
 //        Here we first get all package list
         val packageList = appRepository.getPackageList()
+//       Make a map to store package name and cache
+        val map = mutableMapOf<String, Long>()
         //        Here we Just add new Install App Into Data base
+        for (applicationInfo in installedApplicationsInfo) {
+            val packageName = getApplicationPackageName(applicationInfo)
+            val cacheSize = fileHelper.fileLength(packageName)
 
-        if (packageList.isEmpty()) {
-
-            for (applicationInfo in installedApplicationsInfo) {
-                createApp(applicationInfo, -1)
+            if (cacheSize > 8000L) map[packageName] = cacheSize
+            else {
+                if (packageName in packageList) appRepository.deleteRowFromPackage(packageName)
             }
-        } else {
 
-            for (applicationInfo in installedApplicationsInfo) {
-                val packageName = getApplicationPackageName(applicationInfo)
-                val cacheSize = fileHelper.fileLength(packageName)
-                if (packageName !in packageList) {
-                    if (cacheSize > 8000L) {
-                        createApp(applicationInfo, cacheSize)
-                    }
-                } else {
-                    if (cacheSize > 8000L) {
-                        appRepository.updateCacheSizeByPackage(packageName, cacheSize)
-                    } else {
-                        appRepository.deleteRowFromPackage(packageName)
-                    }
-                }
-            }
         }
+// update thing in data base
+        allAppViewModel.stopObservingData = true
+        map.forEach {
+            appRepository.updateCacheSizeByPackage(it.key, it.value)
+        }
+
+
     }
 
     private suspend fun createApp(applicationInfo: ApplicationInfo, cacheSize:Long) {

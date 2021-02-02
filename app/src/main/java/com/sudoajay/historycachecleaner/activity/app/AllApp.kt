@@ -48,6 +48,8 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
     private lateinit var selectedList: MutableList<App>
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 

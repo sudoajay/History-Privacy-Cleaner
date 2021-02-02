@@ -16,7 +16,6 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.app.database.App
-import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.android.synthetic.main.layout_app_item.view.*
@@ -25,7 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class PagingAppRecyclerAdapter(var context: Context, var main: AllApp) :
+class PagingAppRecyclerAdapter(var context: Context, var allApp: AllApp) :
     PagedListAdapter<App, PagingAppRecyclerAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     private var packageManager = context.packageManager
@@ -56,16 +55,16 @@ class PagingAppRecyclerAdapter(var context: Context, var main: AllApp) :
         holder.appPackage.text = app.packageName
         holder.icon.setImageDrawable(getApplicationsIcon(app.icon, packageManager))
 
-        holder.size.text = String.format("(%s)", if (app.cacheSize != -1L)  FileSize.convertIt(app.cacheSize) else " Cal.. ")
+        holder.size.text = String.format("(%s)", if (allApp.viewModel.isCacheUpdateInDatBase)  FileSize.convertIt(app.cacheSize) else " Cal.. ")
         holder.checkBox.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                main.viewModel.appRepository.updateSelectedApp(
+                allApp.viewModel.appRepository.updateSelectedApp(
                     (it as CompoundButton).isChecked,
                     app.packageName
                 )
             }
         }
-        holder.infoContainer.setOnClickListener { main.showAppInfoBottomSheet(app.id!!)}
+        holder.infoContainer.setOnClickListener { allApp.showAppInfoBottomSheet(app.id!!)}
 
         holder.checkBox.isChecked = app.isSelected
     }
