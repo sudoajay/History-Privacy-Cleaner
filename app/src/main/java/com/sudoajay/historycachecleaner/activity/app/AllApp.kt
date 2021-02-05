@@ -280,6 +280,7 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
 
             override fun onQueryTextChange(newText: String): Boolean {
                 val query: String = newText.toLowerCase(Locale.ROOT).trim { it <= ' ' }
+
                 viewModel.filterChanges(query)
                 return true
             }

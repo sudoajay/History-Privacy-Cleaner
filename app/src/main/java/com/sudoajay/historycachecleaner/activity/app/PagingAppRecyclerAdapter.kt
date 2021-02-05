@@ -55,7 +55,11 @@ class PagingAppRecyclerAdapter(var context: Context, var allApp: AllApp) :
         holder.appPackage.text = app.packageName
         holder.icon.setImageDrawable(getApplicationsIcon(app.icon, packageManager))
 
-        holder.size.text = String.format("(%s)", if (allApp.viewModel.isCacheUpdateInDatBase)  FileSize.convertIt(app.cacheSize) else " Cal.. ")
+        holder.size.text = String.format(
+            "(%s)", if (allApp.viewModel.isCacheUpdateInDatBase) FileSize.convertIt(
+                app.cacheSize
+            ) else " Cal.. "
+        )
         holder.checkBox.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 allApp.viewModel.appRepository.updateSelectedApp(
@@ -103,5 +107,8 @@ class PagingAppRecyclerAdapter(var context: Context, var allApp: AllApp) :
             return packageManager.defaultActivityIcon
         }
     }
+
+
+
 
 }

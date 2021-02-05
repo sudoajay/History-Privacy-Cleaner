@@ -49,7 +49,7 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
             }
             return app.toLiveData(
                 PagedList.Config.Builder()
-                    .setPageSize(50)
+                    .setPageSize(20)
                     .setEnablePlaceholders(false) //
                     .build()
             )
@@ -60,8 +60,8 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
 
             return appDao.searchItem(value).toLiveData(
                 PagedList.Config.Builder()
-                    .setPageSize(10) //
-                    .setEnablePlaceholders(true) //
+                    .setPageSize(20) //
+                    .setEnablePlaceholders(false) //
                     .build()
             )
 
