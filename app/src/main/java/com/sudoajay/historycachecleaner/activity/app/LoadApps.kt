@@ -3,7 +3,6 @@ package com.sudoajay.historycachecleaner.activity.app
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.util.Log
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.helper.FileHelper
@@ -45,21 +44,25 @@ class LoadApps(
 //        Here we first get all package list
         val packageList = appRepository.getPackageList()
 //       Make a map to store package name and cache
-        val map = mutableMapOf<String, Long>()
+        val cacheMap = mutableMapOf<String, Long>()
+        val removePackageList = mutableListOf<String>()
         //        Here we Just add new Install App Into Data base
         for (applicationInfo in installedApplicationsInfo) {
             val packageName = getApplicationPackageName(applicationInfo)
             val cacheSize = fileHelper.fileLength(packageName)
 
-            if (cacheSize > 8000L) map[packageName] = cacheSize
+            if (cacheSize > 8000L) cacheMap[packageName] = cacheSize
             else {
-                if (packageName in packageList) appRepository.deleteRowFromPackage(packageName)
+                if (packageName in packageList) removePackageList.add(packageName)
             }
 
         }
 // update thing in data base
         allAppViewModel.stopObservingData = true
-        map.forEach {
+        removePackageList.forEach {
+            appRepository.deleteRowFromPackage(it)
+        }
+        cacheMap.forEach {
             appRepository.updateCacheSizeByPackage(it.key, it.value)
         }
 
