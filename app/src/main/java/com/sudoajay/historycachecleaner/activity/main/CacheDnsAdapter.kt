@@ -24,7 +24,6 @@ import com.sudoajay.historycachecleaner.activity.app.AllApp
 import com.sudoajay.historycachecleaner.activity.main.database.Cache
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.R
-import kotlinx.android.synthetic.main.layout_app_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,10 +44,10 @@ class CacheDnsAdapter(var mainActivity: MainActivity) :
 
     class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
-        val icon: ImageView = view.app_ImageView
-        val title: TextView = view.appTitle_TextView
-        val checkBox: CheckBox = view.app_Checkbox
-        val infoContainer: ConstraintLayout = view.infoContainer_ConstraintLayout
+        val icon: ImageView = view.findViewById(R.id.app_ImageView)
+        val title: TextView = view.findViewById(R.id.appTitle_TextView)
+        val checkBox: CheckBox = view.findViewById(R.id.app_Checkbox)
+        val infoContainer: ConstraintLayout = view.findViewById(R.id.infoContainer_ConstraintLayout)
 
     }
 

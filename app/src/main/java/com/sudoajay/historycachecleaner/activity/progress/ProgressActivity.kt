@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.viewModelScope
 import com.sudoajay.circleloadinganimation.AnimatedCircleLoadingView
 import com.sudoajay.historycachecleaner.activity.app.AllApp
 import com.sudoajay.historycachecleaner.activity.app.LoadApps
@@ -21,11 +23,13 @@ import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historycachecleaner.helper.root.RootManager
 import com.sudoajay.historycachecleaner.helper.root.RootState
 import com.sudoajay.historyprivacycleaner.R
-import kotlinx.android.synthetic.main.activity_progress.*
+import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
+import com.sudoajay.historyprivacycleaner.databinding.ActivityProgressBinding
 import kotlinx.coroutines.*
 
 class ProgressActivity : AppCompatActivity() {
     private var animatedCircleLoadingView: AnimatedCircleLoadingView? = null
+    private lateinit var binding :  ActivityProgressBinding
     private var TAG = "ProgressActivityTAG"
     private var totalCacheSize = 0L
     private var stopProgress = false
@@ -36,10 +40,10 @@ class ProgressActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_progress)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_progress)
         val action = intent.action.toString()
 
-        animatedCircleLoadingView = circle_loading_view
+        animatedCircleLoadingView = binding.circleLoadingView
         startLoading()
 
         appDao = AppRoomDatabase.getDatabase(applicationContext).appDao()
@@ -54,7 +58,7 @@ class ProgressActivity : AppCompatActivity() {
                 deleteAppCacheData()
             }
         }
-        val closeProgress = imageView_closeProgress
+        val closeProgress = binding.imageViewCloseProgress
         closeProgress.setOnClickListener {
             it.visibility = View.GONE
             animatedCircleLoadingView!!.stopFailure()

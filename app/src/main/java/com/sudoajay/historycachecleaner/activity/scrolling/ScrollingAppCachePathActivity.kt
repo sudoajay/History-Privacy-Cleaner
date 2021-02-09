@@ -18,14 +18,11 @@ import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historycachecleaner.helper.FileHelper
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingAppCachePathBinding
-import kotlinx.android.synthetic.main.content_scrolling_app_cache_path.*
-import kotlinx.android.synthetic.main.layout_app_cache_path_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,7 +70,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
         super.onResume()
         hideProgress.value = true
         Log.e(TAG, hideProgress.value.toString())
-        Log.e(TAG,circular_ProgressBar.visibility.toString() )
+        Log.e(TAG,binding.include.circularProgressBar.visibility.toString() )
         setSupportActionBar(binding.toolbar)
         binding.appImageImageView.setImageDrawable(
             PagingAppRecyclerAdapter.getApplicationsIcon(
@@ -93,7 +90,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
         val viewManager = LinearLayoutManager(this)
         val viewAdapter = MyAdapter(list)
 
-        cachePath_RecyclerView.apply {
+        binding.include.cachePathRecyclerView.apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
@@ -147,7 +144,7 @@ class ScrollingAppCachePathActivity : BaseActivity() {
 
         class MyViewHolder(view: View) :
             RecyclerView.ViewHolder(view) {
-            var path: TextView = view.appCachePath_TextView
+            var path: TextView = view.findViewById(R.id.appCachePath_TextView)
         }
 
         // Replace the contents of a view (invoked by the layout manager)

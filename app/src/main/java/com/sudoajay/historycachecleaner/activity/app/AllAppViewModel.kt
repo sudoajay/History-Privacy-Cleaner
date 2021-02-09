@@ -3,17 +3,17 @@ package com.sudoajay.historycachecleaner.activity.app
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.paging.PagedList
+import androidx.lifecycle.*
+import androidx.paging.*
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlin.system.measureTimeMillis
 
 
@@ -31,18 +31,21 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     private val filterChanges: MutableLiveData<String> = MutableLiveData()
     var stopObservingData: Boolean = false
     var isCacheUpdateInDatBase = false
-
-    var appList: LiveData<PagedList<App>>? = null
-
+    private var job: Job? = null
+    var appList = MutableLiveData<PagingData<App>>()
+    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        onError("Exception L ${throwable.localizedMessage}")
+    }
     init {
         //        Creating Object and Initialization
         appRepository = AppRepository(application, appDao)
         loadApps = LoadApps(_application.applicationContext, appRepository,this)
         loadHideProgress()
 
-        appList = Transformations.switchMap(filterChanges) {
-            appRepository.handleFilterChanges(it)
-        }
+        fetchDataFromDataBase()
+//        appList = Transformations.switchMap(filterChanges) {
+//           fetchDataFromDataBase(it)
+//        }
         filterChanges()
 
         databaseConfiguration()
@@ -53,15 +56,35 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun onRefresh() {
-        appList!!.value!!.dataSource.invalidate()
+        
     }
 
     private fun loadHideProgress() {
         hideProgress.value = false
     }
 
+    private fun fetchDataFromDataBase(){
+        job = CoroutineScope(Dispatchers.Main + exceptionHandler).launch {
+            appRepository.handleFilterChanges(filterChanges.value.toString())
+                .flowOn(Dispatchers.IO)
+                .collectLatest {
+                    hideProgress.postValue(true)
+                    appList.value = it
+                }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
+    }
+
+    private fun onError(message: String) {
+        Log.e(TAG, "error : $message")
+    }
+
     private fun databaseConfiguration() {
-        CoroutineScope(Dispatchers.IO).launch {
+      job =  CoroutineScope(Dispatchers.IO).launch {
             asyncTask()
         }
     }

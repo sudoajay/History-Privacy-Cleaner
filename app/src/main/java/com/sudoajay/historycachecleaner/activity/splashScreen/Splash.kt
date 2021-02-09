@@ -5,17 +5,20 @@ import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
+import androidx.databinding.DataBindingUtil
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historycachecleaner.activity.main.MainActivity
 import com.sudoajay.historyprivacycleaner.R
-import kotlinx.android.synthetic.main.activity_splash_screen.*
+import com.sudoajay.historyprivacycleaner.databinding.ActivityMainBinding
+import com.sudoajay.historyprivacycleaner.databinding.ActivitySplashScreenBinding
 
 
 class Splash : BaseActivity() {
     private var isFirstAnimation = false
+    private lateinit var binding: ActivitySplashScreenBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash_screen)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen)
 
         /*Simple hold animation to hold ImageView in the centre of the screen at a slightly larger
         scale than the ImageView's original one.*/
@@ -25,7 +28,7 @@ class Splash : BaseActivity() {
         larger scale to its original scale.*/
         val translateScale = AnimationUtils.loadAnimation(this, R.anim.translate_scale)
         val imageView =
-            header_icon
+            binding.headerIcon
         translateScale.setAnimationListener(object : AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {

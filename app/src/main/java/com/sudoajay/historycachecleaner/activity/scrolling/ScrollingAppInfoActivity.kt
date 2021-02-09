@@ -20,12 +20,10 @@ import com.sudoajay.historycachecleaner.activity.app.PagingAppRecyclerAdapter
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
-import com.sudoajay.historycachecleaner.activity.main.database.CacheRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityScrollingAppInfoBinding
-import kotlinx.android.synthetic.main.content_scrolling_app_info.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -95,22 +93,22 @@ class ScrollingAppInfoActivity : BaseActivity() {
 
         val sdf = SimpleDateFormat(" h:mm a , d MMM yyyy ", Locale.getDefault())
 
-        versionNameInfo_TextView.text = info.versionName
-        versionCodeInfo_TextView.text = PackageInfoCompat.getLongVersionCode(info).toString()
-        firstInstallInfo_TextView.text = sdf.format(info.firstInstallTime)
-        lastUpdateInfo_TextView.text = sdf.format(info.lastUpdateTime)
-        packageNameInfo_TextView.text = info.packageName
-        apkPathInfo_TextView.text = info.applicationInfo.sourceDir
-        dataPathInfo_TextView.text = info.applicationInfo.dataDir
-        apkSizeInfo_TextView.text = FileSize.convertIt(app.cacheSize)
+        binding.include.versionNameInfoTextView.text = info.versionName
+        binding.include.versionCodeInfoTextView.text = PackageInfoCompat.getLongVersionCode(info).toString()
+        binding.include.firstInstallInfoTextView.text = sdf.format(info.firstInstallTime)
+        binding.include.lastUpdateInfoTextView.text = sdf.format(info.lastUpdateTime)
+        binding.include.packageNameInfoTextView.text = info.packageName
+        binding.include.apkPathInfoTextView.text = info.applicationInfo.sourceDir
+        binding.include.dataPathInfoTextView.text = info.applicationInfo.dataDir
+        binding.include.apkSizeInfoTextView.text = FileSize.convertIt(app.cacheSize)
 
-        minSdkInfo_TextView.text =
+        binding.include.minSdkInfoTextView.text =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) info.applicationInfo.minSdkVersion.toString() else getString(
                 R.string.unspecified_text
             )
 
-        targetSdkInfo_TextView.text = info.applicationInfo.targetSdkVersion.toString()
-        installerInfo_TextView.text = info.applicationInfo.processName
+        binding.include.targetSdkInfoTextView.text = info.applicationInfo.targetSdkVersion.toString()
+        binding.include.installerInfoTextView.text = info.applicationInfo.processName
 
         val permission = packageManager.getPackageInfo(
             app.packageName,
@@ -124,7 +122,7 @@ class ScrollingAppInfoActivity : BaseActivity() {
             }
 
 
-        permissionInfo_TextView.text = builder.toString()
+        binding.include.permissionInfoTextView.text = builder.toString()
 
     }
 

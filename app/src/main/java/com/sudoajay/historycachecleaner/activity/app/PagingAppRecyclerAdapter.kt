@@ -12,20 +12,20 @@ import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.helper.FileSize
 import com.sudoajay.historyprivacycleaner.R
-import kotlinx.android.synthetic.main.layout_app_item.view.*
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 class PagingAppRecyclerAdapter(var context: Context, var allApp: AllApp) :
-    PagedListAdapter<App, PagingAppRecyclerAdapter.MyViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<App, PagingAppRecyclerAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     private var packageManager = context.packageManager
 
@@ -39,12 +39,12 @@ class PagingAppRecyclerAdapter(var context: Context, var allApp: AllApp) :
 
     class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
-        val icon: ImageView = view.app_ImageView
-        val title: TextView = view.appTitle_TextView
-        val appPackage: TextView = view.appPackage_TextView
-        val size: TextView = view.sizeApp_TextView
-        val checkBox: CheckBox = view.app_Checkbox
-        val infoContainer: ConstraintLayout = view.infoContainer_ConstraintLayout
+        val icon: ImageView = view.findViewById(R.id.appImage_ImageView)
+        val title: TextView = view.findViewById(R.id.appTitle_TextView)
+        val appPackage: TextView = view.findViewById(R.id.appPackage_TextView)
+        val size: TextView = view.findViewById(R.id.sizeApp_TextView)
+        val checkBox: CheckBox = view.findViewById(R.id.app_Checkbox)
+        val infoContainer: ConstraintLayout = view.findViewById(R.id.infoContainer_ConstraintLayout)
     }
 
 

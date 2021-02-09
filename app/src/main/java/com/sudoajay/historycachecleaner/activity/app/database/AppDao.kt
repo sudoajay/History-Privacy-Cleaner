@@ -1,6 +1,6 @@
 package com.sudoajay.historycachecleaner.activity.app.database
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 
@@ -9,16 +9,16 @@ import androidx.sqlite.db.SupportSQLiteQuery
 interface AppDao {
 
     @Query("Select * From AppTable Where System_App = :isSystemApp  or User_App = :isUserApp Order By Name asc ")
-    fun getSortByAlpha(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
+    fun getSortByAlpha(isSystemApp: Int, isUserApp: Int): PagingSource<Int, App>
 
     @Query("Select * From AppTable Where System_App = :isSystemApp  or User_App = :isUserApp Order By Date Desc ")
-    fun getSortByDate(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
+    fun getSortByDate(isSystemApp: Int, isUserApp: Int):PagingSource<Int, App>
 
     @Query("Select * From AppTable Where System_App = :isSystemApp  or User_App = :isUserApp Order By Cache_Size Desc ")
-    fun getSortBySize(isSystemApp: Int, isUserApp: Int): DataSource.Factory<Int, App>
+    fun getSortBySize(isSystemApp: Int, isUserApp: Int): PagingSource<Int, App>
 
     @Query("SELECT * FROM AppTable WHERE Name LIKE :search ")
-    fun searchItem(search: String?): DataSource.Factory<Int, App>
+    fun searchItem(search: String?):PagingSource<Int, App>
 
     @Query("SELECT * FROM AppTable WHERE id= :id")
     suspend fun getAppFromId(id:Int): App

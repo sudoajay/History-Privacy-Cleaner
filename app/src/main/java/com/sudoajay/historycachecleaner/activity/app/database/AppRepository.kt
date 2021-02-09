@@ -1,15 +1,13 @@
 package com.sudoajay.historycachecleaner.activity.app.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
-import androidx.paging.PagedList
-import androidx.paging.toLiveData
+import androidx.paging.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.sudoajay.historycachecleaner.activity.BaseActivity
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -18,10 +16,18 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    lateinit var app: DataSource.Factory<Int, App>
+
     lateinit var id: List<Int>
 
-    fun handleFilterChanges(filter: String): LiveData<PagedList<App>> {
+
+    fun handleFilterChanges(filter: String=context.getString(R.string.filter_changes_text)): Flow<PagingData<App>> {
+        val appQuery: PagingSource<Int, App>
+        val pagingConfig = PagingConfig(
+            initialLoadSize = 20,
+            pageSize = 20,
+            enablePlaceholders = true
+        )
+
         if (filter == context.getString(R.string.filter_changes_text)) {
             //         Sorting Data in Alpha or Install date
             val getOrderBy =
@@ -36,7 +42,7 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
             //         get Changes If the Selected App
             modifyDatabase()
 
-            app = when (getOrderBy) {
+            appQuery = when (getOrderBy) {
                 context.getString(R.string.menu_alphabetical_order) -> {
                     appDao.getSortByAlpha(isSystemApp, isUserApp)
                 }
@@ -47,23 +53,17 @@ class AppRepository(private val context: Context, private val appDao: AppDao) {
                     appDao.getSortBySize(isSystemApp, isUserApp)
                 }
             }
-            return app.toLiveData(
-                PagedList.Config.Builder()
-                    .setPageSize(20)
-                    .setEnablePlaceholders(false) //
-                    .build()
-            )
-        } else {
 
+
+            return Pager(pagingConfig) {
+                appQuery
+            }.flow
+        } else {
             val value = "%$filter%"
 
-
-            return appDao.searchItem(value).toLiveData(
-                PagedList.Config.Builder()
-                    .setPageSize(20) //
-                    .setEnablePlaceholders(false) //
-                    .build()
-            )
+            return Pager(pagingConfig) {
+                appDao.searchItem(value)
+            }.flow
 
         }
     }

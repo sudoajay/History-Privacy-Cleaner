@@ -17,6 +17,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sudoajay.historycachecleaner.activity.BaseActivity
@@ -157,19 +158,22 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         val pagingAppRecyclerAdapter = PagingAppRecyclerAdapter(applicationContext, this)
         recyclerView.adapter = pagingAppRecyclerAdapter
 
-        viewModel.appList!!.observe(this, {
-            if (!viewModel.stopObservingData) {
-                if (it.isNotEmpty()) viewModel.hideProgress.value = true
-                Log.e(TAG, "HideProgres -- ${viewModel.hideProgress.value.toString()}")
-                pagingAppRecyclerAdapter.submitList(it)
-                if (binding.swipeRefresh.isRefreshing)
-                    binding.swipeRefresh.isRefreshing = false
-                if (it.isEmpty() && viewModel.hideProgress.value == true)
-                    CustomToast.toastIt(
-                    applicationContext,
-                    getString(R.string.alert_dialog_no_cache_app)
-                )
+        viewModel.appList.observe(this, {
+            lifecycleScope.launch {
+                if (!viewModel.stopObservingData) {
+//                    if (it.s()) viewModel.hideProgress.value = true
+                    Log.e(TAG, "HideProgres -- ${viewModel.hideProgress.value.toString()}")
+                    pagingAppRecyclerAdapter.submitData(it)
+//                    if (binding.swipeRefresh.isRefreshing)
+//                        binding.swipeRefresh.isRefreshing = false
+//                    if (it.isEmpty() && viewModel.hideProgress.value == true)
+//                        CustomToast.toastIt(
+//                            applicationContext,
+//                            getString(R.string.alert_dialog_no_cache_app)
+//                        )
+                }
             }
+
 
         })
 
