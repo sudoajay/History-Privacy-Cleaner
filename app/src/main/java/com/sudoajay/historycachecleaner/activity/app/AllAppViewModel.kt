@@ -9,6 +9,7 @@ import com.sudoajay.historycachecleaner.activity.app.database.App
 import com.sudoajay.historycachecleaner.activity.app.database.AppDao
 import com.sudoajay.historycachecleaner.activity.app.database.AppRepository
 import com.sudoajay.historycachecleaner.activity.app.database.AppRoomDatabase
+import com.sudoajay.historycachecleaner.helper.CustomToast
 import com.sudoajay.historyprivacycleaner.R
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -28,14 +29,12 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
 
     var hideProgress: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val filterChanges: MutableLiveData<String> = MutableLiveData()
+    val filterChanges: MutableLiveData<String> = MutableLiveData()
     var stopObservingData: Boolean = false
     var isCacheUpdateInDatBase = false
     private var job: Job? = null
-    var appList = MutableLiveData<PagingData<App>>()
-    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        onError("Exception L ${throwable.localizedMessage}")
-    }
+    lateinit var appList:Flow<PagingData<App>>
+
     init {
         //        Creating Object and Initialization
         appRepository = AppRepository(application, appDao)
@@ -43,35 +42,26 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
         loadHideProgress()
 
         fetchDataFromDataBase()
-//        appList = Transformations.switchMap(filterChanges) {
-//           fetchDataFromDataBase(it)
-//        }
+
         filterChanges()
 
         databaseConfiguration()
+
+
     }
 
     fun filterChanges(filter: String = _application.getString(R.string.filter_changes_text)) {
         filterChanges.value = filter
     }
 
-    fun onRefresh() {
-        
-    }
 
     private fun loadHideProgress() {
         hideProgress.value = false
     }
 
-    private fun fetchDataFromDataBase(){
-        job = CoroutineScope(Dispatchers.Main + exceptionHandler).launch {
-            appRepository.handleFilterChanges(filterChanges.value.toString())
-                .flowOn(Dispatchers.IO)
-                .collectLatest {
-                    hideProgress.postValue(true)
-                    appList.value = it
-                }
-        }
+    fun fetchDataFromDataBase(){
+
+        appList=  appRepository.handleFilterChanges(filterChanges.value.toString()).cachedIn(viewModelScope)
     }
 
     override fun onCleared() {
@@ -79,9 +69,6 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
         job?.cancel()
     }
 
-    private fun onError(message: String) {
-        Log.e(TAG, "error : $message")
-    }
 
     private fun databaseConfiguration() {
       job =  CoroutineScope(Dispatchers.IO).launch {
@@ -98,25 +85,44 @@ class AllAppViewModel(application: Application) : AndroidViewModel(application) 
             withContext(Dispatchers.Default) { secondTaskSetAppSize() }
         }
         Log.e(TAG , "Completed in Second $anotherTime ms")
+
+        val oneMoreAnotherTime = measureTimeMillis {
+            withContext(Dispatchers.Default) { thirdTaskIsDataBaseEmpty() }
+        }
+        Log.e(TAG , "Completed in Second $oneMoreAnotherTime ms")
+
     }
 
     private suspend fun firstTaskAppList() {
-        val packageList: List<String> = appRepository.getPackageList()
-        if (packageList.isEmpty()) {
+        if (appRepository.getPackageList().isEmpty()) {
             stopObservingData = true
             loadApps.searchInstalledApps("Empty DataBase")
             stopObservingData = false
             //        It will delay the process for 1 sec
             delay(1000)
-            onRefresh()
         }
+        filterChanges.postValue(_application.getString(R.string.filter_changes_text))
+        hideProgress.postValue(true)
     }
 
     private suspend fun secondTaskSetAppSize() {
         loadApps.searchInstalledApps("Not Empty DataBase")
         isCacheUpdateInDatBase = true
         stopObservingData = false
-        onRefresh()
+        filterChanges.postValue(_application.getString(R.string.filter_changes_text))
+
+    }
+
+    private suspend fun thirdTaskIsDataBaseEmpty(){
+        if (appRepository.getPackageList().isEmpty()){
+            withContext(Dispatchers.Main){
+                CustomToast.toastIt(
+                    _application,
+                    _application.getString(R.string.alert_dialog_no_cache_app)
+                )
+            }
+        }
+
     }
 
 }

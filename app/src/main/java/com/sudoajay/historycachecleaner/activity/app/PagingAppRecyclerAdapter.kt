@@ -39,7 +39,7 @@ class PagingAppRecyclerAdapter(var context: Context, var allApp: AllApp) :
 
     class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
-        val icon: ImageView = view.findViewById(R.id.appImage_ImageView)
+        val icon: ImageView = view.findViewById(R.id.app_ImageView)
         val title: TextView = view.findViewById(R.id.appTitle_TextView)
         val appPackage: TextView = view.findViewById(R.id.appPackage_TextView)
         val size: TextView = view.findViewById(R.id.sizeApp_TextView)

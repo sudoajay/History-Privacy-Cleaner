@@ -33,6 +33,8 @@ import com.sudoajay.historyprivacycleaner.R
 import com.sudoajay.historyprivacycleaner.databinding.ActivityAllAppBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -158,30 +160,37 @@ class AllApp : BaseActivity(), FilterAppBottomSheet.IsSelectedBottomSheetFragmen
         val pagingAppRecyclerAdapter = PagingAppRecyclerAdapter(applicationContext, this)
         recyclerView.adapter = pagingAppRecyclerAdapter
 
-        viewModel.appList.observe(this, {
-            lifecycleScope.launch {
-                if (!viewModel.stopObservingData) {
-//                    if (it.s()) viewModel.hideProgress.value = true
-                    Log.e(TAG, "HideProgres -- ${viewModel.hideProgress.value.toString()}")
-                    pagingAppRecyclerAdapter.submitData(it)
+        lifecycleScope.launch {
+            viewModel.appList.collectLatest {
+                pagingAppRecyclerAdapter.submitData(it)
+            }
+        }
+//        viewModel.appList.observe(this, {
+//            lifecycleScope.launch {
+//                if (!viewModel.stopObservingData) {
+//                    Log.e(TAG, "HideProgres -- ${viewModel.hideProgress.value.toString()}")
+//                    pagingAppRecyclerAdapter.submitData(it)
+//
 //                    if (binding.swipeRefresh.isRefreshing)
 //                        binding.swipeRefresh.isRefreshing = false
-//                    if (it.isEmpty() && viewModel.hideProgress.value == true)
-//                        CustomToast.toastIt(
-//                            applicationContext,
-//                            getString(R.string.alert_dialog_no_cache_app)
-//                        )
-                }
-            }
+//
+//                }
+//            }
+//
+//
+//        })
 
 
+        viewModel.filterChanges.observe(this, {
+            pagingAppRecyclerAdapter.refresh()
+            Log.e(TAG,"Filter Changes - Here $it")
+            viewModel.fetchDataFromDataBase()
         })
 
-
-
-
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.onRefresh()
+            if (binding.swipeRefresh.isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+            pagingAppRecyclerAdapter.refresh()
         }
 
     }
